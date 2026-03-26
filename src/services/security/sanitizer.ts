@@ -15,7 +15,7 @@ export interface SanitizerResult {
 }
 
 function matchPattern(filename: string, pattern: string): boolean {
-  const normalizedPattern = pattern.toLowerCase().replace(/\*/g, '.*');
+  const normalizedPattern = pattern.toLowerCase();
   const normalizedFilename = filename.toLowerCase();
   
   if (pattern.startsWith('**/')) {
@@ -27,11 +27,11 @@ function matchPattern(filename: string, pattern: string): boolean {
   }
   
   if (pattern.includes('*')) {
-    const regex = new RegExp(`^${normalizedPattern}$`);
+    const regex = new RegExp(`^${normalizedPattern.replace(/\*/g, '.*')}$`);
     return regex.test(normalizedFilename);
   }
   
-  return normalizedFilename === normalizedPattern || normalizedFilename.includes(normalizedPattern);
+  return normalizedFilename === normalizedPattern;
 }
 
 export function sanitizeFiles(files: string[]): SanitizerResult {
