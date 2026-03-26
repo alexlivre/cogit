@@ -1,0 +1,47 @@
+{
+  "timestamp": "2026-03-26T09:42:09.302Z",
+  "summary": {
+    "total": 6,
+    "passed": 0,
+    "failed": 6,
+    "successRate": "0.00%"
+  },
+  "tests": [
+    {
+      "name": "Basic Functionality",
+      "status": "failed",
+      "duration": 0,
+      "error": "Both automated and interactive modes failed: Command failed: node dist/index.js auto --yes\nnode:internal/modules/cjs/loader:1459\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'C:\\code\\github\\cogit\\test-automation\\dist\\index.js'\r\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1456:15)\r\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1066:19)\r\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1071:22)\r\n    at Module._load (node:internal/modules/cjs/loader:1242:25)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\r\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\r\n    at node:internal/main/run_main_module:33:47 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v24.14.1\r\n"
+    },
+    {
+      "name": "Flags and Options",
+      "status": "failed",
+      "duration": 0,
+      "error": "Command failed: node dist/index.js auto --yes\nnode:internal/modules/cjs/loader:1459\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'C:\\code\\github\\cogit\\test-automation\\dist\\index.js'\r\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1456:15)\r\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1066:19)\r\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1071:22)\r\n    at Module._load (node:internal/modules/cjs/loader:1242:25)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\r\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\r\n    at node:internal/main/run_main_module:33:47 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v24.14.1\r\n"
+    },
+    {
+      "name": "Security Blocklist",
+      "status": "failed",
+      "duration": 0,
+      "error": "Assertion failed: Should fail with security alert\nExpected: \"Security alert\" to be in: \"Command failed: node dist/index.js auto --yes\nnode:internal/modules/cjs/loader:1459\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'C:\\code\\github\\cogit\\test-automation\\dist\\index.js'\r\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1456:15)\r\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1066:19)\r\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1071:22)\r\n    at Module._load (node:internal/modules/cjs/loader:1242:25)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\r\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\r\n    at node:internal/main/run_main_module:33:47 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v24.14.1\r\n\""
+    },
+    {
+      "name": "Internationalization",
+      "status": "failed",
+      "duration": 0,
+      "error": "Command failed: node dist/index.js auto --yes\nnode:internal/modules/cjs/loader:1459\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'C:\\code\\github\\cogit\\test-automation\\dist\\index.js'\r\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1456:15)\r\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1066:19)\r\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1071:22)\r\n    at Module._load (node:internal/modules/cjs/loader:1242:25)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\r\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\r\n    at node:internal/main/run_main_module:33:47 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v24.14.1\r\n"
+    },
+    {
+      "name": "Edge Cases",
+      "status": "failed",
+      "duration": 0,
+      "error": "Assertion failed: Should mention repository in error\nExpected: \"repository\" to be in: \"command failed: node dist/index.js auto --yes -p \"c:\\code\\github\\temp-no-git\"\nnode:internal/modules/cjs/loader:1459\r\n  throw err;\r\n  ^\r\n\r\nerror: cannot find module 'c:\\code\\github\\cogit\\test-automation\\dist\\index.js'\r\n    at module._resolvefilename (node:internal/modules/cjs/loader:1456:15)\r\n    at defaultresolveimpl (node:internal/modules/cjs/loader:1066:19)\r\n    at resolveforcjswithhooks (node:internal/modules/cjs/loader:1071:22)\r\n    at module._load (node:internal/modules/cjs/loader:1242:25)\r\n    at wrapmoduleload (node:internal/modules/cjs/loader:255:19)\r\n    at module.executeuserentrypoint [as runmain] (node:internal/modules/run_main:154:5)\r\n    at node:internal/main/run_main_module:33:47 {\r\n  code: 'module_not_found',\r\n  requirestack: []\r\n}\r\n\r\nnode.js v24.14.1\r\n\""
+    },
+    {
+      "name": "Format Validation",
+      "status": "failed",
+      "duration": 0,
+      "error": "Command failed: node dist/index.js auto --yes -m \"add user profile feature\"\nnode:internal/modules/cjs/loader:1459\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'C:\\code\\github\\cogit\\test-automation\\dist\\index.js'\r\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1456:15)\r\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1066:19)\r\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1071:22)\r\n    at Module._load (node:internal/modules/cjs/loader:1242:25)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\r\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\r\n    at node:internal/main/run_main_module:33:47 {\r\n  code: 'MODULE_NOT_FOUND',\r\n  requireStack: []\r\n}\r\n\r\nNode.js v24.14.1\r\n"
+    }
+  ]
+}
