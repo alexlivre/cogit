@@ -184,18 +184,18 @@ O Cogit gera mensagens no formato **Conventional Commits**:
 
 | Marcador | Tipo |
 |----------|------|
-| `x` | Feature/Enhancement |
-| `b` | Bugfix/Hotfix |
-| `t` | Update/Chore/Refactor |
+| `n` | Feature/Enhancement |
+| `f` | Bugfix/Hotfix |
+| `u` | Update/Chore/Refactor |
 
 ### Exemplo
 
 ```
 feat: adiciona sistema de autenticação
 
-- x implementa JWT tokens
-- x adiciona middleware de validação
-- t refatora estrutura de pastas
+- n implementa JWT tokens
+- n adiciona middleware de validação
+- u refatora estrutura de pastas
 ```
 
 ---

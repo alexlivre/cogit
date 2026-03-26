@@ -1,7 +1,7 @@
 const CATEGORY_MAP: Record<string, string> = {
-  'feat': 'x', 'feature': 'x', 'enhancement': 'x', 'improvement': 'x', 'melhoria': 'x',
-  'fix': 'b', 'bugfix': 'b', 'bug': 'b', 'hotfix': 'b', 'correcao': 'b', 'correção': 'b',
-  'update': 't', 'chore': 't', 'refactor': 't', 'atualizacao': 't', 'atualização': 't',
+  'feat': 'n', 'feature': 'n', 'enhancement': 'n', 'improvement': 'n', 'melhoria': 'n',
+  'fix': 'f', 'bugfix': 'f', 'bug': 'f', 'hotfix': 'f', 'correcao': 'f', 'correção': 'f',
+  'update': 'u', 'chore': 'u', 'refactor': 'u', 'atualizacao': 'u', 'atualização': 'u',
 };
 
 export function normalizeCommitMessage(rawText: string, lang: string = 'en'): string {
@@ -31,15 +31,15 @@ export function normalizeCommitMessage(rawText: string, lang: string = 'en'): st
     const match = trimmed.match(/^(feat|fix|update|chore|refactor|feature|bug|melhoria|correç[aã]o)\s*[:\-]?\s*(.+)$/i);
     
     if (match) {
-      const marker = CATEGORY_MAP[match[1].toLowerCase()] || 't';
+      const marker = CATEGORY_MAP[match[1].toLowerCase()] || 'u';
       return `- ${marker} ${match[2].trim()}`;
     }
     
     if (trimmed.startsWith('-') || trimmed.startsWith('*') || trimmed.startsWith('•')) {
-      return `- t ${trimmed.replace(/^[-*•]\s*/, '').trim()}`;
+      return `- u ${trimmed.replace(/^[-*•]\s*/, '').trim()}`;
     }
     
-    return `- t ${trimmed}`;
+    return `- u ${trimmed}`;
   });
   
   if (bodyLines.length > 0) {

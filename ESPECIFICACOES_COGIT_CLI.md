@@ -887,9 +887,9 @@ export const API_KEYS: Record<string, string> = {
 
 | Marcador | Categorias |
 |----------|------------|
-| `x` | feat, feature, enhancement, improvement, melhoria |
-| `b` | fix, bugfix, bug, hotfix, correcao, correção |
-| `t` | update, chore, refactor, atualizacao, atualização |
+| `n` | feat, feature, enhancement, improvement, melhoria |
+| `f` | fix, bugfix, bug, hotfix, correcao, correção |
+| `u` | update, chore, refactor, atualizacao, atualização |
 
 ### 12.3 Normalização
 
@@ -907,10 +907,10 @@ function normalizeCommitMessage(rawText: string, lang: string): string {
   const bodyLines = lines.slice(1).map(line => {
     const match = line.match(/^(feat|fix|update|...)\s*[:\-]?\s*(.+)$/i);
     if (match) {
-      const marker = CATEGORY_MAP[match[1].toLowerCase()] || 't';
+      const marker = CATEGORY_MAP[match[1].toLowerCase()] || 'u';
       return `- ${marker} ${match[2].trim()}`;
     }
-    return `- t ${line.replace(/^[-*•]\s*/, '').trim()}`;
+    return `- u ${line.replace(/^[-*•]\s*/, '').trim()}`;
   });
   
   return `${title}\n\n${bodyLines.join('\n')}`;
