@@ -1,0 +1,16 @@
+{
+  "cli.description": "CLI de automação Git com mensagens de commit geradas por IA",
+  "auto.description": "Gera mensagem de commit com IA e executa operações git",
+  "auto.confirm": "Executar este commit?",
+  "auto.regenerate": "Regenerar mensagem",
+  "auto.cancel": "Cancelar",
+  "auto.success": "Commit criado e enviado com sucesso!",
+  "auto.no_changes": "Nenhuma mudança detectada no repositório",
+  "auto.processing": "Analisando mudanças...",
+  "auto.generating": "Gerando mensagem de commit...",
+  "auto.executing": "Executando operações git...",
+  "error.not_repo": "Não é um repositório git",
+  "error.no_api_key": "Chave API não configurada. Defina OPENROUTER_API_KEY no .env",
+  "error.blocked_files": "Alerta de segurança: Arquivos bloqueados detectados: {files}",
+  "error.push_failed": "Push falhou: {error}"
+}
