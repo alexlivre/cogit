@@ -40,15 +40,36 @@ class TestRunner {
             await testFunction();
             const duration = Date.now() - startTime;
             
-            this.results.passed++;
-            this.results.tests.push({
-                name: testName,
-                status: 'passed',
-                duration,
-                error: null
-            });
-            
-            this.log(`${testName} - PASSED (${duration}ms)`, 'success');
+            try {
+                const output = execSync('node ../dist/index.js auto --yes', {
+                    cwd: this.testRepo,
+                    encoding: 'utf8',
+                    timeout: 30000
+                });
+                
+                this.results.passed++;
+                this.results.tests.push({
+                    name: testName,
+                    status: 'passed',
+                    duration,
+                    error: null
+                });
+                
+                this.log(`${testName} - PASSED (${duration}ms)`, 'success');
+            } catch (error) {
+                this.results.failed++;
+                this.results.tests.push({
+                    name: testName,
+                    status: 'failed',
+                    duration: 0,
+                    error: error.message
+                });
+                
+                this.log(`${testName} - FAILED: ${error.message}`, 'error');
+                if (this.verbose) {
+                    console.error(error.stack);
+                }
+            }
         } catch (error) {
             this.results.failed++;
             this.results.tests.push({
