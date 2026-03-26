@@ -41,7 +41,14 @@ class I18nManager {
 Rules:
 - Title format: <type>: <description> (max 50 chars)
 - Types: feat, fix, update, chore, refactor, docs, style, test, build, ci
-- Body: bullet points with markers (n=feature, f=fix, u=update)
+- Body: bullet points with category markers:
+  - Use "- n" for features/enhancements
+  - Use "- f" for bug fixes
+  - Use "- u" for updates/refactors
+- Example body format:
+  - n add new authentication system
+  - f resolve login timeout issue
+  - u refactor database connection logic
 - Be concise and descriptive
 - No markdown code blocks in response`,
       user_prompt_template: `Generate a commit message for the following changes:
@@ -59,7 +66,14 @@ Rules:
 Regras:
 - Formato do título: <tipo>: <descrição> (máx 50 caracteres)
 - Tipos: feat, fix, update, chore, refactor, docs, style, test, build, ci
-- Corpo: bullet points com marcadores (n=feature, f=fix, u=update)
+- Corpo: bullet points com marcadores de categoria:
+  - Use "- n" para features/melhorias
+  - Use "- f" para correções de bugs
+  - Use "- u" para atualizações/refatorações
+- Exemplo de formato do corpo:
+  - n adiciona novo sistema de autenticação
+  - f resolve problema de timeout no login
+  - u refatora lógica de conexão com banco
 - Seja conciso e descritivo
 - Sem blocos de código markdown na resposta`,
       user_prompt_template: `Gere uma mensagem de commit para as seguintes mudanças:

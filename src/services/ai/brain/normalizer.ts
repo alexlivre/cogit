@@ -1,7 +1,7 @@
 const CATEGORY_MAP: Record<string, string> = {
-  'feat': 'n', 'feature': 'n', 'enhancement': 'n', 'improvement': 'n', 'melhoria': 'n',
-  'fix': 'f', 'bugfix': 'f', 'bug': 'f', 'hotfix': 'f', 'correcao': 'f', 'correção': 'f',
-  'update': 'u', 'chore': 'u', 'refactor': 'u', 'atualizacao': 'u', 'atualização': 'u',
+  'n': 'n', 'feat': 'n', 'feature': 'n', 'enhancement': 'n', 'improvement': 'n', 'melhoria': 'n',
+  'f': 'f', 'fix': 'f', 'bugfix': 'f', 'bug': 'f', 'hotfix': 'f', 'correcao': 'f', 'correção': 'f',
+  'u': 'u', 'update': 'u', 'chore': 'u', 'refactor': 'u', 'atualizacao': 'u', 'atualização': 'u',
 };
 
 export function normalizeCommitMessage(rawText: string, lang: string = 'en'): string {
@@ -28,13 +28,21 @@ export function normalizeCommitMessage(rawText: string, lang: string = 'en'): st
   
   const bodyLines = lines.slice(1).map(line => {
     const trimmed = line.trim();
-    const match = trimmed.match(/^(feat|fix|update|chore|refactor|feature|bug|melhoria|correç[aã]o)\s*[:\-]?\s*(.+)$/i);
     
-    if (match) {
-      const marker = CATEGORY_MAP[match[1].toLowerCase()] || 'u';
-      return `- ${marker} ${match[2].trim()}`;
+    // Check if line already has a marker (n, f, u)
+    const markerMatch = trimmed.match(/^[-*•]\s*(n|f|u)\s+(.+)$/i);
+    if (markerMatch) {
+      return `- ${markerMatch[1].toLowerCase()} ${markerMatch[2].trim()}`;
     }
     
+    // Check if line starts with type (feat, fix, update, etc.)
+    const typeMatch = trimmed.match(/^(feat|fix|update|chore|refactor|feature|bug|melhoria|correç[aã]o)\s*[:\-]?\s*(.+)$/i);
+    if (typeMatch) {
+      const marker = CATEGORY_MAP[typeMatch[1].toLowerCase()] || 'u';
+      return `- ${marker} ${typeMatch[2].trim()}`;
+    }
+    
+    // Handle existing bullet points without marker
     if (trimmed.startsWith('-') || trimmed.startsWith('*') || trimmed.startsWith('•')) {
       return `- u ${trimmed.replace(/^[-*•]\s*/, '').trim()}`;
     }
