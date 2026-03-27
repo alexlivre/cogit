@@ -17,6 +17,7 @@ export async function menuCommand(): Promise<void> {
     { name: '🌿 Branch Center', value: 'branch' },
     { name: '🏷️  Tag Operations', value: 'tag' },
     { name: '🔍 View Repository Status', value: 'status' },
+    { name: '🤖 Check AI Providers', value: 'check-ai' },
     { name: '⚙️  Settings', value: 'settings' },
     { name: '❌ Exit', value: 'exit' },
   ]);
@@ -31,17 +32,25 @@ export async function menuCommand(): Promise<void> {
       break;
     
     case 'branch':
-      console.log(chalk.yellow('Branch Center - Coming in Phase 3'));
+      const { branchCenter } = await import('../../services/git/branch');
+      await branchCenter(process.cwd());
       await returnToMenu();
       break;
     
     case 'tag':
-      console.log(chalk.yellow('Tag Operations - Coming in Phase 3'));
+      const { tagCenter } = await import('../../services/git/tag');
+      await tagCenter(process.cwd());
       await returnToMenu();
       break;
     
     case 'status':
       await showStatus();
+      await returnToMenu();
+      break;
+    
+    case 'check-ai':
+      const { checkAICommand } = await import('./check-ai');
+      await checkAICommand();
       await returnToMenu();
       break;
     

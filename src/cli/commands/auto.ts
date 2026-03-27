@@ -18,10 +18,35 @@ export interface AutoOptions {
   message?: string;
   path?: string;
   dryRun?: boolean;
+  branch?: string;
 }
 
 export async function autoCommand(options: AutoOptions): Promise<void> {
   const repoPath = options.path || process.cwd();
+  
+  // Handle branch option before starting commit flow
+  if (options.branch) {
+    const { listBranches, createBranch, switchBranch } = await import('../../services/git/branch');
+    
+    const branches = await listBranches(repoPath);
+    const existingBranch = branches.find(b => b.name === options.branch && !b.remote);
+    
+    if (existingBranch) {
+      console.log(chalk.cyan(`Switching to existing branch: ${options.branch}`));
+      const switchResult = await switchBranch(repoPath, options.branch);
+      if (!switchResult.success) {
+        console.error(chalk.red(`Failed to switch branch: ${switchResult.error}`));
+        process.exit(1);
+      }
+    } else {
+      console.log(chalk.cyan(`Creating new branch: ${options.branch}`));
+      const createResult = await createBranch(repoPath, options.branch);
+      if (!createResult.success) {
+        console.error(chalk.red(`Failed to create branch: ${createResult.error}`));
+        process.exit(1);
+      }
+    }
+  }
   
   const config = validateConfig();
   if (!config.valid) {

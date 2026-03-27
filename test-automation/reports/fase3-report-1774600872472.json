@@ -1,0 +1,165 @@
+{
+  "phase": "FASE 3",
+  "timestamp": "2026-03-27T08:41:12.471Z",
+  "summary": {
+    "total": 30,
+    "passed": 27,
+    "failed": 3,
+    "duration": 1706
+  },
+  "tests": [
+    {
+      "name": "F3-01: confirmation.ts module exists",
+      "status": "PASS",
+      "duration": 1
+    },
+    {
+      "name": "F3-02: generateConfirmationCode function exported",
+      "status": "PASS",
+      "duration": 384
+    },
+    {
+      "name": "F3-03: validateConfirmationCode function exported",
+      "status": "PASS",
+      "duration": 1
+    },
+    {
+      "name": "F3-04: Confirmation code format (4 chars)",
+      "status": "PASS",
+      "duration": 0
+    },
+    {
+      "name": "F3-05: PROTECTED_OPERATIONS array exported",
+      "status": "PASS",
+      "duration": 0
+    },
+    {
+      "name": "F3-06: branch.ts module exists",
+      "status": "PASS",
+      "duration": 0
+    },
+    {
+      "name": "F3-07: listBranches function exported",
+      "status": "PASS",
+      "duration": 2
+    },
+    {
+      "name": "F3-08: createBranch function exported",
+      "status": "PASS",
+      "duration": 0
+    },
+    {
+      "name": "F3-09: switchBranch function exported",
+      "status": "PASS",
+      "duration": 0
+    },
+    {
+      "name": "F3-10: deleteBranch function exported",
+      "status": "PASS",
+      "duration": 0
+    },
+    {
+      "name": "F3-11: branchCenter function exported",
+      "status": "PASS",
+      "duration": 0
+    },
+    {
+      "name": "F3-12: tag.ts module exists",
+      "status": "PASS",
+      "duration": 0
+    },
+    {
+      "name": "F3-13: listTags function exported",
+      "status": "PASS",
+      "duration": 2
+    },
+    {
+      "name": "F3-14: createTag function exported",
+      "status": "PASS",
+      "duration": 0
+    },
+    {
+      "name": "F3-15: deleteTag function exported",
+      "status": "PASS",
+      "duration": 0
+    },
+    {
+      "name": "F3-16: resetToTag function exported",
+      "status": "PASS",
+      "duration": 0
+    },
+    {
+      "name": "F3-17: tagCenter function exported",
+      "status": "PASS",
+      "duration": 0
+    },
+    {
+      "name": "F3-18: check-ai.ts module exists",
+      "status": "PASS",
+      "duration": 0
+    },
+    {
+      "name": "F3-19: checkAICommand function exported",
+      "status": "PASS",
+      "duration": 172
+    },
+    {
+      "name": "F3-20: check-ai command registered in CLI",
+      "status": "PASS",
+      "duration": 568
+    },
+    {
+      "name": "F3-21: --branch flag registered in auto command",
+      "status": "PASS",
+      "duration": 556
+    },
+    {
+      "name": "F3-22: AutoOptions interface includes branch",
+      "status": "PASS",
+      "duration": 9
+    },
+    {
+      "name": "F3-23: Branch Center option in menu",
+      "status": "PASS",
+      "duration": 1
+    },
+    {
+      "name": "F3-24: Tag Operations option in menu",
+      "status": "PASS",
+      "duration": 0
+    },
+    {
+      "name": "F3-25: Check AI Providers option in menu",
+      "status": "PASS",
+      "duration": 1
+    },
+    {
+      "name": "F3-26: English locale has branch keys",
+      "status": "FAIL",
+      "error": "ENOENT: no such file or directory, open 'C:\\code\\github\\cogit\\dist\\locales\\en.json'",
+      "duration": 0
+    },
+    {
+      "name": "F3-27: Portuguese locale has branch keys",
+      "status": "FAIL",
+      "error": "ENOENT: no such file or directory, open 'C:\\code\\github\\cogit\\dist\\locales\\pt.json'",
+      "duration": 1
+    },
+    {
+      "name": "F3-28: Confirmation keys in locales",
+      "status": "FAIL",
+      "error": "ENOENT: no such file or directory, open 'C:\\code\\github\\cogit\\dist\\locales\\en.json'",
+      "duration": 0
+    },
+    {
+      "name": "F3-29: check-ai command in index.ts",
+      "status": "PASS",
+      "duration": 1
+    },
+    {
+      "name": "F3-30: --branch flag in index.ts",
+      "status": "PASS",
+      "duration": 0
+    }
+  ]
+}

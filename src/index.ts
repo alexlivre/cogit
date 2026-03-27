@@ -23,11 +23,20 @@ program
   .option('--nobuild', 'Add [CI Skip] to commit message')
   .option('-m, --message <hint>', 'Context hint for AI')
   .option('-p, --path <dir>', 'Target directory', process.cwd())
+  .option('-b, --branch <name>', 'Create or switch to branch')
   .action(autoCommand);
 
 program
   .command('menu')
   .description('Interactive menu with guided options')
   .action(menuCommand);
+
+program
+  .command('check-ai')
+  .description('Test AI provider connectivity')
+  .action(async () => {
+    const { checkAICommand } = await import('./cli/commands/check-ai');
+    await checkAICommand();
+  });
 
 program.parse();

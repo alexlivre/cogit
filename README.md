@@ -1,5 +1,7 @@
 # Cogit CLI
 
+![Status](https://img.shields.io/badge/Status-FASE_3_Complete-brightgreen) ![Version](https://img.shields.io/badge/Version-1.0.0-blue) ![Node](https://img.shields.io/badge/Node-18%2B-green)
+
 > **Git automation CLI with AI-powered commit messages**
 
 Uma ferramenta de linha de comando que transforma o workflow Git através de automação inteligente. Atua como um "DevOps Co-Pilot", analisando mudanças, gerando mensagens de commit semânticas e executando operações Git.
@@ -79,14 +81,47 @@ cogit auto -m "fix: corrige autenticação"
 cogit auto --path /caminho/do/repositorio
 ```
 
+### Comando Menu Interativo
+
+Interface guiada com múltiplas opções:
+
+```bash
+# Menu interativo
+cogit menu
+```
+
+### Comando Check AI
+
+Testa conectividade com provedores de IA:
+
+```bash
+# Verificar status dos providers
+cogit check-ai
+```
+
+### Branch e Tag Operations
+
+Gerenciamento completo via menu interativo:
+
+```bash
+# Branch Center
+cogit menu → 🌿 Branch Center
+
+# Tag Operations
+cogit menu → 🏷️ Tag Operations
+```
+
 ### Flags Disponíveis
 
 | Flag | Shortcut | Descrição |
 |------|----------|-----------|
 | `--yes` | `-y` | Pula confirmações interativas |
 | `--no-push` | - | Commita sem enviar para remote |
+| `--dry-run` | - | Simula operações sem executar |
+| `--nobuild` | - | Adiciona `[CI Skip]` ao commit |
 | `--message <hint>` | `-m` | Dica de contexto para IA |
 | `--path <dir>` | `-p` | Diretório alvo |
+| `--branch <name>` | `-b` | Cria ou usa branch específica |
 
 ---
 
@@ -118,6 +153,11 @@ cogit auto --path /caminho/do/repositorio
 │    • git add -A                                             │
 │    • git commit -m "<mensagem>"                             │
 │    • git push (se não --no-push)                            │
+├─────────────────────────────────────────────────────────────┤
+│ 7. GIT HEALER (se push falhar)                              │
+│    • Analisa erro com IA                                    │
+│    • Sugere comandos de correção                            │
+│    • Até 3 tentativas automáticas                           │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -144,6 +184,75 @@ Padrões mascarados no diff antes de enviar para IA:
 - Tokens → `***TOKEN_REDACTED***`
 - Passwords → `***PASSWORD_REDACTED***`
 - AWS Keys → `***AWS_KEY_REDACTED***`
+
+---
+
+## Git Healer (Auto-correção)
+
+O Git Healer é acionado automaticamente quando o push falha:
+
+1. **Análise**: O erro é enviado para IA analisar
+2. **Sugestão**: IA sugere comandos de correção
+3. **Validação**: Comandos perigosos são bloqueados
+4. **Execução**: Comando seguro é executado
+5. **Retry**: Até 3 tentativas automáticas
+
+### Comandos Bloqueados
+
+- `--force` em qualquer operação
+- `reset --hard`
+- `clean -fd` não interativo
+- `push --force`
+
+### Exemplo
+
+```bash
+# Push falha com conflito
+# Healer sugere: git pull --rebase
+# Executa automaticamente e tenta push novamente
+```
+
+---
+
+## Modo Dry Run
+
+Simula todas as operações sem executar:
+
+```bash
+cogit auto --dry-run --yes
+```
+
+### O que é simulado:
+- ✅ Scanner de mudanças
+- ✅ Geração de commit message
+- ✅ Exibição do comando que seria executado
+- ❌ Nenhum commit criado
+- ❌ Nenhum push realizado
+
+### Casos de uso:
+- Verificar qual mensagem será gerada
+- Validar mudanças antes de commitar
+- Testar configurações
+
+---
+
+## Menu Interativo
+
+O comando `cogit menu` oferece uma interface guiada:
+
+```
+╔══════════════════════════════════════╗
+║         COGIT CLI - MENU             ║
+╚══════════════════════════════════════╝
+
+1. 🚀 Quick Commit (auto)
+2. 📝 Commit with options
+3. 🌿 Branch Center (Phase 3)
+4. 🏷️  Tag Operations (Phase 3)
+5. 🔍 View Repository Status
+6. ⚙️  Settings
+7. ❌ Exit
+```
 
 ---
 
@@ -213,6 +322,67 @@ feat: adiciona sistema de autenticação
 
 ---
 
+## Estrutura do Projeto
+
+```
+src/
+├── index.ts                      # Entry point (2 comandos)
+├── cli/
+│   ├── commands/
+│   │   ├── auto.ts               # Comando auto (6 flags)
+│   │   └── menu.ts               # Menu interativo (7 opções)
+│   └── ui/
+│       ├── renderer.ts           # Output formatting (10 funções)
+│       └── prompts.ts            # User prompts (11 funções)
+├── services/
+│   ├── ai/
+│   │   ├── brain/
+│   │   │   ├── index.ts          # Geração de commit
+│   │   │   └── normalizer.ts     # Conventional Commits
+│   │   └── providers/
+│   │       └── openrouter.ts     # Provider OpenRouter
+│   ├── git/
+│   │   ├── scanner.ts            # Scanner + untracked files
+│   │   ├── executor.ts           # git add/commit/push
+│   │   └── healer.ts             # Auto-correção de erros
+│   └── security/
+│       ├── sanitizer.ts          # Blocklist imutável
+│       └── redactor.ts           # Data masking (5 padrões)
+├── config/
+│   ├── env.ts                    # Configuração de ambiente
+│   └── i18n.ts                   # Internacionalização
+└── locales/
+    ├── en.json                   # Tradução English
+    └── pt.json                   # Tradução Português
+```
+
+---
+
+## Testes
+
+Suite de testes automatizados com **17 testes**:
+
+```bash
+# Suite completa (FASE 1 + FASE 2)
+node test-automation/test-comprehensive.js
+
+# FASE 1 apenas
+node test-automation/test-final.js
+
+# FASE 2 apenas
+node test-automation/test-fase2.js
+```
+
+### Cobertura
+
+| Fase | Testes | Status |
+|------|--------|--------|
+| FASE 1 (MVP) | 10 | ✅ 100% |
+| FASE 2 (Automação) | 7 | ✅ 100% |
+| **TOTAL** | **17** | **✅ 100%** |
+
+---
+
 ## Desenvolvimento
 
 ```bash
@@ -239,15 +409,21 @@ node dist/index.js auto
 - [x] Internacionalização (en/pt)
 - [x] Provider OpenRouter
 
-### Fase 2: Automação
-- [ ] Modo totalmente autônomo
-- [ ] Menu interativo
-- [ ] Dry run simulation
+### Fase 2: Automação ✅
+- [x] Modo totalmente autônomo
+- [x] Menu interativo
+- [x] Dry run simulation
+- [x] CI Skip flag (`--nobuild`)
+- [x] Git Healer (auto-correção)
+- [x] UI Components (Renderer + Prompts)
+- [x] Scanner untracked files
 
-### Fase 3: Branch & Tags
-- [ ] Gerenciamento de branches
-- [ ] Operações com tags
-- [ ] Confirmação de segurança (4 chars)
+### Fase 3: Branch & Tags ✅
+- [x] Gerenciamento de branches
+- [x] Operações com tags
+- [x] Confirmação de segurança (4 chars)
+- [x] Comando check-ai
+- [x] Flag --branch no auto
 
 ### Fase 4: Smart Features
 - [ ] VibeVault (grandes diffs)
@@ -256,7 +432,6 @@ node dist/index.js auto
 
 ### Fase 5: Diagnostics
 - [ ] AI Health Check
-- [ ] Git Healer (auto-correção)
 - [ ] Deep Trace Mode
 
 ---
