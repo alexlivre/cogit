@@ -1,0 +1,45 @@
+{
+  "suite": "smoke",
+  "timestamp": "2026-03-27T09:10:39.694Z",
+  "duration": 10365,
+  "summary": {
+    "total": 5,
+    "passed": 5,
+    "failed": 0
+  },
+  "tests": {
+    "passed": [
+      {
+        "id": "F1-01",
+        "name": "Basic Commit Flow",
+        "phase": "fase1",
+        "duration": 4586
+      },
+      {
+        "id": "F1-02",
+        "name": "Sanitizer Blocklist",
+        "phase": "fase1",
+        "duration": 1181
+      },
+      {
+        "id": "F2-03",
+        "name": "--yes Flag",
+        "phase": "fase2",
+        "duration": 4216
+      },
+      {
+        "id": "F3-01",
+        "name": "List Branches",
+        "phase": "fase3",
+        "duration": 367
+      },
+      {
+        "id": "F3-08",
+        "name": "List Tags",
+        "phase": "fase3",
+        "duration": 1
+      }
+    ],
+    "failed": []
+  }
+}

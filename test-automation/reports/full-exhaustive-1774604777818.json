@@ -1,0 +1,337 @@
+{
+  "suite": "full-exhaustive",
+  "timestamp": "2026-03-27T09:44:29.768Z",
+  "duration": 108047,
+  "summary": {
+    "total": 48,
+    "passed": 48,
+    "failed": 0,
+    "skipped": 0
+  },
+  "phases": {
+    "fase1": {
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fase2": {
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fase3": {
+      "passed": 12,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fase4": {
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0
+    },
+    "edge": {
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0
+    },
+    "stress": {
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "tests": {
+    "passed": [
+      {
+        "id": "F1-01",
+        "name": "Commit Básico",
+        "phase": "fase1",
+        "duration": 5155
+      },
+      {
+        "id": "F1-02",
+        "name": "Flag --yes (sem prompts)",
+        "phase": "fase1",
+        "duration": 4323
+      },
+      {
+        "id": "F1-03",
+        "name": "Flag --no-push",
+        "phase": "fase1",
+        "duration": 3455
+      },
+      {
+        "id": "F1-04",
+        "name": "Flag -m (hint)",
+        "phase": "fase1",
+        "duration": 3505
+      },
+      {
+        "id": "F1-05",
+        "name": "Security Blocklist",
+        "phase": "fase1",
+        "duration": 1228
+      },
+      {
+        "id": "F1-06",
+        "name": "No Changes",
+        "phase": "fase1",
+        "duration": 1130
+      },
+      {
+        "id": "F1-07",
+        "name": "Scanner Detection",
+        "phase": "fase1",
+        "duration": 149
+      },
+      {
+        "id": "F1-08",
+        "name": "Conventional Commits Format",
+        "phase": "fase1",
+        "duration": 5806
+      },
+      {
+        "id": "F1-09",
+        "name": "Internacionalização EN",
+        "phase": "fase1",
+        "duration": 3221
+      },
+      {
+        "id": "F1-10",
+        "name": "Dry Run Check",
+        "phase": "fase1",
+        "duration": 2617
+      },
+      {
+        "id": "F2-01",
+        "name": "Menu Interativo",
+        "phase": "fase2",
+        "duration": 594
+      },
+      {
+        "id": "F2-02",
+        "name": "Flag --dry-run",
+        "phase": "fase2",
+        "duration": 2229
+      },
+      {
+        "id": "F2-03",
+        "name": "Flag --nobuild",
+        "phase": "fase2",
+        "duration": 7864
+      },
+      {
+        "id": "F2-04",
+        "name": "Git Healer (simulated)",
+        "phase": "fase2",
+        "duration": 0
+      },
+      {
+        "id": "F2-05",
+        "name": "UI Renderer",
+        "phase": "fase2",
+        "duration": 0
+      },
+      {
+        "id": "F2-06",
+        "name": "UI Prompts",
+        "phase": "fase2",
+        "duration": 1
+      },
+      {
+        "id": "F2-07",
+        "name": "Scanner Untracked Files",
+        "phase": "fase2",
+        "duration": 126
+      },
+      {
+        "id": "F2-08",
+        "name": "Auto Mode Complete",
+        "phase": "fase2",
+        "duration": 4905
+      },
+      {
+        "id": "F3-01",
+        "name": "Listar Branches",
+        "phase": "fase3",
+        "duration": 73
+      },
+      {
+        "id": "F3-02",
+        "name": "Criar Branch",
+        "phase": "fase3",
+        "duration": 330
+      },
+      {
+        "id": "F3-03",
+        "name": "Trocar Branch",
+        "phase": "fase3",
+        "duration": 559
+      },
+      {
+        "id": "F3-04",
+        "name": "Deletar Branch",
+        "phase": "fase3",
+        "duration": 351
+      },
+      {
+        "id": "F3-05",
+        "name": "Flag --branch",
+        "phase": "fase3",
+        "duration": 10327
+      },
+      {
+        "id": "F3-06",
+        "name": "Listar Tags",
+        "phase": "fase3",
+        "duration": 275
+      },
+      {
+        "id": "F3-07",
+        "name": "Criar Tag",
+        "phase": "fase3",
+        "duration": 202
+      },
+      {
+        "id": "F3-08",
+        "name": "Deletar Tag",
+        "phase": "fase3",
+        "duration": 212
+      },
+      {
+        "id": "F3-09",
+        "name": "Confirmação 4 Chars (module)",
+        "phase": "fase3",
+        "duration": 1
+      },
+      {
+        "id": "F3-10",
+        "name": "Branch Center Module",
+        "phase": "fase3",
+        "duration": 0
+      },
+      {
+        "id": "F3-11",
+        "name": "Tag Center Module",
+        "phase": "fase3",
+        "duration": 0
+      },
+      {
+        "id": "F3-12",
+        "name": "check-ai Command",
+        "phase": "fase3",
+        "duration": 1325
+      },
+      {
+        "id": "F4-01",
+        "name": "VibeVault Module",
+        "phase": "fase4",
+        "duration": 0
+      },
+      {
+        "id": "F4-02",
+        "name": "VibeVault - Diff Pequeno",
+        "phase": "fase4",
+        "duration": 8822
+      },
+      {
+        "id": "F4-03",
+        "name": "VibeVault - Diff Grande",
+        "phase": "fase4",
+        "duration": 4329
+      },
+      {
+        "id": "F4-04",
+        "name": "Stealth Mode Module",
+        "phase": "fase4",
+        "duration": 1
+      },
+      {
+        "id": "F4-05",
+        "name": "Stealth Mode - Config",
+        "phase": "fase4",
+        "duration": 1
+      },
+      {
+        "id": "F4-06",
+        "name": "Stealth Mode - Integration",
+        "phase": "fase4",
+        "duration": 0
+      },
+      {
+        "id": "F4-07",
+        "name": "Smart Ignore Module",
+        "phase": "fase4",
+        "duration": 0
+      },
+      {
+        "id": "F4-08",
+        "name": "Smart Ignore - Config",
+        "phase": "fase4",
+        "duration": 0
+      },
+      {
+        "id": "F4-09",
+        "name": "Smart Ignore - Integration",
+        "phase": "fase4",
+        "duration": 0
+      },
+      {
+        "id": "F4-10",
+        "name": "Git Types Module",
+        "phase": "fase4",
+        "duration": 0
+      },
+      {
+        "id": "E1",
+        "name": "Repositório Não-Git",
+        "phase": "edge",
+        "duration": 3368
+      },
+      {
+        "id": "E2",
+        "name": "Arquivo Vazio",
+        "phase": "edge",
+        "duration": 3909
+      },
+      {
+        "id": "E3",
+        "name": "Arquivo Binário",
+        "phase": "edge",
+        "duration": 8728
+      },
+      {
+        "id": "E4",
+        "name": "Nome com Espaços",
+        "phase": "edge",
+        "duration": 4194
+      },
+      {
+        "id": "E5",
+        "name": "Caminho Longo",
+        "phase": "edge",
+        "duration": 3529
+      },
+      {
+        "id": "E6",
+        "name": "Caracteres Especiais",
+        "phase": "edge",
+        "duration": 3332
+      },
+      {
+        "id": "E7",
+        "name": "Múltiplos Arquivos (50+)",
+        "phase": "edge",
+        "duration": 3966
+      },
+      {
+        "id": "E8",
+        "name": "Commit Message Longa",
+        "phase": "edge",
+        "duration": 3550
+      }
+    ],
+    "failed": [],
+    "skipped": []
+  }
+}

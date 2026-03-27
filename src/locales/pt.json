@@ -48,5 +48,17 @@
   "check-ai.available": "✓ Disponível",
   "check-ai.unavailable": "✗ Indisponível",
   "check-ai.no_key": "Nenhuma chave API configurada",
-  "check-ai.no_providers": "⚠️  Nenhum provedor de IA disponível. Verifique suas chaves API no .env"
+  "check-ai.no_providers": "⚠️  Nenhum provedor de IA disponível. Verifique suas chaves API no .env",
+  "vault.large_diff": "Processando diff grande ({size})",
+  "vault.preview": "Preview: mostrando primeiros 2000 caracteres",
+  "stealth.hiding": "Stealth: Ocultando {count} arquivos privados",
+  "stealth.restoring": "Stealth: Restaurando {count} arquivos privados",
+  "stealth.conflicts": "Stealth: {count} conflitos renomeados para .restored",
+  "stealth.no_config": "Nenhuma configuração .gitpy-private encontrada",
+  "stealth.config_created": "Criado .gitpy-private com {count} padrões",
+  "ignore.title": "Sugestões do Smart Ignore",
+  "ignore.found": "Encontrados {count} padrões para sugerir",
+  "ignore.added": "Adicionados {count} padrões ao .gitignore",
+  "ignore.no_suggestions": "Sem novas sugestões para .gitignore",
+  "ignore.whitelist_added": "Entrada whitelist adicionada: {pattern}"
 }

@@ -1,0 +1,341 @@
+{
+  "suite": "full-exhaustive",
+  "timestamp": "2026-03-27T09:42:18.684Z",
+  "duration": 94261,
+  "summary": {
+    "total": 48,
+    "passed": 45,
+    "failed": 3,
+    "skipped": 0
+  },
+  "phases": {
+    "fase1": {
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fase2": {
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fase3": {
+      "passed": 10,
+      "failed": 2,
+      "skipped": 0
+    },
+    "fase4": {
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0
+    },
+    "edge": {
+      "passed": 7,
+      "failed": 1,
+      "skipped": 0
+    },
+    "stress": {
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "tests": {
+    "passed": [
+      {
+        "id": "F1-01",
+        "name": "Commit Básico",
+        "phase": "fase1",
+        "duration": 4696
+      },
+      {
+        "id": "F1-02",
+        "name": "Flag --yes (sem prompts)",
+        "phase": "fase1",
+        "duration": 4446
+      },
+      {
+        "id": "F1-03",
+        "name": "Flag --no-push",
+        "phase": "fase1",
+        "duration": 4154
+      },
+      {
+        "id": "F1-04",
+        "name": "Flag -m (hint)",
+        "phase": "fase1",
+        "duration": 3901
+      },
+      {
+        "id": "F1-05",
+        "name": "Security Blocklist",
+        "phase": "fase1",
+        "duration": 1015
+      },
+      {
+        "id": "F1-06",
+        "name": "No Changes",
+        "phase": "fase1",
+        "duration": 1085
+      },
+      {
+        "id": "F1-07",
+        "name": "Scanner Detection",
+        "phase": "fase1",
+        "duration": 148
+      },
+      {
+        "id": "F1-08",
+        "name": "Conventional Commits Format",
+        "phase": "fase1",
+        "duration": 4572
+      },
+      {
+        "id": "F1-09",
+        "name": "Internacionalização EN",
+        "phase": "fase1",
+        "duration": 4344
+      },
+      {
+        "id": "F1-10",
+        "name": "Dry Run Check",
+        "phase": "fase1",
+        "duration": 1925
+      },
+      {
+        "id": "F2-01",
+        "name": "Menu Interativo",
+        "phase": "fase2",
+        "duration": 614
+      },
+      {
+        "id": "F2-02",
+        "name": "Flag --dry-run",
+        "phase": "fase2",
+        "duration": 1870
+      },
+      {
+        "id": "F2-03",
+        "name": "Flag --nobuild",
+        "phase": "fase2",
+        "duration": 4282
+      },
+      {
+        "id": "F2-04",
+        "name": "Git Healer (simulated)",
+        "phase": "fase2",
+        "duration": 0
+      },
+      {
+        "id": "F2-05",
+        "name": "UI Renderer",
+        "phase": "fase2",
+        "duration": 1
+      },
+      {
+        "id": "F2-06",
+        "name": "UI Prompts",
+        "phase": "fase2",
+        "duration": 0
+      },
+      {
+        "id": "F2-07",
+        "name": "Scanner Untracked Files",
+        "phase": "fase2",
+        "duration": 131
+      },
+      {
+        "id": "F2-08",
+        "name": "Auto Mode Complete",
+        "phase": "fase2",
+        "duration": 3367
+      },
+      {
+        "id": "F3-01",
+        "name": "Listar Branches",
+        "phase": "fase3",
+        "duration": 70
+      },
+      {
+        "id": "F3-02",
+        "name": "Criar Branch",
+        "phase": "fase3",
+        "duration": 349
+      },
+      {
+        "id": "F3-05",
+        "name": "Flag --branch",
+        "phase": "fase3",
+        "duration": 7446
+      },
+      {
+        "id": "F3-06",
+        "name": "Listar Tags",
+        "phase": "fase3",
+        "duration": 266
+      },
+      {
+        "id": "F3-07",
+        "name": "Criar Tag",
+        "phase": "fase3",
+        "duration": 190
+      },
+      {
+        "id": "F3-08",
+        "name": "Deletar Tag",
+        "phase": "fase3",
+        "duration": 198
+      },
+      {
+        "id": "F3-09",
+        "name": "Confirmação 4 Chars (module)",
+        "phase": "fase3",
+        "duration": 0
+      },
+      {
+        "id": "F3-10",
+        "name": "Branch Center Module",
+        "phase": "fase3",
+        "duration": 0
+      },
+      {
+        "id": "F3-11",
+        "name": "Tag Center Module",
+        "phase": "fase3",
+        "duration": 0
+      },
+      {
+        "id": "F3-12",
+        "name": "check-ai Command",
+        "phase": "fase3",
+        "duration": 1677
+      },
+      {
+        "id": "F4-01",
+        "name": "VibeVault Module",
+        "phase": "fase4",
+        "duration": 1
+      },
+      {
+        "id": "F4-02",
+        "name": "VibeVault - Diff Pequeno",
+        "phase": "fase4",
+        "duration": 4507
+      },
+      {
+        "id": "F4-03",
+        "name": "VibeVault - Diff Grande",
+        "phase": "fase4",
+        "duration": 3814
+      },
+      {
+        "id": "F4-04",
+        "name": "Stealth Mode Module",
+        "phase": "fase4",
+        "duration": 0
+      },
+      {
+        "id": "F4-05",
+        "name": "Stealth Mode - Config",
+        "phase": "fase4",
+        "duration": 1
+      },
+      {
+        "id": "F4-06",
+        "name": "Stealth Mode - Integration",
+        "phase": "fase4",
+        "duration": 0
+      },
+      {
+        "id": "F4-07",
+        "name": "Smart Ignore Module",
+        "phase": "fase4",
+        "duration": 0
+      },
+      {
+        "id": "F4-08",
+        "name": "Smart Ignore - Config",
+        "phase": "fase4",
+        "duration": 1
+      },
+      {
+        "id": "F4-09",
+        "name": "Smart Ignore - Integration",
+        "phase": "fase4",
+        "duration": 0
+      },
+      {
+        "id": "F4-10",
+        "name": "Git Types Module",
+        "phase": "fase4",
+        "duration": 0
+      },
+      {
+        "id": "E2",
+        "name": "Arquivo Vazio",
+        "phase": "edge",
+        "duration": 4334
+      },
+      {
+        "id": "E3",
+        "name": "Arquivo Binário",
+        "phase": "edge",
+        "duration": 4218
+      },
+      {
+        "id": "E4",
+        "name": "Nome com Espaços",
+        "phase": "edge",
+        "duration": 4247
+      },
+      {
+        "id": "E5",
+        "name": "Caminho Longo",
+        "phase": "edge",
+        "duration": 3396
+      },
+      {
+        "id": "E6",
+        "name": "Caracteres Especiais",
+        "phase": "edge",
+        "duration": 4423
+      },
+      {
+        "id": "E7",
+        "name": "Múltiplos Arquivos (50+)",
+        "phase": "edge",
+        "duration": 6208
+      },
+      {
+        "id": "E8",
+        "name": "Commit Message Longa",
+        "phase": "edge",
+        "duration": 3550
+      }
+    ],
+    "failed": [
+      {
+        "id": "F3-03",
+        "name": "Trocar Branch",
+        "phase": "fase3",
+        "duration": 431,
+        "error": "Git command failed: git checkout main 2>$null; git checkout master 2>$null\nError: Command failed: git checkout main 2>$null; git checkout master 2>$null"
+      },
+      {
+        "id": "F3-04",
+        "name": "Deletar Branch",
+        "phase": "fase3",
+        "duration": 280,
+        "error": "Git command failed: git checkout main 2>$null; git checkout master 2>$null\nError: Command failed: git checkout main 2>$null; git checkout master 2>$null"
+      },
+      {
+        "id": "E1",
+        "name": "Repositório Não-Git",
+        "phase": "edge",
+        "duration": 3762,
+        "error": "Command failed: node \"C:\\code\\github\\cogit\\dist\\index.js\" auto --yes\n- Analyzing changes...\n✔ Analyzing changes...\n- Generating commit message...\n✔ Generating commit message...\n- Executing git operations...\n✔ Commit created and pushed successfully!\nnode:internal/readline/interface:564\r\n      throw new ERR_USE_AFTER_CLOSE('readline');\r\n      ^\r\n\r\nError [ERR_USE_AFTER_CLOSE]: readline was closed\r\n    at Interface.pause (node:internal/readline/interface:564:13)\r\n    at PromptUI.close (file:///C:/code/github/cogit/node_modules/inquirer/lib/ui/baseUI.js:53:13)\r\n    at PromptUI.onForceClose (file:///C:/code/github/cogit/node_modules/inquirer/lib/ui/baseUI.js:31:10)\r\n    at process.emit (node:events:508:28) {\r\n  code: 'ERR_USE_AFTER_CLOSE'\r\n}\r\n\r\nNode.js v24.14.1\r\n"
+      }
+    ],
+    "skipped": []
+  }
+}

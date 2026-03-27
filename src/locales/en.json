@@ -48,5 +48,17 @@
   "check-ai.available": "✓ Available",
   "check-ai.unavailable": "✗ Unavailable",
   "check-ai.no_key": "No API key configured",
-  "check-ai.no_providers": "⚠️  No AI providers available. Check your API keys in .env"
+  "check-ai.no_providers": "⚠️  No AI providers available. Check your API keys in .env",
+  "vault.large_diff": "Processing large diff ({size})",
+  "vault.preview": "Preview: showing first 2000 chars",
+  "stealth.hiding": "Stealth: Hiding {count} private files",
+  "stealth.restoring": "Stealth: Restoring {count} private files",
+  "stealth.conflicts": "Stealth: {count} conflicts renamed to .restored",
+  "stealth.no_config": "No .gitpy-private configuration found",
+  "stealth.config_created": "Created .gitpy-private with {count} patterns",
+  "ignore.title": "Smart Ignore Suggestions",
+  "ignore.found": "Found {count} patterns to suggest",
+  "ignore.added": "Added {count} patterns to .gitignore",
+  "ignore.no_suggestions": "No new .gitignore suggestions",
+  "ignore.whitelist_added": "Added whitelist entry: {pattern}"
 }

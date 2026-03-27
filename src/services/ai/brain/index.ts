@@ -2,9 +2,11 @@ import { OpenRouterProvider } from '../providers/openrouter';
 import { normalizeCommitMessage } from './normalizer';
 import { redactDiff } from '../../security/redactor';
 import { loadPromptTemplate } from '../../../config/i18n';
+import { smartUnpack, formatSize, DiffData } from '../../../core/vault';
 
 export interface BrainInput {
   diff: string;
+  diffData?: DiffData;
   hint?: string;
   language: string;
 }
@@ -16,16 +18,28 @@ export interface BrainOutput {
 }
 
 export async function generateCommitMessage(input: BrainInput): Promise<BrainOutput> {
-  const { diff, hint, language } = input;
+  const { diff, diffData, hint, language } = input;
   
-  if (!diff && !hint) {
+  // Use diffData if available (for large diffs)
+  let actualDiff = diff;
+  if (diffData) {
+    actualDiff = smartUnpack(diffData);
+  }
+  
+  if (!actualDiff && !hint) {
     return {
       success: false,
       error: language === 'pt' ? 'Sem diff ou dica para trabalhar.' : 'No diff or hint to work with.',
     };
   }
   
-  const safeDiff = redactDiff(diff);
+  // Check if diff was truncated
+  const originalSize = diffData?.originalSize || Buffer.byteLength(actualDiff, 'utf-8');
+  if (originalSize > 100 * 1024) {
+    console.log(`Note: Processing large diff (${formatSize(originalSize)})`);
+  }
+  
+  const safeDiff = redactDiff(actualDiff);
   const template = loadPromptTemplate(language);
   
   const messages = [

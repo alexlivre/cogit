@@ -1,6 +1,6 @@
 # Cogit CLI
 
-![Status](https://img.shields.io/badge/Status-FASE_3_Complete-brightgreen) ![Version](https://img.shields.io/badge/Version-1.0.0-blue) ![Node](https://img.shields.io/badge/Node-18%2B-green)
+![Status](https://img.shields.io/badge/Status-FASE_4_Complete-brightgreen) ![Version](https://img.shields.io/badge/Version-0.1.0-blue) ![Node](https://img.shields.io/badge/Node-18%2B-green)
 
 > **Git automation CLI with AI-powered commit messages**
 
@@ -125,6 +125,90 @@ cogit menu → 🏷️ Tag Operations
 
 ---
 
+## Smart Features (FASE 4)
+
+### VibeVault (Large Diff Management)
+
+Gerencia diffs grandes (>100KB) de forma eficiente:
+
+- **smartPack**: Compacta diffs grandes em memória
+- **smartUnpack**: Restaura diffs para processamento
+- **Preview truncado**: Mostra apenas início do diff
+
+#### Como funciona:
+1. Scanner detecta diff > 100KB
+2. Diff é compactado e armazenado em memória
+3. AI Brain recebe referência, não conteúdo completo
+4. Mensagem gerada normalmente
+
+#### Configuração:
+Automático - nenhum config necessário.
+
+---
+
+### Stealth Mode (Private Files)
+
+Oculta temporariamente arquivos privados durante operações Git.
+
+#### Configuração:
+Crie `.gitpy-private` na raiz do repositório:
+
+```bash
+# .gitpy-private
+*.secret
+private/
+credentials/
+.env.local
+```
+
+#### Como funciona:
+1. **Antes do commit**: Arquivos são movidos para `.gitpy-temp/`
+2. **Durante o commit**: Arquivos privados não aparecem no diff
+3. **Após o commit**: Arquivos são restaurados automaticamente
+
+#### Menu:
+```bash
+cogit menu → 🔒 Stealth Mode Config
+```
+
+#### Conflitos:
+Se arquivo novo foi criado durante operação, arquivo privado é restaurado como `.restored`.
+
+---
+
+### Smart Ignore (.gitignore Suggestions)
+
+Sugere padrões para `.gitignore` baseado em arquivos "lixo".
+
+#### Base de Dados:
+30+ padrões comuns em `common_trash.json`:
+- **Logs**: `*.log`, `logs/`
+- **Dependencies**: `node_modules/`, `venv/`
+- **IDE**: `.vscode/`, `.idea/`
+- **OS**: `.DS_Store`, `Thumbs.db`
+- **Build**: `dist/`, `build/`, `*.min.js`
+
+#### Como usar:
+1. Após commit bem-sucedido, prompt aparece
+2. Selecione padrões sugeridos
+3. Confirma adição ao `.gitignore`
+
+#### Menu:
+```bash
+cogit menu → 🗑️ Smart Ignore
+```
+
+#### Whitelist:
+Para permitir arquivo específico:
+
+```bash
+# .gitignore
+*.log
+important.log  # cogit:allow
+```
+
+---
+
 ## Fluxo de Execução
 
 ```
@@ -132,32 +216,45 @@ cogit menu → 🏷️ Tag Operations
 │ 1. SCANNER                                                  │
 │    • Detecta mudanças no repositório                        │
 │    • Gera diff completo                                      │
+│    • VibeVault: gerencia diffs > 100KB         (FASE 4)    │
 ├─────────────────────────────────────────────────────────────┤
-│ 2. SANITIZER (Lead Wall - Layer 1)                          │
+│ 2. STEALTH MODE                                 (FASE 4)    │
+│    • Lê padrões de .gitpy-private                           │
+│    • Move arquivos privados para .gitpy-temp/               │
+├─────────────────────────────────────────────────────────────┤
+│ 3. SANITIZER (Lead Wall - Layer 1)                          │
 │    • Valida arquivos contra Blocklist Imutável              │
 │    • Bloqueia: .env, .ssh/, *.pem, secrets, etc.            │
 ├─────────────────────────────────────────────────────────────┤
-│ 3. REDACTOR (Lead Wall - Layer 2)                           │
+│ 4. REDACTOR (Lead Wall - Layer 2)                           │
 │    • Mascara secrets no diff                                │
 │    • Padrões: API keys, tokens, passwords                   │
 ├─────────────────────────────────────────────────────────────┤
-│ 4. AI BRAIN                                                 │
+│ 5. AI BRAIN                                                 │
 │    • Envia diff seguro para OpenRouter                      │
 │    • Gera mensagem no formato Conventional Commits          │
 ├─────────────────────────────────────────────────────────────┤
-│ 5. REVIEW                                                   │
+│ 6. REVIEW                                                   │
 │    • Exibe mensagem gerada                                  │
 │    • Opções: Execute / Regenerate / Cancel                  │
 ├─────────────────────────────────────────────────────────────┤
-│ 6. EXECUTOR                                                 │
+│ 7. EXECUTOR                                                 │
 │    • git add -A                                             │
 │    • git commit -m "<mensagem>"                             │
 │    • git push (se não --no-push)                            │
 ├─────────────────────────────────────────────────────────────┤
-│ 7. GIT HEALER (se push falhar)                              │
-│    • Analisa erro com IA                                    │
-│    • Sugere comandos de correção                            │
-│    • Até 3 tentativas automáticas                           │
+│ 8. SMART IGNORE                                 (FASE 4)    │
+│    • Escaneia arquivos "lixo"                               │
+│    • Sugere padrões para .gitignore                         │
+├─────────────────────────────────────────────────────────────┤
+│ 9. STEALTH RESTORE                              (FASE 4)    │
+│    • Restaura arquivos privados                             │
+│    • Resolve conflitos de nome                              │
+├─────────────────────────────────────────────────────────────┤
+│ 10. GIT HEALER (se push falhar)                             │
+│     • Analisa erro com IA                                   │
+│     • Sugere comandos de correção                           │
+│     • Até 3 tentativas automáticas                          │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -247,11 +344,13 @@ O comando `cogit menu` oferece uma interface guiada:
 
 1. 🚀 Quick Commit (auto)
 2. 📝 Commit with options
-3. 🌿 Branch Center (Phase 3)
-4. 🏷️  Tag Operations (Phase 3)
-5. 🔍 View Repository Status
-6. ⚙️  Settings
-7. ❌ Exit
+3. 🌿 Branch Center
+4. 🏷️  Tag Operations
+5. 🗑️  Smart Ignore          (FASE 4)
+6. 🔒 Stealth Mode Config   (FASE 4)
+7. 🔍 View Repository Status
+8. ⚙️  Settings
+9. ❌ Exit
 ```
 
 ---
@@ -326,14 +425,17 @@ feat: adiciona sistema de autenticação
 
 ```
 src/
-├── index.ts                      # Entry point (2 comandos)
+├── index.ts                      # Entry point
 ├── cli/
 │   ├── commands/
-│   │   ├── auto.ts               # Comando auto (6 flags)
-│   │   └── menu.ts               # Menu interativo (7 opções)
+│   │   ├── auto.ts               # Comando auto (7 flags)
+│   │   └── menu.ts               # Menu interativo (9 opções)
 │   └── ui/
-│       ├── renderer.ts           # Output formatting (10 funções)
-│       └── prompts.ts            # User prompts (11 funções)
+│       ├── renderer.ts           # Output formatting
+│       └── prompts.ts            # User prompts
+├── core/                          # FASE 4
+│   ├── container.ts              # Dependency injection
+│   └── vault.ts                  # VibeVault (large diffs)
 ├── services/
 │   ├── ai/
 │   │   ├── brain/
@@ -342,44 +444,82 @@ src/
 │   │   └── providers/
 │   │       └── openrouter.ts     # Provider OpenRouter
 │   ├── git/
-│   │   ├── scanner.ts            # Scanner + untracked files
+│   │   ├── scanner.ts            # Scanner + diffData
 │   │   ├── executor.ts           # git add/commit/push
-│   │   └── healer.ts             # Auto-correção de erros
-│   └── security/
-│       ├── sanitizer.ts          # Blocklist imutável
-│       └── redactor.ts           # Data masking (5 padrões)
+│   │   ├── healer.ts             # Auto-correção
+│   │   ├── branch.ts             # Branch management
+│   │   └── tag.ts                 # Tag management
+│   ├── security/
+│   │   ├── sanitizer.ts          # Blocklist
+│   │   └── redactor.ts           # Data masking
+│   └── tools/                     # FASE 4
+│       ├── stealth.ts            # Stealth Mode
+│       └── ignore.ts             # Smart Ignore
+├── types/                         # FASE 4
+│   └── git.ts                     # TypeScript interfaces
 ├── config/
-│   ├── env.ts                    # Configuração de ambiente
-│   └── i18n.ts                   # Internacionalização
+│   ├── env.ts                    # Configuração
+│   ├── i18n.ts                   # Internacionalização
+│   └── common_trash.json         # Base de dados Smart Ignore
 └── locales/
-    ├── en.json                   # Tradução English
-    └── pt.json                   # Tradução Português
+    ├── en.json                   # English
+    └── pt.json                   # Português
 ```
 
 ---
 
 ## Testes
 
-Suite de testes automatizados com **17 testes**:
+Suite de testes automatizados com **48 testes** cobrindo todas as funcionalidades:
 
 ```bash
-# Suite completa (FASE 1 + FASE 2)
-node test-automation/test-comprehensive.js
+# === SUITE COMPLETA (48 testes) ===
+node test-automation/test-full-exhaustive.js --report
 
-# FASE 1 apenas
-node test-automation/test-final.js
+# === FASE ESPECÍFICA ===
+node test-automation/test-full-exhaustive.js --fase=1
+node test-automation/test-full-exhaustive.js --fase=4
 
-# FASE 2 apenas
-node test-automation/test-fase2.js
+# === COM STRESS TESTS ===
+node test-automation/test-full-exhaustive.js --stress --report
+
+# === SUITES DE REGRESSÃO ===
+node test-automation/test-regression.js --smoke
+node test-automation/test-regression.js --ci
 ```
 
 ### Cobertura
 
-| Fase | Testes | Status |
-|------|--------|--------|
-| FASE 1 (MVP) | 10 | ✅ 100% |
-| FASE 2 (Automação) | 7 | ✅ 100% |
-| **TOTAL** | **17** | **✅ 100%** |
+| Fase | Testes | Descrição | Status |
+|------|--------|-----------|--------|
+| FASE 1 (MVP) | 10 | Commit, segurança, i18n, provider | ✅ 100% |
+| FASE 2 (Automação) | 8 | Menu, flags, healer, UI | ✅ 100% |
+| FASE 3 (Branch/Tags) | 12 | Branch, tag, confirmação | ✅ 100% |
+| FASE 4 (Smart Features) | 10 | VibeVault, Stealth, Ignore | ✅ 100% |
+| Edge Cases | 8 | Arquivos especiais, limites | ✅ 100% |
+| **TOTAL** | **48** | **Cobertura completa** | **✅ 100%** |
+
+### Estrutura de Testes
+
+```
+test-automation/
+├── test-full-exhaustive.js  # Suite principal (48 testes)
+├── test-fase1.js            # Testes FASE 1
+├── test-fase2.js            # Testes FASE 2
+├── test-fase3.js            # Testes FASE 3
+├── test-fase4.js            # Testes FASE 4
+├── test-regression.js       # Suite de regressão
+├── scenarios/
+│   ├── fase1/               # 10 cenários
+│   ├── fase2/               # 8 cenários
+│   ├── fase3/               # 12 cenários
+│   ├── fase4/               # 10 cenários
+│   └── edge-cases/          # 8 cenários
+├── stress/                  # Testes de estresse
+├── regression/              # Suites de regressão
+├── reports/                 # Relatórios JSON
+└── utils/                   # Helpers de teste
+```
 
 ---
 
@@ -425,10 +565,12 @@ node dist/index.js auto
 - [x] Comando check-ai
 - [x] Flag --branch no auto
 
-### Fase 4: Smart Features
-- [ ] VibeVault (grandes diffs)
-- [ ] Stealth Mode (arquivos privados)
-- [ ] Smart Ignore
+### Fase 4: Smart Features ✅
+- [x] VibeVault (grandes diffs)
+- [x] Stealth Mode (arquivos privados)
+- [x] Smart Ignore
+- [x] Git Types (TypeScript)
+- [x] common_trash.json (base de dados)
 
 ### Fase 5: Diagnostics
 - [ ] AI Health Check

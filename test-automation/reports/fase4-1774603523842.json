@@ -1,0 +1,119 @@
+{
+  "timestamp": "2026-03-27T09:25:23.841Z",
+  "phase": "FASE 4 - Smart Features",
+  "total": 26,
+  "passed": 21,
+  "failed": 5,
+  "successRate": "80.8%",
+  "tests": [
+    {
+      "name": "F4-01: Vault module compiled",
+      "status": "PASS"
+    },
+    {
+      "name": "F4-02: smartPack function exported",
+      "status": "FAIL",
+      "error": "Expected \"DiffData\" not found in content"
+    },
+    {
+      "name": "F4-03: smartUnpack function exported",
+      "status": "PASS"
+    },
+    {
+      "name": "F4-04: formatSize function exported",
+      "status": "PASS"
+    },
+    {
+      "name": "F4-05: VibeVault class exported",
+      "status": "PASS"
+    },
+    {
+      "name": "F4-06: Scanner includes diffData",
+      "status": "PASS"
+    },
+    {
+      "name": "F4-07: Brain supports diffData",
+      "status": "PASS"
+    },
+    {
+      "name": "F4-08: Stealth module compiled",
+      "status": "PASS"
+    },
+    {
+      "name": "F4-09: stealthStash function exported",
+      "status": "PASS"
+    },
+    {
+      "name": "F4-10: stealthRestore function exported",
+      "status": "PASS"
+    },
+    {
+      "name": "F4-11: createPrivateConfig function exported",
+      "status": "PASS"
+    },
+    {
+      "name": "F4-12: hasPrivateConfig function exported",
+      "status": "PASS"
+    },
+    {
+      "name": "F4-13: Stealth integrated in auto.ts",
+      "status": "PASS"
+    },
+    {
+      "name": "F4-14: Ignore module compiled",
+      "status": "PASS"
+    },
+    {
+      "name": "F4-15: suggestIgnore function exported",
+      "status": "PASS"
+    },
+    {
+      "name": "F4-16: addWhitelistEntry function exported",
+      "status": "PASS"
+    },
+    {
+      "name": "F4-17: common_trash.json config exists",
+      "status": "FAIL",
+      "error": "common_trash.json not found"
+    },
+    {
+      "name": "F4-18: Ignore integrated in auto.ts",
+      "status": "PASS"
+    },
+    {
+      "name": "F4-19: Ignore integrated in menu.ts",
+      "status": "PASS"
+    },
+    {
+      "name": "F4-20: Git types module compiled",
+      "status": "FAIL",
+      "error": "Expected \"GitStatus\" not found in content"
+    },
+    {
+      "name": "F4-21: English locales updated",
+      "status": "FAIL",
+      "error": "Missing vault.large_diff"
+    },
+    {
+      "name": "F4-22: Portuguese locales updated",
+      "status": "FAIL",
+      "error": "Missing vault.large_diff"
+    },
+    {
+      "name": "F4-23: Menu has Smart Ignore option",
+      "status": "PASS"
+    },
+    {
+      "name": "F4-24: Menu has Stealth Mode option",
+      "status": "PASS"
+    },
+    {
+      "name": "F4-25: All FASE 4 modules can be imported",
+      "status": "PASS"
+    },
+    {
+      "name": "F4-26: CLI help works",
+      "status": "PASS"
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 import { exec } from 'child_process';
 import { promisify } from 'util';
+import { smartPack, DiffData } from '../../core/vault';
 
 const execAsync = promisify(exec);
 
@@ -9,6 +10,7 @@ export interface ScanResult {
   stagedFiles: string[];
   unstagedFiles: string[];
   diff: string;
+  diffData: DiffData;
 }
 
 export async function scanRepository(repoPath: string): Promise<ScanResult> {
@@ -42,12 +44,16 @@ export async function scanRepository(repoPath: string): Promise<ScanResult> {
     
     const hasChanges = stagedFiles.length > 0 || unstagedFiles.length > 0 || untrackedFiles.length > 0;
     
+    const fullDiff = diffOutput + untrackedDiff;
+    const diffData = smartPack(fullDiff);
+    
     return {
       isRepo: true,
       hasChanges,
       stagedFiles,
       unstagedFiles: [...unstagedFiles, ...untrackedFiles],
-      diff: diffOutput + untrackedDiff,
+      diff: fullDiff,
+      diffData,
     };
   } catch {
     return {
@@ -56,6 +62,7 @@ export async function scanRepository(repoPath: string): Promise<ScanResult> {
       stagedFiles: [],
       unstagedFiles: [],
       diff: '',
+      diffData: { mode: 'direct', payload: '', originalSize: 0 },
     };
   }
 }

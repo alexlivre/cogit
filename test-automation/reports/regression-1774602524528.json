@@ -1,0 +1,48 @@
+{
+  "suite": "smoke",
+  "timestamp": "2026-03-27T09:08:40.546Z",
+  "duration": 3979,
+  "summary": {
+    "total": 5,
+    "passed": 3,
+    "failed": 2
+  },
+  "tests": {
+    "passed": [
+      {
+        "id": "F1-02",
+        "name": "Sanitizer Blocklist",
+        "phase": "fase1",
+        "duration": 1176
+      },
+      {
+        "id": "F3-01",
+        "name": "List Branches",
+        "phase": "fase3",
+        "duration": 354
+      },
+      {
+        "id": "F3-08",
+        "name": "List Tags",
+        "phase": "fase3",
+        "duration": 1
+      }
+    ],
+    "failed": [
+      {
+        "id": "F1-01",
+        "name": "Basic Commit Flow",
+        "phase": "fase1",
+        "duration": 1227,
+        "error": "Assertion failed: Should create commit\nExpected: \"Commit\" to be in: \"\""
+      },
+      {
+        "id": "F2-03",
+        "name": "--yes Flag",
+        "phase": "fase2",
+        "duration": 1195,
+        "error": "Assertion failed: Should create commit\nExpected: \"Commit\" to be in: \"\""
+      }
+    ]
+  }
+}

@@ -5,6 +5,8 @@ import { scanRepository } from '../../services/git/scanner';
 import { CONFIG } from '../../config/env';
 import { t } from '../../config/i18n';
 import { showMenu, confirmPush, confirmSkipCI, confirmDryRun, inputHint } from '../ui/prompts';
+import { suggestIgnore, addWhitelistEntry } from '../../services/tools/ignore';
+import { createPrivateConfig, hasPrivateConfig } from '../../services/tools/stealth';
 
 export async function menuCommand(): Promise<void> {
   console.log(chalk.cyan.bold('\n╔══════════════════════════════════════╗'));
@@ -16,7 +18,9 @@ export async function menuCommand(): Promise<void> {
     { name: '📝 Commit with options', value: 'commit-options' },
     { name: '🌿 Branch Center', value: 'branch' },
     { name: '🏷️  Tag Operations', value: 'tag' },
-    { name: '🔍 View Repository Status', value: 'status' },
+    { name: '�️  Smart Ignore', value: 'smart-ignore' },
+    { name: '🔒 Stealth Mode Config', value: 'stealth' },
+    { name: '� View Repository Status', value: 'status' },
     { name: '🤖 Check AI Providers', value: 'check-ai' },
     { name: '⚙️  Settings', value: 'settings' },
     { name: '❌ Exit', value: 'exit' },
@@ -40,6 +44,16 @@ export async function menuCommand(): Promise<void> {
     case 'tag':
       const { tagCenter } = await import('../../services/git/tag');
       await tagCenter(process.cwd());
+      await returnToMenu();
+      break;
+    
+    case 'smart-ignore':
+      await suggestIgnore(process.cwd());
+      await returnToMenu();
+      break;
+    
+    case 'stealth':
+      await configureStealth();
       await returnToMenu();
       break;
     
@@ -106,6 +120,45 @@ async function showSettings(): Promise<void> {
   console.log(`Commit Language: ${CONFIG.COMMIT_LANGUAGE}`);
   console.log(`AI Provider: ${CONFIG.AI_PROVIDER}`);
   console.log(`Model: ${CONFIG.OPENROUTER_MODEL}`);
+}
+
+async function configureStealth(): Promise<void> {
+  console.log(chalk.cyan('\n🔒 Stealth Mode Configuration:'));
+  console.log(chalk.gray('─'.repeat(40)));
+  
+  if (hasPrivateConfig(process.cwd())) {
+    console.log(chalk.green('✓ .gitpy-private file exists'));
+    const { edit } = await inquirer.prompt([
+      {
+        type: 'confirm',
+        name: 'edit',
+        message: 'Edit existing configuration?',
+        default: false,
+      },
+    ]);
+    
+    if (!edit) {
+      return;
+    }
+  }
+  
+  const { patterns } = await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'patterns',
+      message: 'Enter patterns to hide (comma-separated):',
+      default: '*.local, *.secret, private/',
+    },
+  ]);
+  
+  const patternList = patterns.split(',').map((p: string) => p.trim()).filter(Boolean);
+  
+  if (patternList.length > 0) {
+    createPrivateConfig(process.cwd(), patternList);
+    console.log(chalk.green(`\n✓ Created .gitpy-private with ${patternList.length} patterns`));
+    console.log(chalk.gray('Patterns:'));
+    patternList.forEach((p: string) => console.log(chalk.gray(`  - ${p}`)));
+  }
 }
 
 async function returnToMenu(): Promise<void> {

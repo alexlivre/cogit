@@ -1,0 +1,47 @@
+{
+  "suite": "smoke",
+  "timestamp": "2026-03-27T09:08:09.980Z",
+  "duration": 15575,
+  "summary": {
+    "total": 5,
+    "passed": 4,
+    "failed": 1
+  },
+  "tests": {
+    "passed": [
+      {
+        "id": "F1-01",
+        "name": "Basic Commit Flow",
+        "phase": "fase1",
+        "duration": 9069
+      },
+      {
+        "id": "F2-03",
+        "name": "--yes Flag",
+        "phase": "fase2",
+        "duration": 4688
+      },
+      {
+        "id": "F3-01",
+        "name": "List Branches",
+        "phase": "fase3",
+        "duration": 366
+      },
+      {
+        "id": "F3-08",
+        "name": "List Tags",
+        "phase": "fase3",
+        "duration": 2
+      }
+    ],
+    "failed": [
+      {
+        "id": "F1-02",
+        "name": "Sanitizer Blocklist",
+        "phase": "fase1",
+        "duration": 1436,
+        "error": "Assertion failed: Should block sensitive files\nExpected: \"security\" to be in: \"Command failed: node \"C:\\code\\github\\cogit\\dist\\index.js\" auto --yes\n- Analyzing changes...\n✔ Analyzing changes...\nSecurity alert: Blocked files detected: .env.local\n\""
+      }
+    ]
+  }
+}

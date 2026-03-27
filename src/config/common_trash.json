@@ -1,0 +1,130 @@
+{
+  "node_modules": {
+    "reason": "Node.js dependencies",
+    "category": "dependencies"
+  },
+  "*.log": {
+    "reason": "Log files",
+    "category": "logs"
+  },
+  "*.tmp": {
+    "reason": "Temporary files",
+    "category": "temp"
+  },
+  "*.swp": {
+    "reason": "Vim swap files",
+    "category": "editor"
+  },
+  "*.swo": {
+    "reason": "Vim swap files",
+    "category": "editor"
+  },
+  ".DS_Store": {
+    "reason": "macOS system file",
+    "category": "system"
+  },
+  "Thumbs.db": {
+    "reason": "Windows system file",
+    "category": "system"
+  },
+  "*.pyc": {
+    "reason": "Python bytecode",
+    "category": "build"
+  },
+  "__pycache__": {
+    "reason": "Python cache directory",
+    "category": "build"
+  },
+  ".pytest_cache": {
+    "reason": "Pytest cache",
+    "category": "build"
+  },
+  ".coverage": {
+    "reason": "Coverage report",
+    "category": "build"
+  },
+  "htmlcov": {
+    "reason": "Coverage HTML report",
+    "category": "build"
+  },
+  "*.egg-info": {
+    "reason": "Python package metadata",
+    "category": "build"
+  },
+  "dist": {
+    "reason": "Build output",
+    "category": "build"
+  },
+  "build": {
+    "reason": "Build output",
+    "category": "build"
+  },
+  "*.o": {
+    "reason": "Object files",
+    "category": "build"
+  },
+  "*.class": {
+    "reason": "Java class files",
+    "category": "build"
+  },
+  ".gradle": {
+    "reason": "Gradle cache",
+    "category": "build"
+  },
+  "target": {
+    "reason": "Maven/Gradle output",
+    "category": "build"
+  },
+  "*.bak": {
+    "reason": "Backup files",
+    "category": "backup"
+  },
+  "*.backup": {
+    "reason": "Backup files",
+    "category": "backup"
+  },
+  "*~": {
+    "reason": "Backup files",
+    "category": "backup"
+  },
+  ".idea": {
+    "reason": "JetBrains IDE config",
+    "category": "ide"
+  },
+  ".vscode": {
+    "reason": "VS Code config",
+    "category": "ide"
+  },
+  "*.iml": {
+    "reason": "IntelliJ module file",
+    "category": "ide"
+  },
+  ".env.local": {
+    "reason": "Local environment variables",
+    "category": "secrets"
+  },
+  "*.pem": {
+    "reason": "Certificate/Key file",
+    "category": "secrets"
+  },
+  "*.key": {
+    "reason": "Private key file",
+    "category": "secrets"
+  },
+  ".npm": {
+    "reason": "NPM cache",
+    "category": "cache"
+  },
+  ".yarn": {
+    "reason": "Yarn cache",
+    "category": "cache"
+  },
+  "*.tsbuildinfo": {
+    "reason": "TypeScript build info",
+    "category": "build"
+  },
+  ".cache": {
+    "reason": "Cache directory",
+    "category": "cache"
+  }
+}

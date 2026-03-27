@@ -10,6 +10,8 @@ import { validateConfig, CONFIG } from '../../config/env';
 import { t } from '../../config/i18n';
 import { renderCommitMessage, renderDryRun, renderWarning, renderSuccess, renderError, renderHealerAttempt } from '../ui/renderer';
 import { reviewCommitMessage, editCommitMessage } from '../ui/prompts';
+import { stealthStash, stealthRestore, hasPrivateConfig } from '../../services/tools/stealth';
+import { suggestIgnore } from '../../services/tools/ignore';
 
 export interface AutoOptions {
   yes?: boolean;
@@ -24,8 +26,21 @@ export interface AutoOptions {
 export async function autoCommand(options: AutoOptions): Promise<void> {
   const repoPath = options.path || process.cwd();
   
-  // Handle branch option before starting commit flow
-  if (options.branch) {
+  // Stealth Mode: Hide private files if configured
+  let stealthResult: { hiddenFiles: string[]; tempPath: string; success: boolean; error?: string } = { hiddenFiles: [], tempPath: '', success: true };
+  if (hasPrivateConfig(repoPath)) {
+    console.log(chalk.cyan('🔒 Stealth Mode: Hiding private files...'));
+    stealthResult = await stealthStash(repoPath);
+    if (!stealthResult.success) {
+      console.error(chalk.red(`Stealth Mode error: ${stealthResult.error}`));
+    } else if (stealthResult.hiddenFiles.length > 0) {
+      console.log(chalk.green(`✓ Hidden ${stealthResult.hiddenFiles.length} private files`));
+    }
+  }
+  
+  try {
+    // Handle branch option before starting commit flow
+    if (options.branch) {
     const { listBranches, createBranch, switchBranch } = await import('../../services/git/branch');
     
     const branches = await listBranches(repoPath);
@@ -164,6 +179,20 @@ export async function autoCommand(options: AutoOptions): Promise<void> {
   
   if (result.success) {
     execSpinner.succeed(t('auto.success'));
+    
+    // Smart Ignore: Suggest .gitignore patterns after successful commit
+    const { suggest } = await inquirer.prompt([
+      {
+        type: 'confirm',
+        name: 'suggest',
+        message: 'Check for .gitignore suggestions?',
+        default: false,
+      },
+    ]);
+    
+    if (suggest) {
+      await suggestIgnore(repoPath);
+    }
   } else {
     execSpinner.fail(t('error.push_failed', { error: result.error || 'Unknown error' }));
     
@@ -189,5 +218,22 @@ export async function autoCommand(options: AutoOptions): Promise<void> {
     }
     
     process.exit(1);
+  }
+  } finally {
+    // Stealth Mode: Restore hidden files
+    if (stealthResult.hiddenFiles.length > 0) {
+      console.log(chalk.cyan('🔒 Stealth Mode: Restoring private files...'));
+      const restoreResult = await stealthRestore(repoPath);
+      if (!restoreResult.success) {
+        console.error(chalk.red(`Stealth restore error: ${restoreResult.error}`));
+      } else {
+        if (restoreResult.restoredFiles.length > 0) {
+          console.log(chalk.green(`✓ Restored ${restoreResult.restoredFiles.length} private files`));
+        }
+        if (restoreResult.conflicts.length > 0) {
+          console.log(chalk.yellow(`⚠ ${restoreResult.conflicts.length} conflicts renamed to .restored`));
+        }
+      }
+    }
   }
 }
