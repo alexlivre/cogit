@@ -1,0 +1,17 @@
+{
+  "passed": [
+    "Renderer Module",
+    "Prompts Module",
+    "Healer Module",
+    "Menu Module",
+    "Menu Command Registered",
+    "Auto New Flags",
+    "Dry Run Mode",
+    "CI Skip Flag"
+  ],
+  "failed": [],
+  "total": 8,
+  "startTime": "2026-03-27T00:13:54.452Z",
+  "duration": 10.432,
+  "endTime": "2026-03-27T00:14:04.885Z"
+}

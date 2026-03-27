@@ -26,6 +26,20 @@ export async function scanRepository(repoPath: string): Promise<ScanResult> {
     const { stdout: untrackedOutput } = await execAsync('git ls-files --others --exclude-standard', { cwd: repoPath });
     const untrackedFiles = untrackedOutput.trim().split('\n').filter(Boolean);
     
+    // Include untracked files content in diff
+    let untrackedDiff = '';
+    for (const file of untrackedFiles) {
+      try {
+        const { stdout: fileContent } = await execAsync(`cat "${file}"`, { cwd: repoPath });
+        untrackedDiff += `diff --git a/${file} b/${file}\nnew file mode 100644\n--- /dev/null\n+++ b/${file}\n@@ -0,0 +1,${fileContent.split('\n').length} @@\n`;
+        fileContent.split('\n').forEach((line: string) => {
+          untrackedDiff += `+${line}\n`;
+        });
+      } catch {
+        // Skip files that can't be read
+      }
+    }
+    
     const hasChanges = stagedFiles.length > 0 || unstagedFiles.length > 0 || untrackedFiles.length > 0;
     
     return {
@@ -33,7 +47,7 @@ export async function scanRepository(repoPath: string): Promise<ScanResult> {
       hasChanges,
       stagedFiles,
       unstagedFiles: [...unstagedFiles, ...untrackedFiles],
-      diff: diffOutput,
+      diff: diffOutput + untrackedDiff,
     };
   } catch {
     return {

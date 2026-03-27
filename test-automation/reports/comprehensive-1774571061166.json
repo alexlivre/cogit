@@ -1,0 +1,107 @@
+{
+  "passed": [
+    {
+      "name": "F1-02: Flag --yes",
+      "duration": 3305,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-03: Flag --no-push",
+      "duration": 3097,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-04: Flag -m <hint>",
+      "duration": 3732,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-05: Security Blocklist",
+      "duration": 1020,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-06: Secrets Redaction",
+      "duration": 0,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-07: Scanner Detection",
+      "duration": 188,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-08: No Changes",
+      "duration": 941,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-09: Conventional Commits",
+      "duration": 3629,
+      "phase": "fase1"
+    },
+    {
+      "name": "F2-01: Menu Command",
+      "duration": 526,
+      "phase": "fase2"
+    },
+    {
+      "name": "F2-02: Flag --dry-run",
+      "duration": 1955,
+      "phase": "fase2"
+    },
+    {
+      "name": "F2-03: Flag --nobuild",
+      "duration": 3595,
+      "phase": "fase2"
+    },
+    {
+      "name": "F2-04: Healer Module",
+      "duration": 1,
+      "phase": "fase2"
+    },
+    {
+      "name": "F2-05: UI Renderer",
+      "duration": 15,
+      "phase": "fase2"
+    },
+    {
+      "name": "F2-06: UI Prompts",
+      "duration": 303,
+      "phase": "fase2"
+    },
+    {
+      "name": "F2-07: Scanner Untracked",
+      "duration": 1411,
+      "phase": "fase2"
+    }
+  ],
+  "failed": [
+    {
+      "name": "F1-01: Basic Functionality",
+      "error": "Assertion failed: Should show success message\nExpected: \"success\" to be in: \"══════════════════════════════════════════════════\nGenerated Commit Message:\n══════════════════════════════════════════════════\nfeat: add test file for basic test functionality\n\n- n add test file for verifying basic functionality\n- u update repository with test file for future reference\n══════════════════════════════════════════════════\n\"",
+      "duration": 4069,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-10: i18n",
+      "error": "Assertion failed: Should show processing message\nExpected: \"auto.\" to be in: \"══════════════════════════════════════════════════\nGenerated Commit Message:\n══════════════════════════════════════════════════\ntest: adiciona arquivo de teste para internacional\n\n- n adiciona arquivo de teste para verificar suporte a i18n\n══════════════════════════════════════════════════\n\"",
+      "duration": 10106,
+      "phase": "fase1"
+    }
+  ],
+  "total": 17,
+  "startTime": "2026-03-27T00:23:40.670Z",
+  "phases": {
+    "fase1": {
+      "passed": 8,
+      "failed": 2
+    },
+    "fase2": {
+      "passed": 7,
+      "failed": 0
+    }
+  },
+  "duration": 40.493,
+  "endTime": "2026-03-27T00:24:21.167Z"
+}

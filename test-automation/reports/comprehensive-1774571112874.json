@@ -1,0 +1,104 @@
+{
+  "passed": [
+    {
+      "name": "F1-01: Basic Functionality",
+      "duration": 4236,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-02: Flag --yes",
+      "duration": 3543,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-03: Flag --no-push",
+      "duration": 3611,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-04: Flag -m <hint>",
+      "duration": 3985,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-05: Security Blocklist",
+      "duration": 999,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-06: Secrets Redaction",
+      "duration": 0,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-07: Scanner Detection",
+      "duration": 188,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-08: No Changes",
+      "duration": 949,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-09: Conventional Commits",
+      "duration": 3373,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-10: i18n",
+      "duration": 4053,
+      "phase": "fase1"
+    },
+    {
+      "name": "F2-01: Menu Command",
+      "duration": 523,
+      "phase": "fase2"
+    },
+    {
+      "name": "F2-02: Flag --dry-run",
+      "duration": 1949,
+      "phase": "fase2"
+    },
+    {
+      "name": "F2-03: Flag --nobuild",
+      "duration": 4182,
+      "phase": "fase2"
+    },
+    {
+      "name": "F2-04: Healer Module",
+      "duration": 0,
+      "phase": "fase2"
+    },
+    {
+      "name": "F2-05: UI Renderer",
+      "duration": 15,
+      "phase": "fase2"
+    },
+    {
+      "name": "F2-06: UI Prompts",
+      "duration": 308,
+      "phase": "fase2"
+    },
+    {
+      "name": "F2-07: Scanner Untracked",
+      "duration": 1909,
+      "phase": "fase2"
+    }
+  ],
+  "failed": [],
+  "total": 17,
+  "startTime": "2026-03-27T00:24:36.380Z",
+  "phases": {
+    "fase1": {
+      "passed": 10,
+      "failed": 0
+    },
+    "fase2": {
+      "passed": 7,
+      "failed": 0
+    }
+  },
+  "duration": 36.492,
+  "endTime": "2026-03-27T00:25:12.874Z"
+}
