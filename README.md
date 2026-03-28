@@ -1,6 +1,6 @@
 # Cogit CLI
 
-![Status](https://img.shields.io/badge/Status-FASE_5_Complete-brightgreen) ![Version](https://img.shields.io/badge/Version-1.2.0-blue) ![Node](https://img.shields.io/badge/Node-18%2B-green) ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue) ![Tests](https://img.shields.io/badge/Tests-97%25_Passing-success) ![Refactoring](https://img.shields.io/badge/Refactoring-Clean_Architecture_Phase_3_Validated-brightgreen)
+![Status](https://img.shields.io/badge/Status-FASE_6_Complete-brightgreen) ![Version](https://img.shields.io/badge/Version-1.3.0-blue) ![Node](https://img.shields.io/badge/Node-18%2B-green) ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue) ![Tests](https://img.shields.io/badge/Tests-97%25_Passing-success) ![Refactoring](https://img.shields.io/badge/Refactoring-Clean_Architecture_Phase_3_Validated-brightgreen)
 
 > **Git automation CLI with AI-powered commit messages**
 
@@ -143,6 +143,21 @@ cogit resources
 # Total: 15 dirs, 42 files, 95.7 KB
 ```
 
+### Comando Check Connectivity
+
+Verificação completa de conectividade de rede e acesso ao GitHub:
+
+```bash
+# Verificar conectividade
+cogit check-connectivity
+
+# Forçar verificação (ignorar cache)
+cogit check-connectivity --force
+
+# Verificar em repositório específico
+cogit check-connectivity --repo /caminho/do/repositorio
+```
+
 ### Branch e Tag Operations
 
 Gerenciamento completo via menu interativo:
@@ -166,7 +181,121 @@ cogit menu → 🏷️ Tag Operations
 | `--message <hint>` | `-m` | Dica de contexto para IA |
 | `--path <dir>` | `-p` | Diretório alvo |
 | `--branch <name>` | `-b` | Cria ou usa branch específica |
+| `--auto-push` | - | Forçar habilitar auto push nesta operação |
+| `--no-auto-push` | - | Forçar desabilitar auto push nesta operação |
 | `--debug` | - | Habilita Deep Trace Mode (FASE 5) |
+
+---
+
+## Auto Push (FASE 6)
+
+Sistema inteligente de envio automático de branches e tags para o GitHub quando conectado à internet.
+
+### Configuração
+
+Copie o arquivo de exemplo e configure as variáveis de auto push:
+
+```bash
+cp .env.example .env
+```
+
+Edite o `.env`:
+
+```env
+# ───────────────────────────────────────────────────────────
+# AUTO PUSH SETTINGS
+# ───────────────────────────────────────────────────────────
+
+AUTO_PUSH_ENABLED=true                  # Enable/disable auto push (true por padrão)
+AUTO_PUSH_BRANCHES=true                 # Auto push para branches quando criados
+AUTO_PUSH_TAGS=true                     # Auto push para tags quando criadas
+AUTO_PUSH_INTERNET_CHECK=true           # Verificar conexão antes do push
+AUTO_PUSH_GITHUB_ONLY=true              # Apenas para repositórios GitHub
+AUTO_PUSH_DELAY=5                       # Delay (segundos) após criação antes do push
+AUTO_PUSH_RETRY_COUNT=3                 # Tentativas em caso de falha
+AUTO_PUSH_SILENT=false                  # Suprimir mensagens de auto push
+```
+
+### Funcionalidades
+
+#### **Detecção Inteligente de Conectividade**
+- Verificação de conexão com internet
+- Verificação específica de conectividade com GitHub
+- Cache inteligente para evitar verificações excessivas
+- Suporte a diferentes métodos de verificação
+
+#### **Sistema de Retry Automático**
+- Retry exponencial para falhas de rede
+- Detecção automática de erros recuperáveis
+- Backoff inteligente baseado no tipo de erro
+- Limite configurável de tentativas
+
+#### **Integração com Operações Git**
+- Auto push automático após criação de branches
+- Auto push automático após criação de tags
+- Respeito às configurações de segurança
+- Não interfere em operações existentes
+
+### Verificação de Conectividade
+
+```bash
+# Verificar status completo
+cogit check-connectivity
+
+# Forçar verificação fresca
+cogit check-connectivity --force
+
+# Verificar repositório específico
+cogit check-connectivity --repo /caminho/do/repo
+```
+
+**Output:**
+```
+🌐 CONNECTIVITY CHECK
+──────────────────────────────────────────────────
+
+📡 Connectivity Status:
+   🟢 Internet connected | 🟢 GitHub reachable | 📁 GitHub repository
+
+🔧 Auto Push Configuration:
+   🟢 Auto push: ENABLED | 🌿 Branches | 🏷️ Tags | 🌐 Internet Check | 🐙 GitHub Only
+
+📊 Detailed Status:
+   Internet: 🟢
+   GitHub: 🟢
+   GitHub Repo: 🟢
+   Last Checked: 28/03/2026, 06:30:00
+   Source: 🔴 Live
+
+💡 Recommendations:
+   • All systems ready! Auto push is enabled and configured
+```
+
+### Flags de Override
+
+Você pode sobrescrever as configurações por operação:
+
+```bash
+# Forçar auto push mesmo se desabilitado globalmente
+cogit auto --auto-push
+
+# Desabilitar auto push para esta operação específica
+cogit auto --no-auto-push
+```
+
+### Segurança
+
+#### **Proteções Automáticas**
+- **Nunca usa force push** - Operações de auto push nunca usam `--force`
+- **Verificação de credenciais** - Valida acesso antes de tentar push
+- **Rate limiting** - Respeita limites do GitHub automaticamente
+- **Privacidade** - Funciona com repositórios privados
+
+#### **Configurações Padrão**
+- `AUTO_PUSH_ENABLED=true` (habilitado por padrão)
+- `AUTO_PUSH_GITHUB_ONLY=true` (apenas GitHub por padrão)
+- `AUTO_PUSH_INTERNET_CHECK=true` (verificação obrigatória)
+- `AUTO_PUSH_RETRY_COUNT=3` (limite de tentativas)
 
 ---
 
@@ -797,6 +926,17 @@ cogit resources
 - [x] 50 testes unitários para domain/application/plugins
 - [x] 5 stress tests automatizados (500 arquivos, 1MB diff, 50 commits)
 - [x] **95.4% validado** - 305 testes passando
+
+### Fase 6: Auto Push ✅
+- [x] Sistema de conectividade inteligente
+- [x] Auto push automático para branches e tags
+- [x] Sistema de retry com backoff exponencial
+- [x] Verificação de conectividade GitHub
+- [x] Configurações de segurança (desabilitado por padrão)
+- [x] Comando check-connectivity
+- [x] Flags --auto-push e --no-auto-push
+- [x] Integração total com operações Git existentes
+- [x] Zero breaking changes
 
 ---
 

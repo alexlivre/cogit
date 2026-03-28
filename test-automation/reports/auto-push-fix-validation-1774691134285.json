@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-03-28T09:45:34.285Z",
+  "fix": "Auto Push Menu Integration",
+  "results": {
+    "autoPushFix": true,
+    "connectivity": true
+  },
+  "summary": {
+    "total": 2,
+    "passed": 2,
+    "failed": 0
+  },
+  "changes": [
+    "branch.ts: createBranch() now uses autoPush=true",
+    "branch.ts: switchBranch() now uses autoPush=true",
+    "tag.ts: createTag() now uses autoPush=true",
+    "Added auto push feedback for all menu operations"
+  ]
+}

@@ -81,6 +81,7 @@ export async function autoCommand(options: AutoOptions): Promise<void> {
       message: reviewResult.message,
       shouldPush: !options.noPush,
       dryRun: options.dryRun || false,
+      yes: options.yes || false,
     });
 
   } finally {

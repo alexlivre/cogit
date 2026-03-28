@@ -16,6 +16,21 @@ export const CONFIG = {
   GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-pro',
   OLLAMA_MODEL: process.env.OLLAMA_MODEL || 'llama3',
   
+  // Auto Push Settings
+  AUTO_PUSH_ENABLED: process.env.AUTO_PUSH_ENABLED !== 'false', // default true
+  AUTO_PUSH_BRANCHES: process.env.AUTO_PUSH_BRANCHES !== 'false', // default true
+  AUTO_PUSH_TAGS: process.env.AUTO_PUSH_TAGS !== 'false', // default true
+  AUTO_PUSH_INTERNET_CHECK: process.env.AUTO_PUSH_INTERNET_CHECK !== 'false', // default true
+  AUTO_PUSH_GITHUB_ONLY: process.env.AUTO_PUSH_GITHUB_ONLY !== 'false', // default true
+  AUTO_PUSH_DELAY: parseInt(process.env.AUTO_PUSH_DELAY || '5', 10) * 1000, // convert to ms
+  AUTO_PUSH_RETRY_COUNT: parseInt(process.env.AUTO_PUSH_RETRY_COUNT || '3', 10),
+  AUTO_PUSH_SILENT: process.env.AUTO_PUSH_SILENT === 'true',
+  
+  // Auto Push Fallback Settings
+  AUTO_PUSH_FALLBACK_ENABLED: process.env.AUTO_PUSH_FALLBACK_ENABLED !== 'false', // default true
+  AUTO_PUSH_STRICT_CHECK: process.env.AUTO_PUSH_STRICT_CHECK === 'true', // default false
+  AUTO_PUSH_FALLBACK_TIMEOUT: parseInt(process.env.AUTO_PUSH_FALLBACK_TIMEOUT || '15', 10) * 1000,
+  
   VALID_LANGUAGES: ['en', 'pt'],
 };
 

@@ -24,6 +24,7 @@ export interface ExecutorOptions {
   message: string;
   shouldPush: boolean;
   dryRun: boolean;
+  yes?: boolean;
 }
 
 export interface ExecutorResult {
@@ -63,7 +64,7 @@ export async function handleCommitExecution(
 
   if (result.success) {
     execSpinner.succeed(t('auto.success'));
-    await handleIgnoreSuggestions(options.repoPath);
+    await handleIgnoreSuggestions(options.repoPath, options.yes);
     return { success: true };
   }
 
@@ -80,7 +81,12 @@ export async function handleCommitExecution(
 /**
  * Handle ignore suggestions after successful commit
  */
-async function handleIgnoreSuggestions(repoPath: string): Promise<void> {
+async function handleIgnoreSuggestions(repoPath: string, yes?: boolean): Promise<void> {
+  // Skip prompt if yes flag is set (automatic mode)
+  if (yes) {
+    return;
+  }
+
   const { suggest } = await inquirer.prompt([
     {
       type: 'confirm',

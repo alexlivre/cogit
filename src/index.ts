@@ -25,6 +25,8 @@ program
   .option('-m, --message <hint>', 'Context hint for AI')
   .option('-p, --path <dir>', 'Target directory', process.cwd())
   .option('-b, --branch <name>', 'Create or switch to branch')
+  .option('--auto-push', 'Force enable auto push for this operation')
+  .option('--no-auto-push', 'Force disable auto push for this operation')
   .option('--debug', 'Enable deep trace mode')
   .action(async (options) => {
     try {
@@ -63,6 +65,16 @@ program
     const { scanResources, displayResourceMap } = await import('./services/diagnostics/resources');
     const report = scanResources(process.cwd());
     displayResourceMap(report);
+  });
+
+program
+  .command('check-connectivity')
+  .description('Check network connectivity and GitHub access')
+  .option('-f, --force', 'Force fresh connectivity check (ignore cache)')
+  .option('-r, --repo <path>', 'Repository path (default: current directory)')
+  .action(async (options) => {
+    const { checkConnectivityCommand } = await import('./cli/commands/check-connectivity');
+    await checkConnectivityCommand.action(options);
   });
 
 program.parse();

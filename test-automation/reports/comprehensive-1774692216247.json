@@ -1,0 +1,106 @@
+{
+  "passed": [
+    {
+      "name": "F1-01: Basic Functionality",
+      "duration": 4752,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-02: Flag --yes",
+      "duration": 5563,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-03: Flag --no-push",
+      "duration": 3277,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-04: Flag -m <hint>",
+      "duration": 3759,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-06: Secrets Redaction",
+      "duration": 1,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-07: Scanner Detection",
+      "duration": 227,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-08: No Changes",
+      "duration": 1062,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-09: Conventional Commits",
+      "duration": 4264,
+      "phase": "fase1"
+    },
+    {
+      "name": "F1-10: i18n",
+      "duration": 4859,
+      "phase": "fase1"
+    },
+    {
+      "name": "F2-01: Menu Command",
+      "duration": 576,
+      "phase": "fase2"
+    },
+    {
+      "name": "F2-02: Flag --dry-run",
+      "duration": 2001,
+      "phase": "fase2"
+    },
+    {
+      "name": "F2-03: Flag --nobuild",
+      "duration": 4418,
+      "phase": "fase2"
+    },
+    {
+      "name": "F2-04: Healer Module",
+      "duration": 0,
+      "phase": "fase2"
+    },
+    {
+      "name": "F2-05: UI Renderer",
+      "duration": 16,
+      "phase": "fase2"
+    },
+    {
+      "name": "F2-06: UI Prompts",
+      "duration": 319,
+      "phase": "fase2"
+    },
+    {
+      "name": "F2-07: Scanner Untracked",
+      "duration": 1968,
+      "phase": "fase2"
+    }
+  ],
+  "failed": [
+    {
+      "name": "F1-05: Security Blocklist",
+      "error": "Assertion failed: Should fail with blocked files\nExpected: \"blocked\" to be in: \"Command failed: node \"C:/code/github/cogit/dist/index.js\" auto --yes\n- Analyzing changes...\n✔ Analyzing changes...\nError: Security alert: Blocked files detected\n  - .env.local\n\"",
+      "duration": 1156,
+      "phase": "fase1"
+    }
+  ],
+  "total": 17,
+  "startTime": "2026-03-28T10:02:54.431Z",
+  "phases": {
+    "fase1": {
+      "passed": 9,
+      "failed": 1
+    },
+    "fase2": {
+      "passed": 7,
+      "failed": 0
+    }
+  },
+  "duration": 41.812,
+  "endTime": "2026-03-28T10:03:36.247Z"
+}
