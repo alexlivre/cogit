@@ -4,6 +4,7 @@ import { OpenRouterProvider } from '../../services/ai/providers/openrouter';
 import { GroqProvider } from '../../services/ai/providers/groq';
 import { OpenAIProvider } from '../../services/ai/providers/openai';
 import { GeminiProvider } from '../../services/ai/providers/gemini';
+import { OllamaProvider } from '../../services/ai/providers/ollama';
 import { AIProvider } from '../../services/ai/providers/base';
 import { CONFIG } from '../../config/env';
 
@@ -55,6 +56,12 @@ export async function checkAICommand(): Promise<void> {
       apiKey: CONFIG.GEMINI_API_KEY,
       model: CONFIG.GEMINI_MODEL,
       create: (apiKey, model) => new GeminiProvider({ apiKey, model }),
+    },
+    {
+      name: 'Ollama',
+      apiKey: '', // Local, no API key needed
+      model: CONFIG.OLLAMA_MODEL,
+      create: (_apiKey, model) => new OllamaProvider({ model }),
     },
   ];
 

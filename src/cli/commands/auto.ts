@@ -13,6 +13,8 @@ import { reviewCommitMessage, editCommitMessage } from '../ui/prompts';
 import { stealthStash, stealthRestore, hasPrivateConfig } from '../../services/tools/stealth';
 import { suggestIgnore } from '../../services/tools/ignore';
 import { debugLogger } from '../ui/debug-logger';
+import { classifyError, presentError, presentErrorCompact } from '../../core/error-handler';
+import { handleAIFallback, FallbackResult } from '../../services/ai/providers';
 
 export interface AutoOptions {
   yes?: boolean;
@@ -118,14 +120,35 @@ export async function autoCommand(options: AutoOptions): Promise<void> {
     debugLogger.logResponse('brain', brainResult.message || '', Date.now() - startTime);
   }
   
+  let finalMessage: string | undefined;
+  
   if (!brainResult.success) {
-    aiSpinner.fail(brainResult.error || 'AI generation failed');
-    process.exit(1);
+    aiSpinner.fail('AI generation failed');
+    
+    // Offer fallback options when AI fails
+    const fallbackResult = await handleAIFallback(scanResult.diff);
+    
+    if (fallbackResult.choice === 'abort') {
+      console.log(chalk.yellow(t('auto.cancel')));
+      process.exit(0);
+    }
+    
+    if (fallbackResult.message) {
+      finalMessage = fallbackResult.message;
+      if (options.nobuild) {
+        finalMessage = `[CI Skip] ${finalMessage}`;
+      }
+      renderCommitMessage(finalMessage);
+    } else {
+      // No message available, exit with error
+      const classified = classifyError(brainResult.error || 'Unknown error');
+      presentError(classified);
+      process.exit(1);
+    }
+  } else {
+    aiSpinner.succeed(t('auto.generating'));
+    finalMessage = brainResult.message;
   }
-  
-  aiSpinner.succeed(t('auto.generating'));
-  
-  let finalMessage = brainResult.message;
   
   // Add [CI Skip] prefix if nobuild option
   if (options.nobuild && finalMessage) {
@@ -209,10 +232,13 @@ export async function autoCommand(options: AutoOptions): Promise<void> {
       await suggestIgnore(repoPath);
     }
   } else {
-    execSpinner.fail(t('error.push_failed', { error: result.error || 'Unknown error' }));
+    execSpinner.fail('Operation failed');
     
-    // Try to heal push errors
-    if (!options.noPush && result.error?.includes('push')) {
+    // Classify and present the error
+    const classified = classifyError(result.error || 'Unknown error');
+    
+    // Try to heal push errors if recoverable
+    if (!options.noPush && result.error?.includes('push') && classified.recoverable) {
       renderWarning('Push failed. Attempting to heal...');
       
       const healerResult = await healGitError({
@@ -225,11 +251,14 @@ export async function autoCommand(options: AutoOptions): Promise<void> {
       if (healerResult.success) {
         renderSuccess('Healed successfully!');
       } else {
-        renderError('Healing failed. Manual intervention required.');
+        presentError(classified);
         healerResult.attempts.forEach(a => {
           renderHealerAttempt(a.attempt, a.commands, a.success, a.error);
         });
       }
+    } else {
+      // Present detailed error with solutions
+      presentError(classified);
     }
     
     process.exit(1);

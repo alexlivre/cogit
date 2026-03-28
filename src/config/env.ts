@@ -14,7 +14,10 @@ export const CONFIG = {
   GROQ_MODEL: process.env.GROQ_MODEL || 'llama-4-scout-17b-16e-instruct',
   OPENAI_MODEL: process.env.OPENAI_MODEL || 'gpt-4o-mini',
   GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-pro',
-  OLLAMA_MODEL: process.env.OLLAMA_MODEL || 'llama3',
+  OLLAMA_MODEL: process.env.OLLAMA_MODEL || 'qwen3.5:4b',
+  
+  // Ollama Thinking Mode
+  OLLAMA_THINK: process.env.OLLAMA_THINK === 'true',
   
   // Auto Push Settings
   AUTO_PUSH_ENABLED: process.env.AUTO_PUSH_ENABLED !== 'false', // default true
@@ -47,7 +50,7 @@ export const MODELS: Record<string, string> = {
   groq: process.env.GROQ_MODEL || 'llama-4-scout-17b-16e-instruct',
   openai: process.env.OPENAI_MODEL || 'gpt-4o-mini',
   gemini: process.env.GEMINI_MODEL || 'gemini-pro',
-  ollama: process.env.OLLAMA_MODEL || 'llama3',
+  ollama: process.env.OLLAMA_MODEL || 'qwen3.5:4b',
 };
 
 export function validateConfig(): { valid: boolean; errors: string[] } {

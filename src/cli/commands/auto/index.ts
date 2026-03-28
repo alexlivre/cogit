@@ -9,7 +9,7 @@ import { scanRepository } from '../../../services/git/scanner';
 import { sanitizeFiles } from '../../../services/security/sanitizer';
 import { generateCommitMessage } from '../../../services/ai/brain';
 import { debugLogger } from '../../ui/debug-logger';
-import { renderCommitMessage } from '../../ui/renderer';
+import { renderCommitMessage, renderThinking } from '../../ui/renderer';
 import { t } from '../../../config/i18n';
 import { GitError, SecurityError, AIError } from '../../../core/errors';
 
@@ -133,11 +133,22 @@ async function generateCommitMessageWithAI(
   const aiSpinner = ora(t('auto.generating')).start();
   const startTime = Date.now();
 
+  // Determine thinking mode
+  // Priority: --think > --no-think > undefined (use env config)
+  let thinkValue: boolean | undefined;
+  if (context.options.think) {
+    thinkValue = true;
+  } else if (context.options.noThink) {
+    thinkValue = false;
+  }
+  // else: undefined, brain will use CONFIG.OLLAMA_THINK
+
   const brainResult = await generateCommitMessage({
     diff,
     hint: context.options.message,
     language: context.commitLanguage,
     debug: context.options.debug,
+    think: thinkValue,
   });
 
   if (context.options.debug) {
@@ -147,12 +158,17 @@ async function generateCommitMessageWithAI(
   if (!brainResult.success) {
     aiSpinner.fail(brainResult.error || 'AI generation failed');
     throw new AIError(
-      brainResult.error || 'AI generation failed',
-      [brainResult.error || 'Unknown error']
+      brainResult.error || 'AI generation failed'
     );
   }
 
   aiSpinner.succeed(t('auto.generating'));
+  
+  // Render thinking if available
+  if (brainResult.thinking) {
+    renderThinking(brainResult.thinking);
+  }
+  
   renderCommitMessage(brainResult.message || '');
 
   return brainResult.message || '';

@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { AIProvider, AIProviderConfig, ChatMessage } from './base';
+import { AIProvider, AIProviderConfig, ChatMessage, GenerateOptions } from './base';
 
 export class OpenRouterProvider implements AIProvider {
   private client: OpenAI;
@@ -17,7 +17,7 @@ export class OpenRouterProvider implements AIProvider {
     this.model = config.model;
   }
 
-  async generate(messages: ChatMessage[]): Promise<string> {
+  async generate(messages: ChatMessage[], _options?: GenerateOptions): Promise<string> {
     const completion = await this.client.chat.completions.create({
       model: this.model,
       messages: messages.map(m => ({

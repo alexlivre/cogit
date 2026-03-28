@@ -240,7 +240,7 @@ async function checkOllama(): Promise<ProviderHealth> {
   try {
     const { OllamaProvider } = await import('../ai/providers/ollama');
     const provider = new OllamaProvider({
-      model: process.env.OLLAMA_MODEL || 'llama3',
+      model: process.env.OLLAMA_MODEL || 'qwen3.5:4b',
     });
 
     await provider.generate([{ role: 'user', content: 'OK' }]);
@@ -252,7 +252,7 @@ async function checkOllama(): Promise<ProviderHealth> {
       name: 'Ollama', 
       available: true, 
       responseTime, 
-      model: process.env.OLLAMA_MODEL || 'llama3',
+      model: process.env.OLLAMA_MODEL || 'qwen3.5:4b',
       lastCheck: new Date(),
     };
   } catch (error) {

@@ -89,3 +89,12 @@ export function renderHealerAttempt(attempt: number, commands: string[], success
     }
   }
 }
+
+export function renderThinking(thinking: string): void {
+  console.log(chalk.dim('═'.repeat(50)));
+  console.log(chalk.dim.bold('💭 Thinking:'));
+  console.log(chalk.dim('═'.repeat(50)));
+  console.log(chalk.dim.gray(thinking));
+  console.log(chalk.dim('═'.repeat(50)));
+  console.log();
+}

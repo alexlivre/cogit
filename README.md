@@ -71,6 +71,59 @@ Acesse [OpenRouter](https://openrouter.ai/) para obter sua API key gratuita.
 
 ## Uso
 
+### Comando Padrão (Menu Interativo)
+
+Execute `cogit` sem argumentos para abrir o menu interativo automaticamente:
+
+```bash
+# Abre menu interativo (comportamento padrão)
+cogit
+
+# Equivalente a:
+cogit menu
+```
+
+### Help Completo
+
+Visualize o help organizado com todas as opções:
+
+```bash
+# Help completo e organizado
+cogit --help
+
+# Ou atalho
+cogit -h
+```
+
+**Output:**
+```
+╔══════════════════════════════════════════════════════════╗
+║         COGIT - AI-Powered Git CLI                       ║
+║         Version 1.0.0 | github.com/alexlivre/cogit     ║
+╚══════════════════════════════════════════════════════════╝
+
+USAGE:
+  $ cogit              → Open interactive menu
+  $ cogit [command]    → Run specific command
+  $ cogit --help       → Show this help
+
+CORE COMMANDS:
+  auto           Generate AI commit and execute git operations
+  menu           Interactive menu with guided options (default)
+
+DIAGNOSTICS:
+  check-ai       Test AI provider connectivity
+  health         Full health check of all AI providers
+  resources      Scan and display project resources
+  check-connectivity Check network and GitHub access
+
+OPTIONS:
+  -y, --yes            Skip confirmation prompts
+  --no-push            Commit without pushing to remote
+  --dry-run            Simulate without executing git commands
+  ...
+```
+
 ### Comando Principal: `auto`
 
 Gera mensagem de commit com IA e executa operações Git:
@@ -183,6 +236,8 @@ cogit menu → 🏷️ Tag Operations
 | `--branch <name>` | `-b` | Cria ou usa branch específica |
 | `--auto-push` | - | Forçar habilitar auto push nesta operação |
 | `--no-auto-push` | - | Forçar desabilitar auto push nesta operação |
+| `--think` | - | Habilita modo pensamento (Ollama only) |
+| `--no-think` | - | Desabilita modo pensamento |
 | `--debug` | - | Habilita Deep Trace Mode (FASE 5) |
 
 ---
@@ -545,9 +600,14 @@ cogit auto --dry-run --yes
 O comando `cogit menu` oferece uma interface guiada:
 
 ```
-╔══════════════════════════════════════╗
-║         COGIT CLI - MENU             ║
-╚══════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════╗
+║              Open Source Project                         ║
+║                                                          ║
+║     COGIT - Your AI-Powered Git Automation CLI           ║
+║                                                          ║
+║     by Alex Santos (alexlivre)                           ║
+║     github.com/alexlivre/cogit                          ║
+╚══════════════════════════════════════════════════════════╝
 
 1. 🚀 Quick Commit (auto)
 2. 📝 Commit with options
@@ -832,6 +892,72 @@ OPENAI_API_KEY=sk-...
 GEMINI_API_KEY=AI...
 # Ollama não precisa de key (rodar localmente)
 ```
+
+---
+
+### Ollama Thinking Mode
+
+O Cogit CLI suporta o modo pensamento (thinking) do Ollama, permitindo visualizar o raciocínio do modelo antes da resposta final.
+
+**O que é o Thinking Mode:**
+
+Alguns modelos Ollama (como `qwen3.5:4b`) suportam separação entre raciocínio interno e resposta final. Quando ativado, você pode ver o processo de pensamento do modelo.
+
+**Configuração:**
+
+```env
+# .env
+OLLAMA_THINK=true  # Habilitar thinking por padrão
+```
+
+**Uso via CLI:**
+
+```bash
+# Ativar thinking para esta operação
+cogit auto --think
+
+# Desativar thinking para esta operação
+cogit auto --no-think
+
+# Combinar com outras flags
+cogit auto --think --yes --no-push
+```
+
+**Prioridade:**
+```
+--think / --no-think > OLLAMA_THINK (env)
+```
+
+**Output com Thinking:**
+
+```
+══════════════════════════════════════════════════════
+💭 Thinking:
+══════════════════════════════════════════════════════
+Analyzing the diff, I can see changes to the authentication module...
+The main changes are: JWT implementation, middleware addition...
+══════════════════════════════════════════════════════
+
+══════════════════════════════════════════════════════
+Generated Commit Message:
+══════════════════════════════════════════════════════
+feat: adiciona sistema de autenticação JWT
+
+- n implementa geração de tokens JWT
+- n adiciona middleware de validação
+- u refatora estrutura de pastas
+══════════════════════════════════════════════════════
+```
+
+**Requisitos:**
+- Provider Ollama configurado (`AI_PROVIDER=ollama` ou fallback)
+- Modelo que suporta thinking (ex: `qwen3.5:4b`)
+- Ollama rodando localmente (`ollama serve`)
+
+**Observações:**
+- Thinking aumenta o tempo de resposta
+- Outros providers ignoram a configuração de thinking
+- Útil para debug e entendimento do raciocínio do modelo
 
 ---
 

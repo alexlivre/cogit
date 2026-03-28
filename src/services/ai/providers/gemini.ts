@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { AIProvider, AIProviderConfig, ChatMessage } from './base';
+import { AIProvider, AIProviderConfig, ChatMessage, GenerateOptions } from './base';
 
 export class GeminiProvider implements AIProvider {
   private client: GoogleGenerativeAI;
@@ -10,7 +10,7 @@ export class GeminiProvider implements AIProvider {
     this.model = config.model;
   }
 
-  async generate(messages: ChatMessage[]): Promise<string> {
+  async generate(messages: ChatMessage[], _options?: GenerateOptions): Promise<string> {
     const model = this.client.getGenerativeModel({ model: this.model });
     
     // Convert messages to Gemini format

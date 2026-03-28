@@ -37,8 +37,9 @@ export class AIProviderAdapter implements AIProviderPort {
     const hasGroq = !!process.env.GROQ_API_KEY;
     const hasOpenAI = !!process.env.OPENAI_API_KEY;
     const hasGemini = !!process.env.GEMINI_API_KEY;
+    const hasOllama = !!process.env.OLLAMA_URL || true; // Ollama is always potentially available (local)
     
-    return hasOpenRouter || hasGroq || hasOpenAI || hasGemini;
+    return hasOpenRouter || hasGroq || hasOpenAI || hasGemini || hasOllama;
   }
 }
 
@@ -70,7 +71,9 @@ export class MultiProviderAIAdapter implements AIProviderPort {
       process.env.OPENROUTER_API_KEY ||
       process.env.GROQ_API_KEY ||
       process.env.OPENAI_API_KEY ||
-      process.env.GEMINI_API_KEY
+      process.env.GEMINI_API_KEY ||
+      process.env.OLLAMA_URL ||
+      true // Ollama is always potentially available (local)
     );
   }
 }

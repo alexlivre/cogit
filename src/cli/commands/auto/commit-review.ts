@@ -66,8 +66,7 @@ export async function handleCommitReview(
 
         if (!regenerateResult.success) {
           throw new AIError(
-            regenerateResult.error || 'AI regeneration failed',
-            [regenerateResult.error || 'Unknown error']
+            regenerateResult.error || 'AI regeneration failed'
           );
         }
 

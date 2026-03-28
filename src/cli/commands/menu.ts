@@ -9,9 +9,14 @@ import { suggestIgnore, addWhitelistEntry } from '../../services/tools/ignore';
 import { createPrivateConfig, hasPrivateConfig } from '../../services/tools/stealth';
 
 export async function menuCommand(): Promise<void> {
-  console.log(chalk.cyan.bold('\n╔══════════════════════════════════════╗'));
-  console.log(chalk.cyan.bold('║         COGIT CLI - MENU             ║'));
-  console.log(chalk.cyan.bold('╚══════════════════════════════════════╝\n'));
+  console.log(chalk.cyan.bold('╔══════════════════════════════════════════════════════════╗'));
+  console.log(chalk.cyan.bold('║') + chalk.white.bold('              Open Source Project                         ') + chalk.cyan.bold('║'));
+  console.log(chalk.cyan.bold('║') + '                                                          ' + chalk.cyan.bold('║'));
+  console.log(chalk.cyan.bold('║') + chalk.white.bold('     COGIT - Your AI-Powered Git Automation CLI           ') + chalk.cyan.bold('║'));
+  console.log(chalk.cyan.bold('║') + '                                                          ' + chalk.cyan.bold('║'));
+  console.log(chalk.cyan.bold('║') + chalk.gray('     by Alex Santos (alexlivre)                           ') + chalk.cyan.bold('║'));
+  console.log(chalk.cyan.bold('║') + chalk.gray('     github.com/alexlivre/cogit                          ') + chalk.cyan.bold('║'));
+  console.log(chalk.cyan.bold('╚══════════════════════════════════════════════════════════╝\n'));
 
   const action = await showMenu('What would you like to do?', [
     { name: '🚀 Quick Commit (auto)', value: 'auto' },

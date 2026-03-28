@@ -5,12 +5,20 @@
 
 export type ErrorCode = 
   | 'CONFIG_INVALID'
+  | 'CONFIG_NO_API_KEY'
   | 'GIT_NOT_REPO'
   | 'GIT_NO_CHANGES'
   | 'GIT_BRANCH_FAILED'
   | 'GIT_PUSH_FAILED'
   | 'GIT_COMMIT_FAILED'
+  | 'GIT_SUBMODULE_EMPTY'
+  | 'GIT_CONFLICT'
   | 'AI_GENERATION_FAILED'
+  | 'AI_NO_PROVIDER'
+  | 'AI_CONNECTION_FAILED'
+  | 'AI_ALL_FAILED'
+  | 'NETWORK_OFFLINE'
+  | 'NETWORK_GITHUB_UNREACHABLE'
   | 'SECURITY_BLOCKED'
   | 'STEALTH_FAILED'
   | 'INTERNAL_ERROR';
@@ -79,12 +87,73 @@ export class GitError extends CogitError {
       error ? [error] : undefined
     );
   }
+
+  static submoduleEmpty(directory?: string): GitError {
+    return new GitError(
+      `Submodule or nested repository without commits`,
+      'GIT_SUBMODULE_EMPTY',
+      directory ? [directory] : undefined
+    );
+  }
+
+  static conflict(file?: string): GitError {
+    return new GitError(
+      'Merge conflict detected',
+      'GIT_CONFLICT',
+      file ? [file] : undefined
+    );
+  }
 }
 
 export class AIError extends CogitError {
-  constructor(message: string, details?: string[]) {
-    super(message, 'AI_GENERATION_FAILED', 1, details);
+  constructor(message: string, code: ErrorCode = 'AI_GENERATION_FAILED', details?: string[]) {
+    super(message, code, 1, details);
     this.name = 'AIError';
+  }
+
+  static noProvider(): AIError {
+    return new AIError(
+      'No AI providers available',
+      'AI_NO_PROVIDER',
+      ['Check your API keys in .env']
+    );
+  }
+
+  static connectionFailed(provider?: string): AIError {
+    return new AIError(
+      `Failed to connect to AI provider${provider ? ` (${provider})` : ''}`,
+      'AI_CONNECTION_FAILED',
+      provider ? [provider] : undefined
+    );
+  }
+
+  static allFailed(): AIError {
+    return new AIError(
+      'All AI providers failed',
+      'AI_ALL_FAILED',
+      ['Check your internet connection and API keys']
+    );
+  }
+}
+
+export class NetworkError extends CogitError {
+  constructor(message: string, code: ErrorCode, details?: string[]) {
+    super(message, code, 1, details);
+    this.name = 'NetworkError';
+  }
+
+  static offline(): NetworkError {
+    return new NetworkError(
+      'No internet connection',
+      'NETWORK_OFFLINE'
+    );
+  }
+
+  static githubUnreachable(): NetworkError {
+    return new NetworkError(
+      'GitHub is unreachable',
+      'NETWORK_GITHUB_UNREACHABLE'
+    );
   }
 }
 
@@ -125,12 +194,24 @@ export function formatError(error: CogitError): string {
  * Should be called from entry point only
  */
 export function handleFatalError(error: unknown): never {
+  // Import dynamically to avoid circular dependency
+  const { classifyError, presentError } = require('./error-handler');
+  
   if (CogitError.isCogitError(error)) {
-    console.error(formatError(error));
+    // Use new error presenter for CogitErrors
+    const classified = classifyError(error.message);
+    presentError(classified);
     process.exit(error.exitCode);
   }
   
-  // Unknown error
+  if (error instanceof Error) {
+    // Use new error presenter for standard errors
+    const classified = classifyError(error);
+    presentError(classified);
+    process.exit(1);
+  }
+  
+  // Unknown error type
   console.error('Fatal error:', error);
   process.exit(1);
 }
