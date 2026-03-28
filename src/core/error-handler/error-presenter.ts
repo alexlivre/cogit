@@ -44,8 +44,16 @@ function wrapText(text: string, indent: number = 2): string[] {
  */
 function formatLine(text: string, indent: number = 2): string {
   const padding = ' '.repeat(indent);
-  const rightPadding = ' '.repeat(BOX_WIDTH - text.length - (indent * 2) - 2);
-  return `║${padding}${text}${rightPadding}║`;
+  const maxTextLength = BOX_WIDTH - (indent * 2) - 4;
+  
+  // Truncate text if too long
+  let formattedText = text;
+  if (text.length > maxTextLength) {
+    formattedText = text.substring(0, maxTextLength - 3) + '...';
+  }
+  
+  const rightPadding = ' '.repeat(Math.max(0, BOX_WIDTH - formattedText.length - (indent * 2) - 2));
+  return `║${padding}${formattedText}${rightPadding}║`;
 }
 
 /**

@@ -1,6 +1,6 @@
 # Cogit CLI
 
-![Status](https://img.shields.io/badge/Status-FASE_7_Complete-brightgreen) ![Version](https://img.shields.io/badge/Version-1.4.0-blue) ![Node](https://img.shields.io/badge/Node-18%2B-green) ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue) ![Tests](https://img.shields.io/badge/Tests-97%25_Passing-success) ![Refactoring](https://img.shields.io/badge/Refactoring-Clean_Architecture_Phase_3_Validated-brightgreen)
+![Status](https://img.shields.io/badge/Status-FASE_7_Complete-brightgreen) ![Version](https://img.shields.io/badge/Version-1.4.0-blue) ![Node](https://img.shields.io/badge/Node-18%2B-green) ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue) ![Tests](https://img.shields.io/badge/Tests-96.9%25_Passing-success) ![Refactoring](https://img.shields.io/badge/Refactoring-Clean_Architecture_Phase_3_Validated-brightgreen)
 
 > **Git automation CLI with AI-powered commit messages**
 

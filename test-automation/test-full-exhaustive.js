@@ -16,6 +16,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const { TestLifecycle } = require('./utils/test-lifecycle');
 
 // Configuration
 const CONFIG = {
@@ -101,6 +102,17 @@ class GitHelper {
 
   clean() {
     this.exec('git clean -fd', true);
+  }
+
+  resetIndex() {
+    this.exec('git reset HEAD', true);
+  }
+
+  ensureMainBranch() {
+    const current = this.getCurrentBranch();
+    if (current !== 'main' && current !== 'master') {
+      this.exec('git checkout main', true) || this.exec('git checkout master', true);
+    }
   }
 
   getLastCommit() {
@@ -229,6 +241,12 @@ class FullExhaustiveRunner {
     this.git = new GitHelper(CONFIG.testRepo);
     this.file = new FileHelper(CONFIG.testRepo);
     this.startTime = Date.now();
+    
+    // Lifecycle manager para limpeza automática
+    this.lifecycle = new TestLifecycle(this.git, this.file, {
+      noCleanup: options.noCleanup,
+      verbose: options.verbose
+    });
   }
 
   log(message, type = 'info') {
@@ -267,6 +285,10 @@ class FullExhaustiveRunner {
     }
     
     this.log(`${testId}: ${testName}`, 'test');
+    
+    // Lifecycle desabilitado entre testes individuais
+    // Os testes criam arquivos que precisam persistir durante a execução
+    // A limpeza acontece no final da suite (afterAll)
     
     try {
       await testFn();

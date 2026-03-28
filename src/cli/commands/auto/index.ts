@@ -103,8 +103,8 @@ async function scanRepositoryWithErrorHandling(repoPath: string) {
   }
 
   if (!scanResult.hasChanges) {
-    scanSpinner.fail(t('auto.no_changes'));
-    throw GitError.noChanges();
+    scanSpinner.info(t('auto.no_changes'));
+    process.exit(0);
   }
 
   scanSpinner.succeed(t('auto.processing'));

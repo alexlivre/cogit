@@ -15,6 +15,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const { TestLifecycle } = require('./utils/test-lifecycle');
 
 // ========================================
 // CONFIGURATION
@@ -117,6 +118,17 @@ class GitHelper {
 
   cleanFd() {
     this.exec('git clean -fd', true);
+  }
+
+  resetIndex() {
+    this.exec('git reset HEAD', true);
+  }
+
+  ensureMainBranch() {
+    const current = this.getCurrentBranch();
+    if (current !== 'main' && current !== 'master') {
+      this.exec('git checkout main', true) || this.exec('git checkout master', true);
+    }
   }
 
   getCurrentBranch() {
@@ -285,6 +297,10 @@ function logFaseHeader(faseNum, description) {
 // ========================================
 
 function runTest(id, description, testFn, faseKey) {
+  // Lifecycle desabilitado entre testes individuais
+  // Os testes criam arquivos que precisam persistir durante a execução
+  // A limpeza acontece no final da suite (afterAll)
+  
   try {
     const result = testFn();
     if (result.success) {
@@ -318,6 +334,12 @@ function runTest(id, description, testFn, faseKey) {
 const git = new GitHelper(CONFIG.testRepo);
 const file = new FileHelper(CONFIG.testRepo);
 const cogit = new CogitRunner(CONFIG.cogitBin, CONFIG.testRepo);
+
+// Lifecycle manager para limpeza automática
+const lifecycle = new TestLifecycle(git, file, {
+  noCleanup: options.noCleanup,
+  verbose: options.verbose
+});
 
 function prepareTestRepo() {
   log('\n🔧 Preparando repositório de teste...', 'yellow');
@@ -1526,6 +1548,9 @@ function main() {
     process.exit(1);
   }
   
+  // BEFORE ALL: Setup inicial usando lifecycle
+  lifecycle.beforeAll();
+  
   // Prepare test repo
   prepareTestRepo();
   
@@ -1560,13 +1585,8 @@ function main() {
     cleanupBetweenFases();
   }
   
-  // Final cleanup
-  if (!options.noCleanup) {
-    log('\n🧹 Limpando repositório de teste...', 'yellow');
-    git.resetHard();
-    git.cleanFd();
-    log('✓ Limpeza concluída', 'green');
-  }
+  // AFTER ALL: Cleanup final usando lifecycle
+  lifecycle.afterAll();
   
   // Print summary
   printSummary();

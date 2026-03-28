@@ -92,7 +92,7 @@ export async function autoCommand(options: AutoOptions): Promise<void> {
   }
   
   if (!scanResult.hasChanges) {
-    scanSpinner.fail(t('auto.no_changes'));
+    scanSpinner.info(t('auto.no_changes'));
     process.exit(0);
   }
   
