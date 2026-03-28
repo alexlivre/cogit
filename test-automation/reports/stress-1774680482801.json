@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-03-28T06:48:02.801Z",
+  "total": 5,
+  "passed": 5,
+  "failed": 0,
+  "results": [
+    {
+      "id": "ST-01",
+      "description": "500 arquivos modificados simultaneamente",
+      "status": "PASS",
+      "duration": 34059,
+      "details": "500 arquivos processados"
+    },
+    {
+      "id": "ST-02",
+      "description": "Diff de 1MB",
+      "status": "PASS",
+      "duration": 4724,
+      "details": "Diff 1MB processado"
+    },
+    {
+      "id": "ST-03",
+      "description": "50 commits em sequência",
+      "status": "PASS",
+      "duration": 196229,
+      "details": "50/50 commits processados com sucesso"
+    },
+    {
+      "id": "ST-04",
+      "description": "100 branches criadas/deletadas",
+      "status": "PASS",
+      "duration": 12464,
+      "details": "100 criadas, 100 deletadas"
+    },
+    {
+      "id": "ST-05",
+      "description": "Múltiplos providers AI em fallback",
+      "status": "PASS",
+      "duration": 18398,
+      "details": "2/3 execuções com provider funcionando"
+    }
+  ]
+}

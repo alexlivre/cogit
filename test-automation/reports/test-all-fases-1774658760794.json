@@ -1,0 +1,452 @@
+{
+  "timestamp": "2026-03-28T00:43:21.487Z",
+  "total": 66,
+  "passed": 56,
+  "failed": 10,
+  "fases": {
+    "fase1": {
+      "passed": 5,
+      "failed": 5,
+      "tests": [
+        {
+          "id": "F1-01",
+          "description": "Commit básico com IA",
+          "status": "FAIL",
+          "error": "Falha ao criar commit"
+        },
+        {
+          "id": "F1-02",
+          "description": "Flag --yes (sem prompts)",
+          "status": "FAIL",
+          "error": "Flag --yes não funcionou"
+        },
+        {
+          "id": "F1-03",
+          "description": "Flag --no-push",
+          "status": "FAIL",
+          "error": "Flag --no-push não funcionou"
+        },
+        {
+          "id": "F1-04",
+          "description": "Flag -m (hint)",
+          "status": "FAIL",
+          "error": "Flag -m não funcionou"
+        },
+        {
+          "id": "F1-05",
+          "description": "Security Blocklist",
+          "status": "PASS",
+          "details": "Segurança ativada"
+        },
+        {
+          "id": "F1-06",
+          "description": "No Changes",
+          "status": "FAIL",
+          "error": "Não detectou ausência de mudanças"
+        },
+        {
+          "id": "F1-07",
+          "description": "Scanner Detection (untracked)",
+          "status": "PASS",
+          "details": "Scanner detectou untracked"
+        },
+        {
+          "id": "F1-08",
+          "description": "Conventional Commits Format",
+          "status": "PASS",
+          "details": "Formato conventional detectado"
+        },
+        {
+          "id": "F1-09",
+          "description": "Internacionalização EN",
+          "status": "PASS",
+          "details": "Interface em inglês OK"
+        },
+        {
+          "id": "F1-10",
+          "description": "Dry Run Check",
+          "status": "PASS",
+          "details": "Dry run funcionou"
+        }
+      ]
+    },
+    "fase2": {
+      "passed": 7,
+      "failed": 1,
+      "tests": [
+        {
+          "id": "F2-01",
+          "description": "Menu Interativo (módulo)",
+          "status": "PASS",
+          "details": "Módulo menu existe"
+        },
+        {
+          "id": "F2-02",
+          "description": "Flag --dry-run",
+          "status": "PASS",
+          "details": "Dry run funcionou"
+        },
+        {
+          "id": "F2-03",
+          "description": "Flag --nobuild",
+          "status": "PASS",
+          "details": "Flag --nobuild processada"
+        },
+        {
+          "id": "F2-04",
+          "description": "Git Healer (módulo)",
+          "status": "PASS",
+          "details": "Módulo healer existe"
+        },
+        {
+          "id": "F2-05",
+          "description": "UI Renderer (módulo)",
+          "status": "PASS",
+          "details": "Módulo renderer existe"
+        },
+        {
+          "id": "F2-06",
+          "description": "UI Prompts (módulo)",
+          "status": "PASS",
+          "details": "Módulo prompts existe"
+        },
+        {
+          "id": "F2-07",
+          "description": "Scanner Untracked Files",
+          "status": "PASS",
+          "details": "Scanner processou untracked"
+        },
+        {
+          "id": "F2-08",
+          "description": "Auto Mode Complete",
+          "status": "FAIL",
+          "error": "Auto mode falhou"
+        }
+      ]
+    },
+    "fase3": {
+      "passed": 12,
+      "failed": 0,
+      "tests": [
+        {
+          "id": "F3-01",
+          "description": "Listar Branches",
+          "status": "PASS",
+          "details": "Branches listadas"
+        },
+        {
+          "id": "F3-02",
+          "description": "Criar Branch",
+          "status": "PASS",
+          "details": "Branch criada"
+        },
+        {
+          "id": "F3-03",
+          "description": "Trocar Branch",
+          "status": "PASS",
+          "details": "Branch trocada"
+        },
+        {
+          "id": "F3-04",
+          "description": "Deletar Branch",
+          "status": "PASS",
+          "details": "Branch deletada"
+        },
+        {
+          "id": "F3-05",
+          "description": "Flag --branch",
+          "status": "PASS",
+          "details": "Flag --branch funcionou"
+        },
+        {
+          "id": "F3-06",
+          "description": "Listar Tags",
+          "status": "PASS",
+          "details": "Tags listadas"
+        },
+        {
+          "id": "F3-07",
+          "description": "Criar Tag",
+          "status": "PASS",
+          "details": "Tag criada"
+        },
+        {
+          "id": "F3-08",
+          "description": "Deletar Tag",
+          "status": "PASS",
+          "details": "Tag deletada"
+        },
+        {
+          "id": "F3-09",
+          "description": "Confirmação 4 Chars (módulo)",
+          "status": "PASS",
+          "details": "Módulo de confirmação existe"
+        },
+        {
+          "id": "F3-10",
+          "description": "Branch Center Module",
+          "status": "PASS",
+          "details": "Módulo branch existe"
+        },
+        {
+          "id": "F3-11",
+          "description": "Tag Center Module",
+          "status": "PASS",
+          "details": "Módulo tag existe"
+        },
+        {
+          "id": "F3-12",
+          "description": "check-ai Command",
+          "status": "PASS",
+          "details": "check-ai funcionou"
+        }
+      ]
+    },
+    "fase4": {
+      "passed": 8,
+      "failed": 2,
+      "tests": [
+        {
+          "id": "F4-01",
+          "description": "VibeVault Module",
+          "status": "PASS",
+          "details": "Módulo vault existe"
+        },
+        {
+          "id": "F4-02",
+          "description": "VibeVault - Diff Pequeno",
+          "status": "FAIL",
+          "error": "Falha no diff pequeno"
+        },
+        {
+          "id": "F4-03",
+          "description": "VibeVault - Diff Grande (>100KB)",
+          "status": "PASS",
+          "details": "Diff grande processado"
+        },
+        {
+          "id": "F4-04",
+          "description": "Stealth Mode Module",
+          "status": "PASS",
+          "details": "Módulo stealth existe"
+        },
+        {
+          "id": "F4-05",
+          "description": "Stealth Mode - Config",
+          "status": "PASS",
+          "details": "Config stealth criada"
+        },
+        {
+          "id": "F4-06",
+          "description": "Stealth Mode - Integration",
+          "status": "PASS",
+          "details": "Stealth integrado"
+        },
+        {
+          "id": "F4-07",
+          "description": "Smart Ignore Module",
+          "status": "PASS",
+          "details": "Módulo ignore existe"
+        },
+        {
+          "id": "F4-08",
+          "description": "Smart Ignore - Config",
+          "status": "FAIL",
+          "error": "Config ignore não encontrada"
+        },
+        {
+          "id": "F4-09",
+          "description": "Smart Ignore - Integration",
+          "status": "PASS",
+          "details": "Smart ignore integrado"
+        },
+        {
+          "id": "F4-10",
+          "description": "Git Types Module",
+          "status": "PASS",
+          "details": "Módulo types existe"
+        }
+      ]
+    },
+    "fase5": {
+      "passed": 18,
+      "failed": 0,
+      "tests": [
+        {
+          "id": "F5-01",
+          "description": "Flag --debug enables logging",
+          "status": "PASS",
+          "details": "--debug flag encontrada"
+        },
+        {
+          "id": "F5-02",
+          "description": "Debug log file created",
+          "status": "PASS",
+          "details": "Debug log criado"
+        },
+        {
+          "id": "F5-03",
+          "description": "Health command works",
+          "status": "PASS",
+          "details": "Health command funcionou"
+        },
+        {
+          "id": "F5-04",
+          "description": "Health tests all providers",
+          "status": "PASS",
+          "details": "5/5 providers testados"
+        },
+        {
+          "id": "F5-05",
+          "description": "Resources command works",
+          "status": "PASS",
+          "details": "Resources command funcionou"
+        },
+        {
+          "id": "F5-06",
+          "description": "Resources lists files/dirs",
+          "status": "PASS",
+          "details": "Resources mostra dirs, files, total"
+        },
+        {
+          "id": "F5-07",
+          "description": "Provider factory module",
+          "status": "PASS",
+          "details": "Provider factory existe"
+        },
+        {
+          "id": "F5-08",
+          "description": "Fallback system implemented",
+          "status": "PASS",
+          "details": "Fallback implementado"
+        },
+        {
+          "id": "F5-09",
+          "description": "Provider Groq module",
+          "status": "PASS",
+          "details": "Provider Groq existe"
+        },
+        {
+          "id": "F5-10",
+          "description": "Provider OpenAI module",
+          "status": "PASS",
+          "details": "Provider OpenAI existe"
+        },
+        {
+          "id": "F5-11",
+          "description": "Provider Gemini module",
+          "status": "PASS",
+          "details": "Provider Gemini existe"
+        },
+        {
+          "id": "F5-12",
+          "description": "Provider Ollama module",
+          "status": "PASS",
+          "details": "Provider Ollama existe"
+        },
+        {
+          "id": "F5-13",
+          "description": "Brain integrated with fallback",
+          "status": "PASS",
+          "details": "Brain usa fallback"
+        },
+        {
+          "id": "F5-14",
+          "description": "Debug logger in brain",
+          "status": "PASS",
+          "details": "Debug logger integrado"
+        },
+        {
+          "id": "F5-15",
+          "description": "i18n debug keys",
+          "status": "PASS",
+          "details": "i18n debug existe"
+        },
+        {
+          "id": "F5-16",
+          "description": "i18n health keys",
+          "status": "PASS",
+          "details": "i18n health existe"
+        },
+        {
+          "id": "F5-17",
+          "description": "i18n resources keys",
+          "status": "PASS",
+          "details": "i18n resources existe"
+        },
+        {
+          "id": "F5-18",
+          "description": "i18n provider keys",
+          "status": "PASS",
+          "details": "i18n provider existe"
+        }
+      ]
+    },
+    "edge": {
+      "passed": 6,
+      "failed": 2,
+      "tests": [
+        {
+          "id": "E1",
+          "description": "Repositório Não-Git",
+          "status": "PASS",
+          "details": "Tratou não-git"
+        },
+        {
+          "id": "E2",
+          "description": "Arquivo Vazio",
+          "status": "PASS",
+          "details": "Arquivo vazio tratado"
+        },
+        {
+          "id": "E3",
+          "description": "Arquivo Binário",
+          "status": "FAIL",
+          "error": "Falha com arquivo binário"
+        },
+        {
+          "id": "E4",
+          "description": "Nome com Espaços",
+          "status": "PASS",
+          "details": "Nome com espaços tratado"
+        },
+        {
+          "id": "E5",
+          "description": "Caminho Longo",
+          "status": "PASS",
+          "details": "Caminho longo tratado"
+        },
+        {
+          "id": "E6",
+          "description": "Caracteres Especiais",
+          "status": "PASS",
+          "details": "Caracteres especiais tratados"
+        },
+        {
+          "id": "E7",
+          "description": "Múltiplos Arquivos (50+)",
+          "status": "PASS",
+          "details": "50+ arquivos tratados"
+        },
+        {
+          "id": "E8",
+          "description": "Commit Message Longa",
+          "status": "FAIL",
+          "error": "Falha com mensagem longa"
+        }
+      ]
+    }
+  },
+  "failedTests": [
+    "F1-01",
+    "F1-02",
+    "F1-03",
+    "F1-04",
+    "F1-06",
+    "F2-08",
+    "F4-02",
+    "F4-08",
+    "E3",
+    "E8"
+  ]
+}

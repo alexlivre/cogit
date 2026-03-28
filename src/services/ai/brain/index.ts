@@ -1,24 +1,27 @@
-import { OpenRouterProvider } from '../providers/openrouter';
 import { normalizeCommitMessage } from './normalizer';
 import { redactDiff } from '../../security/redactor';
 import { loadPromptTemplate } from '../../../config/i18n';
 import { smartUnpack, formatSize, DiffData } from '../../../core/vault';
+import { getAvailableProvider, tryWithFallback } from '../providers/index';
+import { debugLogger } from '../../../cli/ui/debug-logger';
 
 export interface BrainInput {
   diff: string;
   diffData?: DiffData;
   hint?: string;
   language: string;
+  debug?: boolean;
 }
 
 export interface BrainOutput {
   success: boolean;
   message?: string;
   error?: string;
+  provider?: string;
 }
 
 export async function generateCommitMessage(input: BrainInput): Promise<BrainOutput> {
-  const { diff, diffData, hint, language } = input;
+  const { diff, diffData, hint, language, debug } = input;
   
   // Use diffData if available (for large diffs)
   let actualDiff = diff;
@@ -48,19 +51,38 @@ export async function generateCommitMessage(input: BrainInput): Promise<BrainOut
   ];
   
   try {
-    const provider = new OpenRouterProvider({
-      apiKey: process.env.OPENROUTER_API_KEY || '',
-      model: process.env.OPENROUTER_MODEL || 'meta-llama/llama-4-scout',
+    // Use fallback system for provider selection
+    const { result: rawResponse, provider } = await tryWithFallback(async (p) => {
+      const startTime = Date.now();
+      
+      if (debug) {
+        debugLogger.logRequest(p.getName(), messages);
+      }
+      
+      const response = await p.generate(messages);
+      
+      if (debug) {
+        debugLogger.logResponse(p.getName(), response, Date.now() - startTime);
+      }
+      
+      return response;
     });
     
-    const rawResponse = await provider.generate(messages);
+    if (debug) {
+      debugLogger.logInfo('Provider used', { provider });
+    }
+    
     const normalizedMessage = normalizeCommitMessage(rawResponse, language);
     
     return {
       success: true,
       message: normalizedMessage,
+      provider,
     };
   } catch (error) {
+    if (debug) {
+      debugLogger.logError('brain', error);
+    }
     return {
       success: false,
       error: `AI generation failed: ${error}`,

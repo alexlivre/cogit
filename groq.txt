@@ -1,0 +1,56 @@
+npm install groq-sdk
+
+import Groq from "groq-sdk";
+const groq = new Groq();
+async function main() {
+  const completion = await groq.chat.completions.create({
+    model: "meta-llama/llama-4-scout-17b-16e-instruct",
+    messages: [
+      {
+        role: "user",
+        content: "Explain why fast inference is critical for reasoning models",
+      },
+    ],
+  });
+  console.log(completion.choices[0]?.message?.content);
+}
+main().catch(console.error);
+
+
+
+---
+
+curl https://api.groq.com/openai/v1/chat/completions \
+  -H "Authorization: Bearer $GROQ_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Explain why fast inference is critical for reasoning models"
+      }
+    ]
+  }'
+
+----
+import Groq from "groq-sdk";
+const groq = new Groq();
+async function main() {
+  const completion = await groq.chat.completions.create({
+    model: "openai/gpt-oss-20b",
+    messages: [
+      {
+        role: "user",
+        content: "Explain why fast inference is critical for reasoning models",
+      },
+    ],
+  });
+  console.log(completion.choices[0]?.message?.content);
+}
+main().catch(console.error);
+
+
+
+
+CRIE UM GUIA ENSINADO A USAR A API DO GROQ

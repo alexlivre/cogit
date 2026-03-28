@@ -12,6 +12,7 @@ import { renderCommitMessage, renderDryRun, renderWarning, renderSuccess, render
 import { reviewCommitMessage, editCommitMessage } from '../ui/prompts';
 import { stealthStash, stealthRestore, hasPrivateConfig } from '../../services/tools/stealth';
 import { suggestIgnore } from '../../services/tools/ignore';
+import { debugLogger } from '../ui/debug-logger';
 
 export interface AutoOptions {
   yes?: boolean;
@@ -21,10 +22,17 @@ export interface AutoOptions {
   path?: string;
   dryRun?: boolean;
   branch?: string;
+  debug?: boolean;
 }
 
 export async function autoCommand(options: AutoOptions): Promise<void> {
   const repoPath = options.path || process.cwd();
+  
+  // Debug Mode: Enable logging
+  if (options.debug) {
+    debugLogger.enable();
+    console.log(chalk.yellow('🔍 Debug mode enabled. Logging to .vibe-debug.log'));
+  }
   
   // Stealth Mode: Hide private files if configured
   let stealthResult: { hiddenFiles: string[]; tempPath: string; success: boolean; error?: string } = { hiddenFiles: [], tempPath: '', success: true };
@@ -97,11 +105,18 @@ export async function autoCommand(options: AutoOptions): Promise<void> {
   }
   
   const aiSpinner = ora(t('auto.generating')).start();
+  
+  const startTime = Date.now();
   const brainResult = await generateCommitMessage({
     diff: scanResult.diff,
     hint: options.message,
     language: commitLang,
+    debug: options.debug,
   });
+  
+  if (options.debug) {
+    debugLogger.logResponse('brain', brainResult.message || '', Date.now() - startTime);
+  }
   
   if (!brainResult.success) {
     aiSpinner.fail(brainResult.error || 'AI generation failed');

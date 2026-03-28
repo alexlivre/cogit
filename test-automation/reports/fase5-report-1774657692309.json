@@ -1,0 +1,114 @@
+{
+  "passed": 18,
+  "failed": 0,
+  "tests": [
+    {
+      "id": "F5-01",
+      "description": "Flag --debug enables logging",
+      "status": "PASS",
+      "details": "--debug flag found in auto help"
+    },
+    {
+      "id": "F5-02",
+      "description": "Debug log file created when --debug used",
+      "status": "PASS",
+      "details": "Debug log created and contains data"
+    },
+    {
+      "id": "F5-03",
+      "description": "Health command works",
+      "status": "PASS",
+      "details": "Health command executed successfully"
+    },
+    {
+      "id": "F5-04",
+      "description": "Health tests all providers",
+      "status": "PASS",
+      "details": "Found 5/5 providers: OpenRouter, Groq, OpenAI, Gemini, Ollama"
+    },
+    {
+      "id": "F5-05",
+      "description": "Resources command works",
+      "status": "PASS",
+      "details": "Resources command executed successfully"
+    },
+    {
+      "id": "F5-06",
+      "description": "Resources lists files and directories",
+      "status": "PASS",
+      "details": "Resources shows dirs, files, and total"
+    },
+    {
+      "id": "F5-07",
+      "description": "Provider factory module exists",
+      "status": "PASS",
+      "details": "Provider factory module exists"
+    },
+    {
+      "id": "F5-08",
+      "description": "Fallback system implemented",
+      "status": "PASS",
+      "details": "Fallback system implemented in factory"
+    },
+    {
+      "id": "F5-09",
+      "description": "Provider Groq module exists",
+      "status": "PASS",
+      "details": "Groq provider module exists"
+    },
+    {
+      "id": "F5-10",
+      "description": "Provider OpenAI module exists",
+      "status": "PASS",
+      "details": "OpenAI provider module exists"
+    },
+    {
+      "id": "F5-11",
+      "description": "Provider Gemini module exists",
+      "status": "PASS",
+      "details": "Gemini provider module exists"
+    },
+    {
+      "id": "F5-12",
+      "description": "Provider Ollama module exists",
+      "status": "PASS",
+      "details": "Ollama provider module exists"
+    },
+    {
+      "id": "F5-13",
+      "description": "Brain integrated with fallback",
+      "status": "PASS",
+      "details": "Brain uses fallback system"
+    },
+    {
+      "id": "F5-14",
+      "description": "Debug logger integrated in brain",
+      "status": "PASS",
+      "details": "Debug logger integrated in brain"
+    },
+    {
+      "id": "F5-15",
+      "description": "i18n keys for debug exist",
+      "status": "PASS",
+      "details": "Debug i18n keys exist in both languages"
+    },
+    {
+      "id": "F5-16",
+      "description": "i18n keys for health exist",
+      "status": "PASS",
+      "details": "Health i18n keys exist in both languages"
+    },
+    {
+      "id": "F5-17",
+      "description": "i18n keys for resources exist",
+      "status": "PASS",
+      "details": "Resources i18n keys exist in both languages"
+    },
+    {
+      "id": "F5-18",
+      "description": "i18n keys for provider fallback exist",
+      "status": "PASS",
+      "details": "Provider i18n keys exist in both languages"
+    }
+  ]
+}

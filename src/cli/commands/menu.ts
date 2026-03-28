@@ -1,6 +1,6 @@
 import inquirer from 'inquirer';
 import chalk from 'chalk';
-import { autoCommand } from './auto';
+import { autoCommand } from './auto/index';
 import { scanRepository } from '../../services/git/scanner';
 import { CONFIG } from '../../config/env';
 import { t } from '../../config/i18n';

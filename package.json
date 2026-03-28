@@ -17,7 +17,8 @@
     "ora": "^8.0.0",
     "inquirer": "^9.2.0",
     "dotenv": "^16.4.0",
-    "openai": "^4.0.0"
+    "openai": "^4.0.0",
+    "@google/generative-ai": "^0.21.0"
   },
   "devDependencies": {
     "typescript": "^5.4.0",

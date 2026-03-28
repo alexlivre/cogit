@@ -1,5 +1,5 @@
 export interface AIProviderConfig {
-  apiKey: string;
+  apiKey?: string;
   model: string;
   baseURL?: string;
 }
