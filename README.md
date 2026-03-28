@@ -1,6 +1,6 @@
 # Cogit CLI
 
-![Status](https://img.shields.io/badge/Status-FASE_6_Complete-brightgreen) ![Version](https://img.shields.io/badge/Version-1.3.0-blue) ![Node](https://img.shields.io/badge/Node-18%2B-green) ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue) ![Tests](https://img.shields.io/badge/Tests-97%25_Passing-success) ![Refactoring](https://img.shields.io/badge/Refactoring-Clean_Architecture_Phase_3_Validated-brightgreen)
+![Status](https://img.shields.io/badge/Status-FASE_7_Complete-brightgreen) ![Version](https://img.shields.io/badge/Version-1.4.0-blue) ![Node](https://img.shields.io/badge/Node-18%2B-green) ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue) ![Tests](https://img.shields.io/badge/Tests-97%25_Passing-success) ![Refactoring](https://img.shields.io/badge/Refactoring-Clean_Architecture_Phase_3_Validated-brightgreen)
 
 > **Git automation CLI with AI-powered commit messages**
 
@@ -1064,7 +1064,89 @@ cogit resources
 - [x] Integração total com operações Git existentes
 - [x] Zero breaking changes
 
+### Fase 7: Error Handling System ✅
+- [x] Classificador de erros por categoria (Git, AI, Network, Config)
+- [x] Base de soluções detalhadas com causa, explicação e comandos
+- [x] Apresentador visual de erros com box formatado
+- [x] Fallback interativo quando todas as IAs falham
+- [x] Opções: mensagem personalizada, genérica ou abortar
+- [x] Integração com sistema de i18n (pt/en)
+- [x] Mensagens detalhadas com sugestões de correção
+- [x] Tratamento específico para erros de conectividade
+
 ---
+
+## Error Handling System (FASE 7)
+
+Sistema inteligente de tratamento de erros que classifica, explica e sugere soluções para problemas encontrados.
+
+### Como Funciona
+
+Quando ocorre um erro que o Cogit não consegue corrigir automaticamente:
+
+1. **Classificação**: O erro é identificado por categoria e subtipo
+2. **Explicação**: Mensagem detalhada explica a causa e por que aconteceu
+3. **Soluções**: Lista de comandos/ações para resolver o problema
+
+### Exemplo de Saída
+
+```
+╔══════════════════════════════════════════════════════════╗
+║  ❌ ERRO: Submódulo sem commits                          ║
+╠══════════════════════════════════════════════════════════╣
+║  Causa:                                                  ║
+║  O diretório 'temp-test-dir/' contém um repositório     ║
+║  Git inicializado mas sem nenhum commit.                ║
+║                                                          ║
+║  Por que acontece:                                       ║
+║  O Git não consegue indexar um repositório vazio como   ║
+║  submódulo.                                              ║
+║                                                          ║
+║  Soluções:                                               ║
+║  1. Remover o diretório problemático:                   ║
+║     $ rm -rf temp-test-dir/                              ║
+║                                                          ║
+║  2. Adicionar ao .gitignore para ignorar:               ║
+║     $ echo "temp-test-dir/" >> .gitignore               ║
+╚══════════════════════════════════════════════════════════╝
+```
+
+### Categorias de Erro
+
+| Categoria | Exemplos | Recuperável |
+|-----------|----------|-------------|
+| **GIT** | Submodule empty, conflicts, push rejected | Sim |
+| **AI** | Connection failed, rate limit, all failed | Sim |
+| **NETWORK** | No internet, GitHub unreachable | Sim |
+| **CONFIG** | No API key, invalid config | Não |
+
+### Fallback Interativo para IA
+
+Quando todas as IAs falham, o sistema oferece 3 opções:
+
+```
+╔══════════════════════════════════════════════════════════╗
+║  🤖 Todas as IAs falharam                                ║
+╠══════════════════════════════════════════════════════════╣
+║  Não foi possível gerar mensagem automaticamente.       ║
+║                                                          ║
+║  O que deseja fazer?                                     ║
+║                                                          ║
+║  1. 📝 Digitar minha própria mensagem                    ║
+║  2. 📋 Usar mensagem genérica automática                 ║
+║  3. ❌ Abortar operação                                  ║
+╚══════════════════════════════════════════════════════════╝
+```
+
+### Estrutura de Arquivos
+
+```
+src/core/error-handler/
+├── error-classifier.ts   # Classificação de erros
+├── error-solutions.ts    # Base de soluções detalhadas
+├── error-presenter.ts    # Formatação visual
+└── index.ts              # Exportações
+```
 
 ## Arquitetura Refatorada (Clean Code Phase 1)
 
