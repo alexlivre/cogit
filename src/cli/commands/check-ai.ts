@@ -1,9 +1,11 @@
 import chalk from 'chalk';
 import ora from 'ora';
+import { separatorLine } from '../ui/separator';
 import { OpenRouterProvider } from '../../services/ai/providers/openrouter';
 import { GroqProvider } from '../../services/ai/providers/groq';
 import { OpenAIProvider } from '../../services/ai/providers/openai';
 import { GeminiProvider } from '../../services/ai/providers/gemini';
+import { OllamaProvider } from '../../services/ai/providers/ollama';
 import { AIProvider } from '../../services/ai/providers/base';
 import { CONFIG } from '../../config/env';
 
@@ -26,7 +28,7 @@ interface ProviderConfig {
  */
 export async function checkAICommand(): Promise<void> {
   console.log(chalk.cyan.bold('\n🔍 AI HEALTH CHECK'));
-  console.log(chalk.gray('─'.repeat(40)));
+  console.log(chalk.gray(separatorLine(40)));
 
   const providers: ProviderStatus[] = [];
 
@@ -55,6 +57,12 @@ export async function checkAICommand(): Promise<void> {
       apiKey: CONFIG.GEMINI_API_KEY,
       model: CONFIG.GEMINI_MODEL,
       create: (apiKey, model) => new GeminiProvider({ apiKey, model }),
+    },
+    {
+      name: 'Ollama',
+      apiKey: '', // Local, no API key needed
+      model: CONFIG.OLLAMA_MODEL,
+      create: (_apiKey, model) => new OllamaProvider({ model }),
     },
   ];
 
@@ -86,7 +94,7 @@ export async function checkAICommand(): Promise<void> {
 
   // Summary
   console.log(chalk.cyan('\n📊 Summary:'));
-  console.log(chalk.gray('─'.repeat(40)));
+  console.log(chalk.gray(separatorLine(40)));
 
   providers.forEach(p => {
     const status = p.available
@@ -99,7 +107,7 @@ export async function checkAICommand(): Promise<void> {
   });
 
   const availableCount = providers.filter(p => p.available).length;
-  console.log(chalk.gray('\n─'.repeat(40)));
+  console.log(chalk.gray('\n' + separatorLine(40)));
   console.log(`Total: ${availableCount}/${providers.length} providers available`);
 
   if (availableCount === 0) {

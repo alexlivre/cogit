@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import chalk from 'chalk';
+import { separatorLine } from '../../cli/ui/separator';
 
 export interface ResourceInfo {
   type: 'file' | 'directory';
@@ -88,7 +89,7 @@ export function scanResources(repoPath: string): ResourceReport {
 
 export function displayResourceMap(report: ResourceReport): void {
   console.log(chalk.cyan.bold('\n🗺️  RESOURCE MAP'));
-  console.log(chalk.gray('─'.repeat(50)));
+  console.log(chalk.gray(separatorLine(50)));
 
   const dirs = report.resources.filter(r => r.type === 'directory');
   const files = report.resources.filter(r => r.type === 'file');
@@ -133,7 +134,7 @@ export function displayResourceMap(report: ResourceReport): void {
   }
 
   // Total
-  console.log(chalk.gray('\n─'.repeat(50)));
+  console.log(chalk.gray('\n' + separatorLine(50)));
   console.log(`Total: ${report.totalDirs} dirs, ${report.totalFiles} files, ${formatSize(report.totalSize)}`);
 }
 

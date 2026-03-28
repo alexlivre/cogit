@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+import { separatorLine } from './separator';
 
 export function renderHeader(title: string): void {
   const line = '═'.repeat(50);
@@ -51,7 +52,7 @@ export function renderDiffPreview(diff: string, maxLines: number = 20): void {
   const lines = diff.split('\n').slice(0, maxLines);
   
   console.log(chalk.cyan('\n📝 Diff Preview:'));
-  console.log(chalk.gray('─'.repeat(40)));
+  console.log(chalk.gray(separatorLine(40)));
   
   lines.forEach(line => {
     if (line.startsWith('+')) {
@@ -72,7 +73,7 @@ export function renderDiffPreview(diff: string, maxLines: number = 20): void {
 
 export function renderDryRun(commands: string[]): void {
   console.log(chalk.cyan('\n🔍 DRY RUN MODE - No changes will be made'));
-  console.log(chalk.gray('─'.repeat(40)));
+  console.log(chalk.gray(separatorLine(40)));
   console.log(chalk.yellow('Would execute:'));
   commands.forEach(cmd => {
     console.log(chalk.gray(`  ${cmd}`));
@@ -88,4 +89,13 @@ export function renderHealerAttempt(attempt: number, commands: string[], success
       console.log(chalk.gray(`    Error: ${error}`));
     }
   }
+}
+
+export function renderThinking(thinking: string): void {
+  console.log(chalk.dim('═'.repeat(50)));
+  console.log(chalk.dim.bold('💭 Thinking:'));
+  console.log(chalk.dim('═'.repeat(50)));
+  console.log(chalk.dim.gray(thinking));
+  console.log(chalk.dim('═'.repeat(50)));
+  console.log();
 }

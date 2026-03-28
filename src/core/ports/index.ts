@@ -48,6 +48,7 @@ export interface BrainOutput {
   message?: string;
   error?: string;
   provider?: string;
+  thinking?: string;
 }
 
 export interface AIProviderPort {

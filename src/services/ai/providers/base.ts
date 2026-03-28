@@ -9,8 +9,17 @@ export interface ChatMessage {
   content: string;
 }
 
+export interface GenerateOptions {
+  think?: boolean;
+}
+
+export interface GenerateResult {
+  content: string;
+  thinking?: string;
+}
+
 export interface AIProvider {
-  generate(messages: ChatMessage[]): Promise<string>;
+  generate(messages: ChatMessage[], options?: GenerateOptions): Promise<string | GenerateResult>;
   getName(): string;
   isAvailable(): boolean;
 }

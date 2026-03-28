@@ -14,7 +14,25 @@ export const CONFIG = {
   GROQ_MODEL: process.env.GROQ_MODEL || 'llama-4-scout-17b-16e-instruct',
   OPENAI_MODEL: process.env.OPENAI_MODEL || 'gpt-4o-mini',
   GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-pro',
-  OLLAMA_MODEL: process.env.OLLAMA_MODEL || 'llama3',
+  OLLAMA_MODEL: process.env.OLLAMA_MODEL || 'qwen3.5:4b',
+  
+  // Ollama Thinking Mode
+  OLLAMA_THINK: process.env.OLLAMA_THINK === 'true',
+  
+  // Auto Push Settings
+  AUTO_PUSH_ENABLED: process.env.AUTO_PUSH_ENABLED !== 'false', // default true
+  AUTO_PUSH_BRANCHES: process.env.AUTO_PUSH_BRANCHES !== 'false', // default true
+  AUTO_PUSH_TAGS: process.env.AUTO_PUSH_TAGS !== 'false', // default true
+  AUTO_PUSH_INTERNET_CHECK: process.env.AUTO_PUSH_INTERNET_CHECK !== 'false', // default true
+  AUTO_PUSH_GITHUB_ONLY: process.env.AUTO_PUSH_GITHUB_ONLY !== 'false', // default true
+  AUTO_PUSH_DELAY: parseInt(process.env.AUTO_PUSH_DELAY || '5', 10) * 1000, // convert to ms
+  AUTO_PUSH_RETRY_COUNT: parseInt(process.env.AUTO_PUSH_RETRY_COUNT || '3', 10),
+  AUTO_PUSH_SILENT: process.env.AUTO_PUSH_SILENT === 'true',
+  
+  // Auto Push Fallback Settings
+  AUTO_PUSH_FALLBACK_ENABLED: process.env.AUTO_PUSH_FALLBACK_ENABLED !== 'false', // default true
+  AUTO_PUSH_STRICT_CHECK: process.env.AUTO_PUSH_STRICT_CHECK === 'true', // default false
+  AUTO_PUSH_FALLBACK_TIMEOUT: parseInt(process.env.AUTO_PUSH_FALLBACK_TIMEOUT || '15', 10) * 1000,
   
   VALID_LANGUAGES: ['en', 'pt'],
 };
@@ -32,7 +50,7 @@ export const MODELS: Record<string, string> = {
   groq: process.env.GROQ_MODEL || 'llama-4-scout-17b-16e-instruct',
   openai: process.env.OPENAI_MODEL || 'gpt-4o-mini',
   gemini: process.env.GEMINI_MODEL || 'gemini-pro',
-  ollama: process.env.OLLAMA_MODEL || 'llama3',
+  ollama: process.env.OLLAMA_MODEL || 'qwen3.5:4b',
 };
 
 export function validateConfig(): { valid: boolean; errors: string[] } {

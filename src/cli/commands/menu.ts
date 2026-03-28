@@ -1,5 +1,6 @@
 import inquirer from 'inquirer';
 import chalk from 'chalk';
+import { separatorLine } from '../ui/separator';
 import { autoCommand } from './auto/index';
 import { scanRepository } from '../../services/git/scanner';
 import { CONFIG } from '../../config/env';
@@ -9,9 +10,14 @@ import { suggestIgnore, addWhitelistEntry } from '../../services/tools/ignore';
 import { createPrivateConfig, hasPrivateConfig } from '../../services/tools/stealth';
 
 export async function menuCommand(): Promise<void> {
-  console.log(chalk.cyan.bold('\n╔══════════════════════════════════════╗'));
-  console.log(chalk.cyan.bold('║         COGIT CLI - MENU             ║'));
-  console.log(chalk.cyan.bold('╚══════════════════════════════════════╝\n'));
+  console.log(chalk.cyan.bold('╔══════════════════════════════════════════════════════════╗'));
+  console.log(chalk.cyan.bold('║') + chalk.white.bold('              Open Source Project                         ') + chalk.cyan.bold('║'));
+  console.log(chalk.cyan.bold('║') + '                                                          ' + chalk.cyan.bold('║'));
+  console.log(chalk.cyan.bold('║') + chalk.white.bold('     COGIT - Your AI-Powered Git Automation CLI           ') + chalk.cyan.bold('║'));
+  console.log(chalk.cyan.bold('║') + '                                                          ' + chalk.cyan.bold('║'));
+  console.log(chalk.cyan.bold('║') + chalk.gray('     by Alex Santos (alexlivre)                           ') + chalk.cyan.bold('║'));
+  console.log(chalk.cyan.bold('║') + chalk.gray('     github.com/alexlivre/cogit                          ') + chalk.cyan.bold('║'));
+  console.log(chalk.cyan.bold('╚══════════════════════════════════════════════════════════╝\n'));
 
   const action = await showMenu('What would you like to do?', [
     { name: '🚀 Quick Commit (auto)', value: 'auto' },
@@ -98,7 +104,7 @@ async function showStatus(): Promise<void> {
   const scan = await scanRepository(process.cwd());
   
   console.log(chalk.cyan('\n📊 Repository Status:'));
-  console.log(chalk.gray('─'.repeat(40)));
+  console.log(chalk.gray(separatorLine(40)));
   console.log(`Staged files: ${chalk.green(scan.stagedFiles.length.toString())}`);
   console.log(`Unstaged files: ${chalk.yellow(scan.unstagedFiles.length.toString())}`);
   
@@ -115,7 +121,7 @@ async function showStatus(): Promise<void> {
 
 async function showSettings(): Promise<void> {
   console.log(chalk.cyan('\n⚙️  Current Settings:'));
-  console.log(chalk.gray('─'.repeat(40)));
+  console.log(chalk.gray(separatorLine(40)));
   console.log(`Language: ${CONFIG.LANGUAGE}`);
   console.log(`Commit Language: ${CONFIG.COMMIT_LANGUAGE}`);
   console.log(`AI Provider: ${CONFIG.AI_PROVIDER}`);
@@ -124,7 +130,7 @@ async function showSettings(): Promise<void> {
 
 async function configureStealth(): Promise<void> {
   console.log(chalk.cyan('\n🔒 Stealth Mode Configuration:'));
-  console.log(chalk.gray('─'.repeat(40)));
+  console.log(chalk.gray(separatorLine(40)));
   
   if (hasPrivateConfig(process.cwd())) {
     console.log(chalk.green('✓ .gitpy-private file exists'));

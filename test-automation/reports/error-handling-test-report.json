@@ -1,0 +1,36 @@
+{
+  "timestamp": "2026-03-28T12:39:52.982Z",
+  "total": 7,
+  "passed": 4,
+  "failed": 3,
+  "results": [
+    {
+      "name": "Git Submodule Empty Error",
+      "status": "FAIL"
+    },
+    {
+      "name": "AI Fallback - Generic Message",
+      "status": "PASS"
+    },
+    {
+      "name": "No Git Repository Error",
+      "status": "FAIL"
+    },
+    {
+      "name": "No Changes Error",
+      "status": "FAIL"
+    },
+    {
+      "name": "Error Classifier Module",
+      "status": "PASS"
+    },
+    {
+      "name": "Error Solutions Module",
+      "status": "PASS"
+    },
+    {
+      "name": "Error Presenter Module",
+      "status": "PASS"
+    }
+  ]
+}

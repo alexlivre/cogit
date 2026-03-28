@@ -4,6 +4,8 @@ import { loadPromptTemplate } from '../../../config/i18n';
 import { smartUnpack, formatSize, DiffData } from '../../../core/vault';
 import { getAvailableProvider, tryWithFallback } from '../providers/index';
 import { debugLogger } from '../../../cli/ui/debug-logger';
+import { GenerateResult } from '../providers/base';
+import { CONFIG } from '../../../config/env';
 
 export interface BrainInput {
   diff: string;
@@ -11,6 +13,7 @@ export interface BrainInput {
   hint?: string;
   language: string;
   debug?: boolean;
+  think?: boolean;
 }
 
 export interface BrainOutput {
@@ -18,10 +21,11 @@ export interface BrainOutput {
   message?: string;
   error?: string;
   provider?: string;
+  thinking?: string;
 }
 
 export async function generateCommitMessage(input: BrainInput): Promise<BrainOutput> {
-  const { diff, diffData, hint, language, debug } = input;
+  const { diff, diffData, hint, language, debug, think: thinkFlag } = input;
   
   // Use diffData if available (for large diffs)
   let actualDiff = diff;
@@ -50,6 +54,11 @@ export async function generateCommitMessage(input: BrainInput): Promise<BrainOut
     { role: 'user' as const, content: buildUserPrompt(safeDiff, hint, template) },
   ];
   
+  // Determine if thinking should be used
+  // Priority: flag > env config
+  // Only Ollama supports thinking, but we pass it to all providers (they ignore it)
+  const shouldThink = thinkFlag !== undefined ? thinkFlag : CONFIG.OLLAMA_THINK;
+  
   try {
     // Use fallback system for provider selection
     const { result: rawResponse, provider } = await tryWithFallback(async (p) => {
@@ -59,26 +68,48 @@ export async function generateCommitMessage(input: BrainInput): Promise<BrainOut
         debugLogger.logRequest(p.getName(), messages);
       }
       
-      const response = await p.generate(messages);
+      const response = await p.generate(messages, { think: shouldThink });
       
       if (debug) {
-        debugLogger.logResponse(p.getName(), response, Date.now() - startTime);
+        debugLogger.logResponse(p.getName(), typeof response === 'string' ? response : response.content, Date.now() - startTime);
       }
       
       return response;
     });
     
     if (debug) {
-      debugLogger.logInfo('Provider used', { provider });
+      debugLogger.logInfo('Provider used', { provider, think: shouldThink });
     }
     
-    const normalizedMessage = normalizeCommitMessage(rawResponse, language);
+    // Extract content and thinking from response
+    let content: string;
+    let thinking: string | undefined;
     
-    return {
+    if (typeof rawResponse === 'string') {
+      content = rawResponse;
+    } else {
+      content = rawResponse.content;
+      thinking = rawResponse.thinking;
+    }
+    
+    const normalizedMessage = normalizeCommitMessage(content, language);
+    
+    const result: BrainOutput = {
       success: true,
       message: normalizedMessage,
       provider,
     };
+    
+    // Include thinking in output if available
+    if (thinking) {
+      result.thinking = thinking;
+      
+      if (debug) {
+        debugLogger.logInfo('Thinking output', { thinking: thinking.substring(0, 200) + '...' });
+      }
+    }
+    
+    return result;
   } catch (error) {
     if (debug) {
       debugLogger.logError('brain', error);

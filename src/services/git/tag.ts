@@ -1,7 +1,9 @@
 import { execGit } from '../../utils/executor';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
+import { separatorLine } from '../../cli/ui/separator';
 import { confirmDestructiveOperation } from '../../utils/confirmation';
+import { autoPushTag } from '../network/auto-push';
 
 export interface TagInfo {
   name: string;
@@ -60,8 +62,9 @@ export async function createTag(
   repoPath: string, 
   tagName: string, 
   message?: string,
-  annotated: boolean = true
-): Promise<{ success: boolean; error?: string }> {
+  annotated: boolean = true,
+  autoPush: boolean = true
+): Promise<{ success: boolean; error?: string; autoPushResult?: any }> {
   try {
     if (!isValidTagName(tagName)) {
       return { success: false, error: `Invalid tag name: ${tagName}` };
@@ -74,7 +77,19 @@ export async function createTag(
       await execGit(`tag ${tagName}`, { cwd: repoPath });
     }
     
-    return { success: true };
+    // Attempt auto push if enabled
+    let autoPushResult = undefined;
+    if (autoPush) {
+      try {
+        autoPushResult = await autoPushTag(tagName, { repoPath, silent: false });
+      } catch (error) {
+        // Don't fail the tag creation if auto push fails
+        console.log(chalk.yellow(`⚠️  Auto push failed: ${error}`));
+        autoPushResult = { success: false, error: String(error) };
+      }
+    }
+    
+    return { success: true, autoPushResult };
   } catch (error) {
     return { success: false, error: String(error) };
   }
@@ -147,7 +162,7 @@ export async function tagCenter(repoPath: string): Promise<void> {
   const tags = await listTags(repoPath);
   
   console.log(chalk.cyan.bold('\n🏷️  TAG CENTER'));
-  console.log(chalk.gray('─'.repeat(40)));
+  console.log(chalk.gray(separatorLine(40)));
   console.log(chalk.green(`Total tags: ${tags.length}\n`));
   
   const { action } = await inquirer.prompt([
@@ -199,9 +214,20 @@ export async function tagCenter(repoPath: string): Promise<void> {
           when: (answers: any) => answers.newTagAnnotated,
         },
       ]);
-      const createResult = await createTag(repoPath, newTagName, newTagMessage, newTagAnnotated);
+      const createResult = await createTag(repoPath, newTagName, newTagMessage, newTagAnnotated, true); // Enable auto push
       if (createResult.success) {
         console.log(chalk.green(`✓ Tag '${newTagName}' created`));
+        
+        // Auto push feedback
+        if (createResult.autoPushResult) {
+          if (createResult.autoPushResult.success) {
+            console.log(chalk.green(`✓ Tag automatically pushed to remote`));
+          } else if (createResult.autoPushResult.skipped) {
+            console.log(chalk.yellow(`⚠️ Auto push skipped: ${createResult.autoPushResult.reason}`));
+          } else {
+            console.log(chalk.yellow(`⚠️ Auto push failed: ${createResult.autoPushResult.error}`));
+          }
+        }
       } else {
         console.log(chalk.red(`✗ ${createResult.error}`));
       }

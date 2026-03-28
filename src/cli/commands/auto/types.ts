@@ -11,6 +11,8 @@ export interface AutoOptions {
   dryRun?: boolean;
   branch?: string;
   debug?: boolean;
+  think?: boolean;
+  noThink?: boolean;
 }
 
 export interface CommandContext {
