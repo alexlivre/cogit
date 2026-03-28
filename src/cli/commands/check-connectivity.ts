@@ -5,6 +5,7 @@
 
 import { Command } from 'commander';
 import chalk from 'chalk';
+import { separatorLine } from '../ui/separator';
 import { checkConnectivity, getCachedConnectivity, getConnectivityMessage } from '../../services/network/connectivity';
 import { getAutoPushStatus } from '../../services/network/auto-push';
 import { CONFIG } from '../../config/env';
@@ -18,7 +19,7 @@ export const checkConnectivityCommand = new Command('check-connectivity')
       const repoPath = options.repo || process.cwd();
       
       console.log(chalk.cyan.bold('\n🌐 CONNECTIVITY CHECK'));
-      console.log(chalk.gray('─'.repeat(50)));
+      console.log(chalk.gray(separatorLine(50)));
       
       // Check connectivity
       const connectivity = await checkConnectivity(repoPath, { 

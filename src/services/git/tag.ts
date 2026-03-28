@@ -1,6 +1,7 @@
 import { execGit } from '../../utils/executor';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
+import { separatorLine } from '../../cli/ui/separator';
 import { confirmDestructiveOperation } from '../../utils/confirmation';
 import { autoPushTag } from '../network/auto-push';
 
@@ -161,7 +162,7 @@ export async function tagCenter(repoPath: string): Promise<void> {
   const tags = await listTags(repoPath);
   
   console.log(chalk.cyan.bold('\n🏷️  TAG CENTER'));
-  console.log(chalk.gray('─'.repeat(40)));
+  console.log(chalk.gray(separatorLine(40)));
   console.log(chalk.green(`Total tags: ${tags.length}\n`));
   
   const { action } = await inquirer.prompt([

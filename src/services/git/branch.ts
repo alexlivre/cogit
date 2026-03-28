@@ -1,6 +1,7 @@
 import { execGit } from '../../utils/executor';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
+import { separatorLine } from '../../cli/ui/separator';
 import { confirmDestructiveOperation } from '../../utils/confirmation';
 import { autoPushBranch } from '../network/auto-push';
 
@@ -156,7 +157,7 @@ export async function branchCenter(repoPath: string): Promise<void> {
   const currentBranch = await getCurrentBranch(repoPath);
   
   console.log(chalk.cyan.bold('\n🌿 BRANCH CENTER'));
-  console.log(chalk.gray('─'.repeat(40)));
+  console.log(chalk.gray(separatorLine(40)));
   console.log(chalk.green(`Current: ${currentBranch}\n`));
   
   const { action } = await inquirer.prompt([

@@ -1,5 +1,6 @@
 import inquirer from 'inquirer';
 import chalk from 'chalk';
+import { separatorLine } from '../ui/separator';
 import { autoCommand } from './auto/index';
 import { scanRepository } from '../../services/git/scanner';
 import { CONFIG } from '../../config/env';
@@ -103,7 +104,7 @@ async function showStatus(): Promise<void> {
   const scan = await scanRepository(process.cwd());
   
   console.log(chalk.cyan('\n📊 Repository Status:'));
-  console.log(chalk.gray('─'.repeat(40)));
+  console.log(chalk.gray(separatorLine(40)));
   console.log(`Staged files: ${chalk.green(scan.stagedFiles.length.toString())}`);
   console.log(`Unstaged files: ${chalk.yellow(scan.unstagedFiles.length.toString())}`);
   
@@ -120,7 +121,7 @@ async function showStatus(): Promise<void> {
 
 async function showSettings(): Promise<void> {
   console.log(chalk.cyan('\n⚙️  Current Settings:'));
-  console.log(chalk.gray('─'.repeat(40)));
+  console.log(chalk.gray(separatorLine(40)));
   console.log(`Language: ${CONFIG.LANGUAGE}`);
   console.log(`Commit Language: ${CONFIG.COMMIT_LANGUAGE}`);
   console.log(`AI Provider: ${CONFIG.AI_PROVIDER}`);
@@ -129,7 +130,7 @@ async function showSettings(): Promise<void> {
 
 async function configureStealth(): Promise<void> {
   console.log(chalk.cyan('\n🔒 Stealth Mode Configuration:'));
-  console.log(chalk.gray('─'.repeat(40)));
+  console.log(chalk.gray(separatorLine(40)));
   
   if (hasPrivateConfig(process.cwd())) {
     console.log(chalk.green('✓ .gitpy-private file exists'));

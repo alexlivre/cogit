@@ -7,6 +7,7 @@ import chalk from 'chalk';
 import { ClassifiedError, ErrorCategory } from './error-classifier';
 import { getSolution, formatSolution, ErrorSolution } from './error-solutions';
 import { t } from '../../config/i18n';
+import { separatorLine } from '../../cli/ui/separator';
 
 const BOX_WIDTH = 60;
 
@@ -247,7 +248,7 @@ export function presentRecoverySuccess(message: string): void {
 export function presentErrorSummary(errors: ClassifiedError[]): void {
   console.log();
   console.log(chalk.red.bold('  ❌ Resumo de Erros:'));
-  console.log(chalk.gray('  ' + '─'.repeat(40)));
+  console.log(chalk.gray('  ' + separatorLine(40)));
 
   const grouped = new Map<ErrorCategory, ClassifiedError[]>();
   errors.forEach(e => {

@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import ora from 'ora';
+import { separatorLine } from '../../cli/ui/separator';
 
 export interface ProviderHealth {
   name: string;
@@ -268,7 +269,7 @@ async function checkOllama(): Promise<ProviderHealth> {
 
 export function displayHealthReport(results: ProviderHealth[]): void {
   console.log(chalk.cyan.bold('\n🏥 HEALTH REPORT'));
-  console.log(chalk.gray('─'.repeat(50)));
+  console.log(chalk.gray(separatorLine(50)));
 
   results.forEach(r => {
     const status = r.available ? chalk.green('✓') : chalk.red('✗');
@@ -280,6 +281,6 @@ export function displayHealthReport(results: ProviderHealth[]): void {
   });
 
   const available = results.filter(r => r.available).length;
-  console.log(chalk.gray('\n─'.repeat(50)));
+  console.log(chalk.gray('\n' + separatorLine(50)));
   console.log(`Available: ${available}/${results.length}`);
 }
