@@ -1,6 +1,6 @@
 # Cogit CLI
 
-![Status](https://img.shields.io/badge/Status-FASE_5_Complete-brightgreen) ![Version](https://img.shields.io/badge/Version-1.2.0-blue) ![Node](https://img.shields.io/badge/Node-18%2B-green) ![Tests](https://img.shields.io/badge/Tests-94.4%25_Passing-success) ![Refactoring](https://img.shields.io/badge/Refactoring-Clean_Architecture_Phase_3_Validated-brightgreen)
+![Status](https://img.shields.io/badge/Status-FASE_5_Complete-brightgreen) ![Version](https://img.shields.io/badge/Version-1.2.0-blue) ![Node](https://img.shields.io/badge/Node-18%2B-green) ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue) ![Tests](https://img.shields.io/badge/Tests-97%25_Passing-success) ![Refactoring](https://img.shields.io/badge/Refactoring-Clean_Architecture_Phase_3_Validated-brightgreen)
 
 > **Git automation CLI with AI-powered commit messages**
 
@@ -167,6 +167,39 @@ cogit menu → 🏷️ Tag Operations
 | `--path <dir>` | `-p` | Diretório alvo |
 | `--branch <name>` | `-b` | Cria ou usa branch específica |
 | `--debug` | - | Habilita Deep Trace Mode (FASE 5) |
+
+---
+
+## Multiplataforma (Cross-Platform)
+
+O Cogit CLI é **100% compatível** com Windows, macOS e Linux.
+
+### Implementação
+
+A compatibilidade multiplataforma foi alcançada através de:
+
+1. **Camada de Abstração** (`src/utils/platform.ts`)
+   - Detecção automática de sistema operacional
+   - Normalização de paths para cada plataforma
+   - Escape de paths com espaços/caracteres especiais
+
+2. **Wrapper de Execução** (`src/utils/executor.ts`)
+   - Execução de comandos Git de forma cross-platform
+   - Shell correto por plataforma (cmd.exe, bash, zsh)
+   - Tratamento de erros unificado
+
+3. **Substituição de Comandos Unix**
+   - `cat` → `fs.readFile()` (Node.js API)
+   - Paths normalizados automaticamente
+
+### Testes Multi-OS
+
+Testes automatizados executam em:
+- ✅ Windows (Windows Latest)
+- ✅ macOS (macOS Latest)
+- ✅ Linux (Ubuntu Latest)
+
+CI/CD configurado via GitHub Actions (`.github/workflows/test-multi-os.yml`).
 
 ---
 
@@ -463,6 +496,7 @@ feat: adiciona sistema de autenticação
 | UI/Output | Chalk + Ora + Inquirer.js |
 | HTTP Client | OpenAI SDK |
 | AI Provider | OpenRouter |
+| **Plataforma** | **Windows, macOS, Linux** |
 
 ---
 

@@ -5,10 +5,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-
-const execAsync = promisify(exec);
+import { execGit } from '../../utils/executor';
 
 const PRIVATE_CONFIG_FILE = '.gitpy-private';
 const TEMP_DIR = '.gitpy-temp';
@@ -54,8 +51,8 @@ async function getMatchingFiles(repoPath: string, patterns: string[]): Promise<s
   for (const pattern of patterns) {
     try {
       // Use git ls-files to find matching files
-      const { stdout } = await execAsync(
-        `git ls-files --others --exclude-standard "${pattern}" && git ls-files "${pattern}"`,
+      const { stdout } = await execGit(
+        `ls-files --others --exclude-standard "${pattern}" && git ls-files "${pattern}"`,
         { cwd: repoPath }
       );
       

@@ -5,11 +5,8 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import { execGit } from '../../utils/executor';
 import chalk from 'chalk';
-
-const execAsync = promisify(exec);
 
 const WHITELIST_MARKER = '# cogit:allow';
 const GITIGNORE_PATH = '.gitignore';
@@ -45,11 +42,11 @@ function loadCommonTrash(): Record<string, { reason: string; category: string }>
 async function getAllRepoFiles(repoPath: string): Promise<string[]> {
   try {
     // Get tracked files
-    const { stdout: tracked } = await execAsync('git ls-files', { cwd: repoPath });
+    const { stdout: tracked } = await execGit('ls-files', { cwd: repoPath });
     
     // Get untracked files
-    const { stdout: untracked } = await execAsync(
-      'git ls-files --others --exclude-standard',
+    const { stdout: untracked } = await execGit(
+      'ls-files --others --exclude-standard',
       { cwd: repoPath }
     );
     

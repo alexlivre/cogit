@@ -1,6 +1,9 @@
 import { exec } from 'child_process';
 import { promisify } from 'util';
+import { readFile } from 'fs/promises';
+import * as path from 'path';
 import { smartPack, DiffData } from '../../core/vault';
+import { execGit } from '../../utils/executor';
 
 const execAsync = promisify(exec);
 
@@ -28,11 +31,12 @@ export async function scanRepository(repoPath: string): Promise<ScanResult> {
     const { stdout: untrackedOutput } = await execAsync('git ls-files --others --exclude-standard', { cwd: repoPath });
     const untrackedFiles = untrackedOutput.trim().split('\n').filter(Boolean);
     
-    // Include untracked files content in diff
+    // Include untracked files content in diff (cross-platform using fs.readFile)
     let untrackedDiff = '';
     for (const file of untrackedFiles) {
       try {
-        const { stdout: fileContent } = await execAsync(`cat "${file}"`, { cwd: repoPath });
+        const filePath = path.join(repoPath, file);
+        const fileContent = await readFile(filePath, 'utf-8');
         untrackedDiff += `diff --git a/${file} b/${file}\nnew file mode 100644\n--- /dev/null\n+++ b/${file}\n@@ -0,0 +1,${fileContent.split('\n').length} @@\n`;
         fileContent.split('\n').forEach((line: string) => {
           untrackedDiff += `+${line}\n`;

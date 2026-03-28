@@ -1,7 +1,4 @@
-import { exec } from 'child_process';
-import { promisify } from 'util';
-
-const execAsync = promisify(exec);
+import { execGit } from '../../utils/executor';
 
 export interface ExecutorResult {
   success: boolean;
@@ -11,7 +8,7 @@ export interface ExecutorResult {
 
 export async function gitAdd(repoPath: string): Promise<ExecutorResult> {
   try {
-    const { stdout } = await execAsync('git add -A', { cwd: repoPath });
+    const { stdout } = await execGit('add -A', { cwd: repoPath });
     return { success: true, output: stdout };
   } catch (error) {
     return { success: false, error: String(error) };
@@ -21,7 +18,7 @@ export async function gitAdd(repoPath: string): Promise<ExecutorResult> {
 export async function gitCommit(repoPath: string, message: string): Promise<ExecutorResult> {
   try {
     const escapedMessage = message.replace(/"/g, '\\"');
-    const { stdout } = await execAsync(`git commit -m "${escapedMessage}"`, { cwd: repoPath });
+    const { stdout } = await execGit(`commit -m "${escapedMessage}"`, { cwd: repoPath });
     return { success: true, output: stdout };
   } catch (error) {
     return { success: false, error: String(error) };
@@ -30,7 +27,7 @@ export async function gitCommit(repoPath: string, message: string): Promise<Exec
 
 export async function gitPush(repoPath: string): Promise<ExecutorResult> {
   try {
-    const { stdout } = await execAsync('git push', { cwd: repoPath });
+    const { stdout } = await execGit('push', { cwd: repoPath });
     return { success: true, output: stdout };
   } catch (error) {
     return { success: false, error: String(error) };

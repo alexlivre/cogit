@@ -1,0 +1,66 @@
+name: Cross-Platform Tests
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  test:
+    name: Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        node-version: [18.x, 20.x]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build TypeScript
+      run: npm run build
+
+    - name: Run platform tests
+      run: node test-automation/platform/platform-test.js
+
+    - name: Run existing tests
+      run: node test-automation/test-all-fases.js
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results-${{ matrix.os }}-node${{ matrix.node-version }}
+        path: test-automation/reports/
+        retention-days: 7
+
+  # Summary job that requires all platform tests to pass
+  all-tests-pass:
+    name: All Platform Tests Pass
+    needs: test
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Check test results
+      run: |
+        if [[ "${{ needs.test.result }}" == "success" ]]; then
+          echo "✅ All platform tests passed!"
+          exit 0
+        else
+          echo "❌ Some platform tests failed"
+          exit 1
+        fi

@@ -1,10 +1,7 @@
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import { execGit } from '../../utils/executor';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { confirmDestructiveOperation } from '../../utils/confirmation';
-
-const execAsync = promisify(exec);
 
 export interface BranchInfo {
   name: string;
@@ -18,7 +15,7 @@ export interface BranchInfo {
  */
 export async function listBranches(repoPath: string): Promise<BranchInfo[]> {
   try {
-    const { stdout } = await execAsync('git branch -a', { cwd: repoPath });
+    const { stdout } = await execGit('branch -a', { cwd: repoPath });
     
     const lines = stdout.trim().split('\n').filter(Boolean);
     
@@ -44,7 +41,7 @@ export async function listBranches(repoPath: string): Promise<BranchInfo[]> {
  */
 export async function getCurrentBranch(repoPath: string): Promise<string> {
   try {
-    const { stdout } = await execAsync('git rev-parse --abbrev-ref HEAD', { cwd: repoPath });
+    const { stdout } = await execGit('rev-parse --abbrev-ref HEAD', { cwd: repoPath });
     return stdout.trim();
   } catch {
     return '';
@@ -71,7 +68,7 @@ export async function createBranch(repoPath: string, branchName: string): Promis
       return { success: false, error: `Invalid branch name: ${branchName}` };
     }
     
-    await execAsync(`git checkout -b ${branchName}`, { cwd: repoPath });
+    await execGit(`checkout -b ${branchName}`, { cwd: repoPath });
     return { success: true };
   } catch (error) {
     return { success: false, error: String(error) };
@@ -83,7 +80,7 @@ export async function createBranch(repoPath: string, branchName: string): Promis
  */
 export async function switchBranch(repoPath: string, branchName: string): Promise<{ success: boolean; error?: string }> {
   try {
-    await execAsync(`git checkout ${branchName}`, { cwd: repoPath });
+    await execGit(`checkout ${branchName}`, { cwd: repoPath });
     return { success: true };
   } catch (error) {
     return { success: false, error: String(error) };
@@ -101,7 +98,7 @@ export async function deleteBranch(repoPath: string, branchName: string, force: 
   
   try {
     const flag = force ? '-D' : '-d';
-    await execAsync(`git branch ${flag} ${branchName}`, { cwd: repoPath });
+    await execGit(`branch ${flag} ${branchName}`, { cwd: repoPath });
     return { success: true };
   } catch (error) {
     return { success: false, error: String(error) };
@@ -114,9 +111,9 @@ export async function deleteBranch(repoPath: string, branchName: string, force: 
 export async function pushBranch(repoPath: string, branchName: string, setUpstream: boolean = true): Promise<{ success: boolean; error?: string }> {
   try {
     if (setUpstream) {
-      await execAsync(`git push -u origin ${branchName}`, { cwd: repoPath });
+      await execGit(`push -u origin ${branchName}`, { cwd: repoPath });
     } else {
-      await execAsync(`git push origin ${branchName}`, { cwd: repoPath });
+      await execGit(`push origin ${branchName}`, { cwd: repoPath });
     }
     return { success: true };
   } catch (error) {

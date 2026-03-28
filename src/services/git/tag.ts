@@ -1,10 +1,7 @@
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import { execGit } from '../../utils/executor';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { confirmDestructiveOperation } from '../../utils/confirmation';
-
-const execAsync = promisify(exec);
 
 export interface TagInfo {
   name: string;
@@ -28,16 +25,16 @@ function isValidTagName(name: string): boolean {
 export async function listTags(repoPath: string): Promise<TagInfo[]> {
   try {
     // Get local tags
-    const { stdout: localTags } = await execAsync('git tag -l', { cwd: repoPath });
+    const { stdout: localTags } = await execGit('tag -l', { cwd: repoPath });
     const tagNames = localTags.trim().split('\n').filter(Boolean);
     
     const tags: TagInfo[] = [];
     
     for (const name of tagNames) {
       try {
-        const { stdout: commit } = await execAsync(`git rev-list -n 1 ${name}`, { cwd: repoPath });
-        const { stdout: message } = await execAsync(`git tag -l -n1 ${name}`, { cwd: repoPath });
-        const { stdout: date } = await execAsync(`git log -1 --format=%ci ${name}`, { cwd: repoPath });
+        const { stdout: commit } = await execGit(`rev-list -n 1 ${name}`, { cwd: repoPath });
+        const { stdout: message } = await execGit(`tag -l -n1 ${name}`, { cwd: repoPath });
+        const { stdout: date } = await execGit(`log -1 --format=%ci ${name}`, { cwd: repoPath });
         
         tags.push({
           name,
@@ -72,9 +69,9 @@ export async function createTag(
     
     if (annotated && message) {
       const escapedMessage = message.replace(/"/g, '\\"');
-      await execAsync(`git tag -a ${tagName} -m "${escapedMessage}"`, { cwd: repoPath });
+      await execGit(`tag -a ${tagName} -m "${escapedMessage}"`, { cwd: repoPath });
     } else {
-      await execAsync(`git tag ${tagName}`, { cwd: repoPath });
+      await execGit(`tag ${tagName}`, { cwd: repoPath });
     }
     
     return { success: true };
@@ -101,9 +98,9 @@ export async function deleteTag(
   
   try {
     if (remote) {
-      await execAsync(`git push origin --delete ${tagName}`, { cwd: repoPath });
+      await execGit(`push origin --delete ${tagName}`, { cwd: repoPath });
     } else {
-      await execAsync(`git tag -d ${tagName}`, { cwd: repoPath });
+      await execGit(`tag -d ${tagName}`, { cwd: repoPath });
     }
     return { success: true };
   } catch (error) {
@@ -123,7 +120,7 @@ export async function resetToTag(repoPath: string, tagName: string, hard: boolea
   
   try {
     const mode = hard ? '--hard' : '--soft';
-    await execAsync(`git reset ${mode} ${tagName}`, { cwd: repoPath });
+    await execGit(`reset ${mode} ${tagName}`, { cwd: repoPath });
     return { success: true };
   } catch (error) {
     return { success: false, error: String(error) };
@@ -136,7 +133,7 @@ export async function resetToTag(repoPath: string, tagName: string, hard: boolea
 export async function pushTag(repoPath: string, tagName?: string): Promise<{ success: boolean; error?: string }> {
   try {
     const tagRef = tagName ? tagName : '--tags';
-    await execAsync(`git push origin ${tagRef}`, { cwd: repoPath });
+    await execGit(`push origin ${tagRef}`, { cwd: repoPath });
     return { success: true };
   } catch (error) {
     return { success: false, error: String(error) };

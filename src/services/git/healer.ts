@@ -1,9 +1,6 @@
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import { execGit, execCommand } from '../../utils/executor';
 import { OpenRouterProvider } from '../ai/providers/openrouter';
 import { CONFIG } from '../../config/env';
-
-const execAsync = promisify(exec);
 
 export interface HealerInput {
   repoPath: string;
@@ -100,7 +97,7 @@ Provide commands to fix this error:`;
     
     for (const cmd of safeCommands) {
       try {
-        await execAsync(cmd, { cwd: input.repoPath });
+        await execCommand(cmd, { cwd: input.repoPath });
       } catch (error) {
         allSuccess = false;
         lastError = String(error);
@@ -118,7 +115,7 @@ Provide commands to fix this error:`;
     if (allSuccess) {
       // Try original push again
       try {
-        await execAsync('git push', { cwd: input.repoPath });
+        await execGit('push', { cwd: input.repoPath });
         return { success: true, attempts };
       } catch (error) {
         currentError = String(error);
