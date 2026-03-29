@@ -1,10 +1,7 @@
 name: Cross-Platform Tests
 
 on:
-  push:
-    branches: [ main, master, develop ]
-  pull_request:
-    branches: [ main, master, develop ]
+  workflow_dispatch:  # Execução manual apenas - não dispara automaticamente em push/PR
 
 jobs:
   test:
