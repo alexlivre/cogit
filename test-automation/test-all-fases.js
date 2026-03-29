@@ -16,16 +16,17 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 const { TestLifecycle } = require('./utils/test-lifecycle');
+const { config: testConfig } = require('./utils/test-config');
 
 // ========================================
 // CONFIGURATION
 // ========================================
 
 const CONFIG = {
-  testRepo: 'C:\\code\\github\\teste',
-  cogitPath: 'C:\\code\\github\\cogit',
-  cogitBin: 'C:\\code\\github\\cogit\\dist\\index.js',
-  reportsPath: 'C:\\code\\github\\cogit\\test-automation\\reports'
+  testRepo: testConfig.testRepo,
+  cogitPath: testConfig.cogitPath,
+  cogitBin: testConfig.cogitBin,
+  reportsPath: testConfig.reportsPath
 };
 
 // Parse command line arguments

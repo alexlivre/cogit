@@ -1,16 +1,29 @@
 /**
  * Test Configuration for Cogit CLI
  * Centralized configuration for all test suites
+ * 
+ * Cross-platform compatible: works on Windows, macOS, and Linux
+ * CI-aware: automatically detects and adapts to CI environment
  */
 
 const path = require('path');
 
+// Detect environment
+const isCI = process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true';
+
+// Calculate paths dynamically based on __dirname
+const testAutomationRoot = path.resolve(__dirname, '..');
+const projectRoot = path.resolve(testAutomationRoot, '..');
+
 const config = {
-  // Paths
-  testRepo: 'C:/code/github/teste',
-  cogitPath: 'C:/code/github/cogit',
-  distPath: path.join('C:/code/github/cogit', 'dist'),
-  reportsPath: path.join('C:/code/github/cogit', 'test-automation', 'reports'),
+  // Paths (cross-platform compatible)
+  testRepo: isCI 
+    ? path.join(testAutomationRoot, 'temp-test-repo')  // CI: use temp directory
+    : path.join(projectRoot, 'teste'),                  // Local: use existing teste directory
+  cogitPath: projectRoot,
+  distPath: path.join(projectRoot, 'dist'),
+  reportsPath: path.join(testAutomationRoot, 'reports'),
+  cogitBin: path.join(projectRoot, 'dist', 'index.js'),
   
   // Timeouts (in milliseconds)
   timeout: {

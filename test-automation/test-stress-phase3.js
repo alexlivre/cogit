@@ -11,14 +11,15 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const { config: testConfig } = require('./utils/test-config');
 
 // ========================================
 // CONFIGURATION
 // ========================================
 
 const CONFIG = {
-  testRepo: 'C:\\code\\github\\teste',
-  cogitBin: 'C:\\code\\github\\cogit\\dist\\index.js',
+  testRepo: testConfig.testRepo,
+  cogitBin: testConfig.cogitBin,
   timeout: 300000, // 5 minutes max
 };
 

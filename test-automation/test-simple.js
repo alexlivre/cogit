@@ -3,11 +3,13 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const { config: testConfig } = require('./utils/test-config');
 
 class SimpleTest {
     constructor() {
-        this.testRepo = 'C:/code/github/teste';
-        this.cogitPath = 'C:/code/github/cogit';
+        this.testRepo = testConfig.testRepo;
+        this.cogitPath = testConfig.cogitPath;
+        this.cogitBin = testConfig.cogitBin;
         this.results = { passed: 0, failed: 0, tests: [] };
     }
 
@@ -49,7 +51,7 @@ class SimpleTest {
         execSync('git add test-basic.txt', { cwd: this.testRepo, stdio: 'pipe' });
         
         // Run cogit
-        const output = execSync('node C:/code/github/cogit/dist/index.js auto --yes', {
+        const output = execSync(`node "${this.cogitBin}" auto --yes`, {
             cwd: this.testRepo,
             encoding: 'utf8',
             timeout: 30000
@@ -75,7 +77,7 @@ class SimpleTest {
         fs.writeFileSync(path.join(this.testRepo, 'test-nopush.txt'), 'Test no push');
         execSync('git add test-nopush.txt', { cwd: this.testRepo, stdio: 'pipe' });
         
-        const output = execSync('node C:/code/github/cogit/dist/index.js auto --yes --no-push', {
+        const output = execSync(`node "${this.cogitBin}" auto --yes --no-push`, {
             cwd: this.testRepo,
             encoding: 'utf8',
             timeout: 30000
@@ -101,7 +103,7 @@ class SimpleTest {
         execSync('git add .env.local', { cwd: this.testRepo, stdio: 'pipe' });
         
         try {
-            const output = execSync('node C:/code/github/cogit/dist/index.js auto --yes', {
+            const output = execSync(`node "${this.cogitBin}" auto --yes`, {
                 cwd: this.testRepo,
                 encoding: 'utf8',
                 timeout: 30000
@@ -136,7 +138,7 @@ class SimpleTest {
             throw new Error('No changes to test');
         }
         
-        const output = execSync('node C:/code/github/cogit/dist/index.js auto --yes', {
+        const output = execSync(`node "${this.cogitBin}" auto --yes`, {
             cwd: this.testRepo,
             encoding: 'utf8',
             timeout: 30000,
@@ -172,7 +174,7 @@ class SimpleTest {
         }
         
         try {
-            const output = execSync('node C:/code/github/cogit/dist/index.js auto --yes', {
+            const output = execSync(`node "${this.cogitBin}" auto --yes`, {
                 cwd: this.testRepo,
                 encoding: 'utf8',
                 timeout: 30000
@@ -198,7 +200,7 @@ class SimpleTest {
         fs.writeFileSync(path.join(this.testRepo, 'feature.js'), '// New feature implementation');
         execSync('git add feature.js', { cwd: this.testRepo, stdio: 'pipe' });
         
-        const output = execSync('node C:/code/github/cogit/dist/index.js auto --yes -m "add new feature"', {
+        const output = execSync(`node "${this.cogitBin}" auto --yes -m "add new feature"`, {
             cwd: this.testRepo,
             encoding: 'utf8',
             timeout: 30000
