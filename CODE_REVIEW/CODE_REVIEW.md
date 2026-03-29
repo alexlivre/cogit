@@ -10,11 +10,13 @@
 
 | Severidade | Quantidade | Descrição |
 |------------|------------|-----------|
-| 🔴 Crítico | 3 | Vulnerabilidades de segurança e bugs graves |
-| 🟠 Moderado | 5 | Problemas que podem causar comportamento inesperado |
-| 🟡 Menor | 4 | Issues de qualidade e edge cases |
+| 🔴 Crítico | 5 | Vulnerabilidades de segurança e bugs graves |
+| 🟠 Moderado | 7 | Problemas que podem causar comportamento inesperado |
+| 🟡 Menor | 6 | Issues de qualidade e edge cases |
 | 🔵 Qualidade | 3 | Melhorias de código e arquitetura |
-| **Total** | **15** | |
+| **Total** | **21** | |
+
+**Status:** ✅ 12 bugs (Críticos + Moderados) corrigidos em 29/03/2026
 
 ---
 
@@ -1020,3 +1022,36 @@ Recomenda-se:
 ---
 
 *Documento gerado por análise automatizada de código.*
+
+---
+
+## ✅ Correções Implementadas (29/03/2026)
+
+### Bugs Críticos Corrigidos
+
+| # | Bug | Arquivo | Solução |
+|---|-----|---------|---------|
+| 1 | Injeção em `gitCommit` | `src/services/git/executor.ts` | Usar stdin (`-F -`) ao invés de interpolação |
+| 2 | Execução no Healer | `src/services/git/healer.ts` | Whitelist de comandos + bloqueio de comandos perigosos |
+| 3 | Memory Leak Vault | `src/core/vault.ts` | TTL + `withAutoCleanup` no fluxo principal |
+| 4 | Type Mismatch | `src/services/network/retry-handler.ts` | Nova função `getRetrySummaryFromCount` |
+| 5 | Injeção Branch/Tag | `src/services/network/auto-push.ts` | `sanitizeGitRefName()` antes do push |
+
+### Bugs Moderados Corrigidos
+
+| # | Bug | Arquivo | Solução |
+|---|-----|---------|---------|
+| 6 | Timeout Ollama | `src/services/ai/providers/ollama.ts` | `finally` para limpeza |
+| 7 | Spinner não limpo | `src/services/network/auto-push.ts` | `try/finally` no delay |
+| 8 | Regex Sanitizer | `src/services/security/sanitizer.ts` | `escapeRegex()` antes de criar pattern |
+| 9 | Validação Branch | `src/services/git/branch.ts` | Validação completa `git check-ref-format` |
+| 10 | Validação Tag | `src/services/git/tag.ts` | Validação completa `git check-ref-format` |
+| 11 | Erro Scanner | `src/services/git/scanner.ts` | Campo `warnings` para arquivos ilegíveis |
+| 12 | Race Condition | `src/services/tools/stealth.ts` | Log de operações + rollback automático |
+| 13 | Duplicação Código | `src/services/network/auto-push.ts` | Refatorado para `autoPushGeneric()` |
+
+### Validação
+
+- **Build:** ✅ TypeScript compilado sem erros
+- **Testes:** ✅ 96/96 passaram (100%)
+- **Cobertura:** Fases 1-5 + Edge Cases
