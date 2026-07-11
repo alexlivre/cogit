@@ -1,9 +1,10 @@
-import { execGit } from '../../utils/executor';
+import { execGit, safeExecGit } from '../../utils/executor';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { separatorLine } from '../../cli/ui/separator';
 import { confirmDestructiveOperation } from '../../utils/confirmation';
 import { autoPushBranch } from '../network/auto-push';
+import { isValidBranchName } from '../../utils/git-ref';
 
 export interface BranchInfo {
   name: string;
@@ -51,39 +52,26 @@ export async function getCurrentBranch(repoPath: string): Promise<string> {
 }
 
 /**
- * Validates branch name according to Git rules
- */
-function isValidBranchName(name: string): boolean {
-  // Git branch name rules
-  const pattern = /^[a-zA-Z0-9][a-zA-Z0-9._/-]*$/;
-  const reserved = ['HEAD', 'head'];
-  
-  return pattern.test(name) && !reserved.includes(name.toLowerCase());
-}
-
-/**
  * Creates a new branch and switches to it
  */
 export async function createBranch(repoPath: string, branchName: string, autoPush: boolean = true): Promise<{ success: boolean; error?: string; autoPushResult?: any }> {
+  if (!isValidBranchName(branchName)) {
+    return { success: false, error: `Invalid branch name: ${branchName}` };
+  }
+
   try {
-    if (!isValidBranchName(branchName)) {
-      return { success: false, error: `Invalid branch name: ${branchName}` };
-    }
-    
-    await execGit(`checkout -b ${branchName}`, { cwd: repoPath });
-    
-    // Attempt auto push if enabled
+    await safeExecGit(['checkout', '-b', branchName], { cwd: repoPath });
+
     let autoPushResult = undefined;
     if (autoPush) {
       try {
         autoPushResult = await autoPushBranch(branchName, { repoPath, silent: false });
       } catch (error) {
-        // Don't fail the branch creation if auto push fails
         console.log(chalk.yellow(`⚠️  Auto push failed: ${error}`));
         autoPushResult = { success: false, error: String(error) };
       }
     }
-    
+
     return { success: true, autoPushResult };
   } catch (error) {
     return { success: false, error: String(error) };
@@ -94,21 +82,23 @@ export async function createBranch(repoPath: string, branchName: string, autoPus
  * Switches to an existing branch
  */
 export async function switchBranch(repoPath: string, branchName: string, autoPush: boolean = true): Promise<{ success: boolean; error?: string; autoPushResult?: any }> {
+  if (!isValidBranchName(branchName)) {
+    return { success: false, error: `Invalid branch name: ${branchName}` };
+  }
+
   try {
-    await execGit(`checkout ${branchName}`, { cwd: repoPath });
-    
-    // Attempt auto push if enabled (for existing branches that might not be on remote)
+    await safeExecGit(['checkout', branchName], { cwd: repoPath });
+
     let autoPushResult = undefined;
     if (autoPush) {
       try {
         autoPushResult = await autoPushBranch(branchName, { repoPath, silent: false });
       } catch (error) {
-        // Don't fail the branch switch if auto push fails
         console.log(chalk.yellow(`⚠️  Auto push failed: ${error}`));
         autoPushResult = { success: false, error: String(error) };
       }
     }
-    
+
     return { success: true, autoPushResult };
   } catch (error) {
     return { success: false, error: String(error) };
@@ -119,14 +109,18 @@ export async function switchBranch(repoPath: string, branchName: string, autoPus
  * Deletes a branch (requires confirmation for destructive operation)
  */
 export async function deleteBranch(repoPath: string, branchName: string, force: boolean = false): Promise<{ success: boolean; error?: string }> {
+  if (!isValidBranchName(branchName)) {
+    return { success: false, error: `Invalid branch name: ${branchName}` };
+  }
+
   const confirmed = await confirmDestructiveOperation(`Delete branch: ${branchName}`);
   if (!confirmed) {
     return { success: false, error: 'Operation cancelled' };
   }
-  
+
   try {
     const flag = force ? '-D' : '-d';
-    await execGit(`branch ${flag} ${branchName}`, { cwd: repoPath });
+    await safeExecGit(['branch', flag, branchName], { cwd: repoPath });
     return { success: true };
   } catch (error) {
     return { success: false, error: String(error) };
@@ -137,11 +131,15 @@ export async function deleteBranch(repoPath: string, branchName: string, force: 
  * Pushes a branch to remote
  */
 export async function pushBranch(repoPath: string, branchName: string, setUpstream: boolean = true): Promise<{ success: boolean; error?: string }> {
+  if (!isValidBranchName(branchName)) {
+    return { success: false, error: `Invalid branch name: ${branchName}` };
+  }
+
   try {
     if (setUpstream) {
-      await execGit(`push -u origin ${branchName}`, { cwd: repoPath });
+      await safeExecGit(['push', '-u', 'origin', branchName], { cwd: repoPath });
     } else {
-      await execGit(`push origin ${branchName}`, { cwd: repoPath });
+      await safeExecGit(['push', 'origin', branchName], { cwd: repoPath });
     }
     return { success: true };
   } catch (error) {
