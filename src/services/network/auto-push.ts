@@ -8,8 +8,7 @@ import ora from 'ora';
 import { checkConnectivity, shouldAttemptAutoPush, getConnectivityMessage } from './connectivity';
 import { executeGitWithRetry, getRetrySummary } from './retry-handler';
 import { CONFIG } from '../../config/env';
-import { execGit } from '../../utils/executor';
-import { t } from '../../config/i18n';
+import { safeExecGit } from '../../utils/executor';
 
 export interface AutoPushOptions {
   repoPath: string;
@@ -28,75 +27,84 @@ export interface AutoPushResult {
   duration?: number;
 }
 
-/**
- * Auto push for branches
- */
-export async function autoPushBranch(
-  branchName: string,
+type ResourceKind = 'branch' | 'tag';
+
+interface ExecuteAutoPushParams {
+  kind: ResourceKind;
+  name: string;
+  enabledFlag: boolean;       // CONFIG.AUTO_PUSH_BRANCHES or CONFIG.AUTO_PUSH_TAGS
+  disabledReason: string;
+  messagePreDelay: string;    // "Auto pushing branch in N seconds..."
+  messageExecuting: string;   // "🌐 Auto pushing branch: foo"
+  gitCommand: string[];       // argv for safeExecGit
+  summarySuccess: string;     // "✅ Branch 'foo' auto pushed successfully"
+  summaryFail: string;        // "❌ Auto push failed for branch 'foo'"
+  showDelaySpinner: boolean;
+}
+
+async function executeAutoPush(
+  params: ExecuteAutoPushParams,
   options: AutoPushOptions
 ): Promise<AutoPushResult> {
   const { repoPath, silent = false, forceCheck = false, customDelay } = options;
-  
-  // Check if auto push is enabled for branches
-  if (!CONFIG.AUTO_PUSH_ENABLED || !CONFIG.AUTO_PUSH_BRANCHES) {
+
+  if (!CONFIG.AUTO_PUSH_ENABLED || !params.enabledFlag) {
     return {
       success: false,
       attempted: false,
       skipped: true,
-      reason: 'Auto push is disabled for branches'
+      reason: params.disabledReason,
     };
   }
 
-  // Check connectivity
   const connectivity = await checkConnectivity(repoPath, { forceCheck });
-  
+
   const autoPushConfig = {
     enabled: true,
     requireInternet: CONFIG.AUTO_PUSH_INTERNET_CHECK,
-    githubOnly: CONFIG.AUTO_PUSH_GITHUB_ONLY
+    githubOnly: CONFIG.AUTO_PUSH_GITHUB_ONLY,
   };
 
   if (!shouldAttemptAutoPush(connectivity, autoPushConfig)) {
-    const message = getConnectivityMessage(connectivity);
     return {
       success: false,
       attempted: false,
       skipped: true,
-      reason: `Connectivity check failed: ${message}`
+      reason: `Connectivity check failed: ${getConnectivityMessage(connectivity)}`,
     };
   }
 
-  // Wait for configured delay
-  const delay = customDelay || CONFIG.AUTO_PUSH_DELAY;
-  if (delay > 0 && !silent) {
-    const spinner = ora(`Auto pushing branch in ${delay / 1000} seconds...`).start();
-    await new Promise(resolve => setTimeout(resolve, delay));
-    spinner.stop();
+  if (params.showDelaySpinner) {
+    const delay = customDelay || CONFIG.AUTO_PUSH_DELAY;
+    if (delay > 0 && !silent) {
+      const spinner = ora(params.messagePreDelay).start();
+      await new Promise(resolve => setTimeout(resolve, delay));
+      spinner.stop();
+    }
   }
 
-  // Execute auto push with retry
   if (!silent) {
-    console.log(chalk.blue(`🌐 Auto pushing branch: ${branchName}`));
+    console.log(chalk.blue(params.messageExecuting));
   }
 
   const pushResult = await executeGitWithRetry(
     async () => {
-      const { stdout } = await execGit(`push -u origin ${branchName}`, { cwd: repoPath });
+      const { stdout } = await safeExecGit(params.gitCommand, { cwd: repoPath });
       return stdout;
     },
     {
       maxRetries: CONFIG.AUTO_PUSH_RETRY_COUNT,
       baseDelay: 1000,
       maxDelay: 10000,
-      backoffFactor: 2
+      backoffFactor: 2,
     }
   );
 
   if (pushResult.success) {
     if (!silent && !CONFIG.AUTO_PUSH_SILENT) {
-      console.log(chalk.green(`✅ Branch '${branchName}' auto pushed successfully`));
+      console.log(chalk.green(params.summarySuccess));
       if (pushResult.attempts > 1) {
-        console.log(chalk.gray(`   ${getRetrySummary(pushResult.attempts as any)}`));
+        console.log(chalk.gray(`   ${getRetrySummaryFromAttempts(pushResult.attempts)}`));
       }
     }
     return {
@@ -104,240 +112,112 @@ export async function autoPushBranch(
       attempted: true,
       skipped: false,
       attempts: pushResult.attempts,
-      duration: pushResult.totalDuration
-    };
-  } else {
-    if (!silent) {
-      console.log(chalk.red(`❌ Auto push failed for branch '${branchName}'`));
-      console.log(chalk.gray(`   Error: ${pushResult.error}`));
-      if (pushResult.attempts > 1) {
-        console.log(chalk.gray(`   ${getRetrySummary(pushResult.attempts as any)}`));
-      }
-    }
-    return {
-      success: false,
-      attempted: true,
-      skipped: false,
-      error: pushResult.error,
-      attempts: pushResult.attempts,
-      duration: pushResult.totalDuration
+      duration: pushResult.totalDuration,
     };
   }
+
+  if (!silent) {
+    console.log(chalk.red(params.summaryFail));
+    console.log(chalk.gray(`   Error: ${pushResult.error}`));
+    if (pushResult.attempts > 1) {
+      console.log(chalk.gray(`   ${getRetrySummaryFromAttempts(pushResult.attempts)}`));
+    }
+  }
+
+  return {
+    success: false,
+    attempted: true,
+    skipped: false,
+    error: pushResult.error,
+    attempts: pushResult.attempts,
+    duration: pushResult.totalDuration,
+  };
+}
+
+/** executeGitWithRetry returns RetryResult with `attempts: number` (not the array). */
+function getRetrySummaryFromAttempts(count: number): string {
+  if (count <= 1) return '✅ Success on first attempt';
+  return `✅ Success after ${count} attempts (${count - 1} retries)`;
+}
+
+/**
+ * Auto push for branches
+ */
+export function autoPushBranch(
+  branchName: string,
+  options: AutoPushOptions
+): Promise<AutoPushResult> {
+  return executeAutoPush(
+    {
+      kind: 'branch',
+      name: branchName,
+      enabledFlag: CONFIG.AUTO_PUSH_BRANCHES,
+      disabledReason: 'Auto push is disabled for branches',
+      messagePreDelay: `Auto pushing branch in ${(options.customDelay || CONFIG.AUTO_PUSH_DELAY) / 1000} seconds...`,
+      messageExecuting: `🌐 Auto pushing branch: ${branchName}`,
+      gitCommand: ['push', '-u', 'origin', branchName],
+      summarySuccess: `✅ Branch '${branchName}' auto pushed successfully`,
+      summaryFail: `❌ Auto push failed for branch '${branchName}'`,
+      showDelaySpinner: true,
+    },
+    options
+  );
 }
 
 /**
  * Auto push for tags
  */
-export async function autoPushTag(
+export function autoPushTag(
   tagName: string,
   options: AutoPushOptions
 ): Promise<AutoPushResult> {
-  const { repoPath, silent = false, forceCheck = false, customDelay } = options;
-  
-  // Check if auto push is enabled for tags
-  if (!CONFIG.AUTO_PUSH_ENABLED || !CONFIG.AUTO_PUSH_TAGS) {
-    return {
-      success: false,
-      attempted: false,
-      skipped: true,
-      reason: 'Auto push is disabled for tags'
-    };
-  }
-
-  // Check connectivity
-  const connectivity = await checkConnectivity(repoPath, { forceCheck });
-  
-  const autoPushConfig = {
-    enabled: true,
-    requireInternet: CONFIG.AUTO_PUSH_INTERNET_CHECK,
-    githubOnly: CONFIG.AUTO_PUSH_GITHUB_ONLY
-  };
-
-  if (!shouldAttemptAutoPush(connectivity, autoPushConfig)) {
-    const message = getConnectivityMessage(connectivity);
-    return {
-      success: false,
-      attempted: false,
-      skipped: true,
-      reason: `Connectivity check failed: ${message}`
-    };
-  }
-
-  // Wait for configured delay
-  const delay = customDelay || CONFIG.AUTO_PUSH_DELAY;
-  if (delay > 0 && !silent) {
-    const spinner = ora(`Auto pushing tag in ${delay / 1000} seconds...`).start();
-    await new Promise(resolve => setTimeout(resolve, delay));
-    spinner.stop();
-  }
-
-  // Execute auto push with retry
-  if (!silent) {
-    console.log(chalk.blue(`🏷️  Auto pushing tag: ${tagName}`));
-  }
-
-  const pushResult = await executeGitWithRetry(
-    async () => {
-      const { stdout } = await execGit(`push origin ${tagName}`, { cwd: repoPath });
-      return stdout;
-    },
+  return executeAutoPush(
     {
-      maxRetries: CONFIG.AUTO_PUSH_RETRY_COUNT,
-      baseDelay: 1000,
-      maxDelay: 10000,
-      backoffFactor: 2
-    }
+      kind: 'tag',
+      name: tagName,
+      enabledFlag: CONFIG.AUTO_PUSH_TAGS,
+      disabledReason: 'Auto push is disabled for tags',
+      messagePreDelay: `Auto pushing tag in ${(options.customDelay || CONFIG.AUTO_PUSH_DELAY) / 1000} seconds...`,
+      messageExecuting: `🏷️  Auto pushing tag: ${tagName}`,
+      gitCommand: ['push', 'origin', tagName],
+      summarySuccess: `✅ Tag '${tagName}' auto pushed successfully`,
+      summaryFail: `❌ Auto push failed for tag '${tagName}'`,
+      showDelaySpinner: true,
+    },
+    options
   );
-
-  if (pushResult.success) {
-    if (!silent && !CONFIG.AUTO_PUSH_SILENT) {
-      console.log(chalk.green(`✅ Tag '${tagName}' auto pushed successfully`));
-      if (pushResult.attempts > 1) {
-        console.log(chalk.gray(`   ${getRetrySummary(pushResult.attempts as any)}`));
-      }
-    }
-    return {
-      success: true,
-      attempted: true,
-      skipped: false,
-      attempts: pushResult.attempts,
-      duration: pushResult.totalDuration
-    };
-  } else {
-    if (!silent) {
-      console.log(chalk.red(`❌ Auto push failed for tag '${tagName}'`));
-      console.log(chalk.gray(`   Error: ${pushResult.error}`));
-      if (pushResult.attempts > 1) {
-        console.log(chalk.gray(`   ${getRetrySummary(pushResult.attempts as any)}`));
-      }
-    }
-    return {
-      success: false,
-      attempted: true,
-      skipped: false,
-      error: pushResult.error,
-      attempts: pushResult.attempts,
-      duration: pushResult.totalDuration
-    };
-  }
 }
 
 /**
- * Auto push all tags
+ * Auto push all tags at once
  */
-export async function autoPushAllTags(options: AutoPushOptions): Promise<AutoPushResult> {
-  const { repoPath, silent = false, forceCheck = false } = options;
-  
-  // Check if auto push is enabled for tags
-  if (!CONFIG.AUTO_PUSH_ENABLED || !CONFIG.AUTO_PUSH_TAGS) {
-    return {
-      success: false,
-      attempted: false,
-      skipped: true,
-      reason: 'Auto push is disabled for tags'
-    };
-  }
-
-  // Check connectivity
-  const connectivity = await checkConnectivity(repoPath, { forceCheck });
-  
-  const autoPushConfig = {
-    enabled: true,
-    requireInternet: CONFIG.AUTO_PUSH_INTERNET_CHECK,
-    githubOnly: CONFIG.AUTO_PUSH_GITHUB_ONLY
-  };
-
-  if (!shouldAttemptAutoPush(connectivity, autoPushConfig)) {
-    const message = getConnectivityMessage(connectivity);
-    return {
-      success: false,
-      attempted: false,
-      skipped: true,
-      reason: `Connectivity check failed: ${message}`
-    };
-  }
-
-  // Execute auto push with retry
-  if (!silent) {
-    console.log(chalk.blue(`🏷️  Auto pushing all tags...`));
-  }
-
-  const pushResult = await executeGitWithRetry(
-    async () => {
-      const { stdout } = await execGit('push origin --tags', { cwd: repoPath });
-      return stdout;
-    },
+export function autoPushAllTags(options: AutoPushOptions): Promise<AutoPushResult> {
+  return executeAutoPush(
     {
-      maxRetries: CONFIG.AUTO_PUSH_RETRY_COUNT,
-      baseDelay: 1000,
-      maxDelay: 10000,
-      backoffFactor: 2
-    }
+      kind: 'tag',
+      name: '--all-tags--',
+      enabledFlag: CONFIG.AUTO_PUSH_TAGS,
+      disabledReason: 'Auto push is disabled for tags',
+      messagePreDelay: '',
+      messageExecuting: '🏷️  Auto pushing all tags...',
+      gitCommand: ['push', 'origin', '--tags'],
+      summarySuccess: '✅ All tags auto pushed successfully',
+      summaryFail: '❌ Auto push failed for tags',
+      showDelaySpinner: false,
+    },
+    options
   );
-
-  if (pushResult.success) {
-    if (!silent && !CONFIG.AUTO_PUSH_SILENT) {
-      console.log(chalk.green(`✅ All tags auto pushed successfully`));
-      if (pushResult.attempts > 1) {
-        console.log(chalk.gray(`   ${getRetrySummary(pushResult.attempts as any)}`));
-      }
-    }
-    return {
-      success: true,
-      attempted: true,
-      skipped: false,
-      attempts: pushResult.attempts,
-      duration: pushResult.totalDuration
-    };
-  } else {
-    if (!silent) {
-      console.log(chalk.red(`❌ Auto push failed for tags`));
-      console.log(chalk.gray(`   Error: ${pushResult.error}`));
-      if (pushResult.attempts > 1) {
-        console.log(chalk.gray(`   ${getRetrySummary(pushResult.attempts as any)}`));
-      }
-    }
-    return {
-      success: false,
-      attempted: true,
-      skipped: false,
-      error: pushResult.error,
-      attempts: pushResult.attempts,
-      duration: pushResult.totalDuration
-    };
-  }
 }
 
-/**
- * Get auto push status summary
- */
 export function getAutoPushStatus(): string {
-  const parts = [];
-  
-  if (!CONFIG.AUTO_PUSH_ENABLED) {
-    return '🔴 Auto push: DISABLED';
-  }
-  
+  const parts: string[] = [];
+  if (!CONFIG.AUTO_PUSH_ENABLED) return '🔴 Auto push: DISABLED';
   parts.push('🟢 Auto push: ENABLED');
-  
-  if (CONFIG.AUTO_PUSH_BRANCHES) {
-    parts.push('🌿 Branches');
-  }
-  
-  if (CONFIG.AUTO_PUSH_TAGS) {
-    parts.push('🏷️  Tags');
-  }
-  
-  if (CONFIG.AUTO_PUSH_INTERNET_CHECK) {
-    parts.push('🌐 Internet Check');
-  }
-  
-  if (CONFIG.AUTO_PUSH_GITHUB_ONLY) {
-    parts.push('🐙 GitHub Only');
-  }
-  
+  if (CONFIG.AUTO_PUSH_BRANCHES) parts.push('🌿 Branches');
+  if (CONFIG.AUTO_PUSH_TAGS) parts.push('🏷️  Tags');
+  if (CONFIG.AUTO_PUSH_INTERNET_CHECK) parts.push('🌐 Internet Check');
+  if (CONFIG.AUTO_PUSH_GITHUB_ONLY) parts.push('🐙 GitHub Only');
   parts.push(`⏱️  ${CONFIG.AUTO_PUSH_DELAY / 1000}s delay`);
   parts.push(`🔄 ${CONFIG.AUTO_PUSH_RETRY_COUNT} retries`);
-  
   return parts.join(' | ');
 }
