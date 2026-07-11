@@ -10,24 +10,29 @@
     "build": "tsc",
     "start": "ts-node src/index.ts",
     "dev": "ts-node src/index.ts",
-    "test": "npm run test:platform && npm run test:all",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:unit": "vitest run",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
     "test:platform": "node test-automation/platform/platform-test.js",
-    "test:all": "node test-automation/test-all-fases.js",
-    "test:unit": "node test-automation/unit/run-unit-tests.js"
+    "test:all": "node test-automation/test-all-fases.js"
   },
   "dependencies": {
-    "commander": "^12.0.0",
+    "@google/generative-ai": "^0.21.0",
     "chalk": "^5.3.0",
-    "ora": "^8.0.0",
-    "inquirer": "^9.2.0",
+    "commander": "^12.0.0",
     "dotenv": "^16.4.0",
+    "inquirer": "^9.2.0",
     "openai": "^4.0.0",
-    "@google/generative-ai": "^0.21.0"
+    "ora": "^8.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.4.0",
-    "@types/node": "^20.0.0",
     "@types/inquirer": "^9.0.0",
-    "ts-node": "^10.9.0"
+    "@types/node": "^20.0.0",
+    "@vitest/coverage-v8": "^4.1.10",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.4.0",
+    "vitest": "^4.1.10"
   }
 }
