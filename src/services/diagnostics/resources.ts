@@ -20,30 +20,62 @@ export interface ResourceReport {
   resources: ResourceInfo[];
 }
 
+const MAX_DEPTH = 20;
+const MAX_ENTRIES = 50_000;
+
 export function scanResources(repoPath: string): ResourceReport {
   const resources: ResourceInfo[] = [];
   const byExtension: Record<string, { count: number; size: number }> = {};
+  const seenRealPaths = new Set<string>();
+  let truncated = false;
 
-  function scan(dir: string, relative: string = '') {
-    const entries = fs.readdirSync(dir, { withFileTypes: true });
+  function scan(dir: string, relative: string, depth: number): void {
+    if (depth > MAX_DEPTH) {
+      truncated = true;
+      return;
+    }
+    if (resources.length >= MAX_ENTRIES) {
+      truncated = true;
+      return;
+    }
+
+    let entries: fs.Dirent[];
+    try {
+      entries = fs.readdirSync(dir, { withFileTypes: true });
+    } catch {
+      // Permission denied or symlink loop; skip silently for diagnostic command.
+      return;
+    }
 
     for (const entry of entries) {
       const fullPath = path.join(dir, entry.name);
       const relativePath = path.join(relative, entry.name);
 
-      // Skip .git and node_modules
       if (entry.name === '.git' || entry.name === 'node_modules') continue;
 
+      try {
+        const realPath = fs.realpathSync(fullPath);
+        if (seenRealPaths.has(realPath)) {
+          // Symlink loop or dup dir; skip
+          continue;
+        }
+        seenRealPaths.add(realPath);
+      } catch {
+        // realpath can fail on broken symlinks; treat as real (record once)
+      }
+
       if (entry.isDirectory()) {
-        resources.push({ 
-          type: 'directory', 
-          path: relativePath,
-        });
-        scan(fullPath, relativePath);
-      } else {
-        const stats = fs.statSync(fullPath);
+        resources.push({ type: 'directory', path: relativePath });
+        scan(fullPath, relativePath, depth + 1);
+      } else if (entry.isFile()) {
+        let stats: fs.Stats;
+        try {
+          stats = fs.statSync(fullPath);
+        } catch {
+          continue;  // broken file / race
+        }
         const ext = path.extname(entry.name).toLowerCase();
-        
+
         const resource: ResourceInfo = {
           type: 'file',
           path: relativePath,
@@ -51,31 +83,37 @@ export function scanResources(repoPath: string): ResourceReport {
           extension: ext || undefined,
           lastModified: stats.mtime,
         };
-        
+
         resources.push(resource);
-        
-        // Track by extension
+
         if (ext) {
-          if (!byExtension[ext]) {
-            byExtension[ext] = { count: 0, size: 0 };
-          }
+          if (!byExtension[ext]) byExtension[ext] = { count: 0, size: 0 };
           byExtension[ext].count++;
           byExtension[ext].size += stats.size;
         }
+      } else if (entry.isSymbolicLink()) {
+        // Ignore symlinks — they could be loops or point outside the repo
       }
     }
   }
 
-  scan(repoPath);
-  
+  scan(repoPath, '', 0);
+
   const files = resources.filter(r => r.type === 'file');
   const dirs = resources.filter(r => r.type === 'directory');
   const totalSize = files.reduce((sum, f) => sum + (f.size || 0), 0);
-  
-  // Get top 10 largest files
+
   const largestFiles = [...files]
     .sort((a, b) => (b.size || 0) - (a.size || 0))
     .slice(0, 10);
+
+  if (truncated) {
+    // Annotate that some entries may have been skipped
+    resources.push({
+      type: 'directory',
+      path: `…truncated (depth>${MAX_DEPTH} or entries>${MAX_ENTRIES})`,
+    });
+  }
 
   return {
     totalFiles: files.length,

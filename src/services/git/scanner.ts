@@ -7,6 +7,11 @@ import { execGit } from '../../utils/executor';
 
 const execAsync = promisify(exec);
 
+export interface ScanWarning {
+  file: string;
+  reason: string;
+}
+
 export interface ScanResult {
   isRepo: boolean;
   hasChanges: boolean;
@@ -14,24 +19,26 @@ export interface ScanResult {
   unstagedFiles: string[];
   diff: string;
   diffData: DiffData;
+  warnings?: ScanWarning[];
 }
 
 export async function scanRepository(repoPath: string): Promise<ScanResult> {
   try {
     await execAsync('git rev-parse --is-inside-work-tree', { cwd: repoPath });
-    
+
     const { stdout: stagedOutput } = await execAsync('git diff --name-only --cached', { cwd: repoPath });
     const stagedFiles = stagedOutput.trim().split('\n').filter(Boolean);
-    
+
     const { stdout: unstagedOutput } = await execAsync('git diff --name-only', { cwd: repoPath });
     const unstagedFiles = unstagedOutput.trim().split('\n').filter(Boolean);
-    
+
     const { stdout: diffOutput } = await execAsync('git diff HEAD', { cwd: repoPath });
-    
+
     const { stdout: untrackedOutput } = await execAsync('git ls-files --others --exclude-standard', { cwd: repoPath });
     const untrackedFiles = untrackedOutput.trim().split('\n').filter(Boolean);
-    
-    // Include untracked files content in diff (cross-platform using fs.readFile)
+
+    const warnings: ScanWarning[] = [];
+
     let untrackedDiff = '';
     for (const file of untrackedFiles) {
       try {
@@ -41,16 +48,19 @@ export async function scanRepository(repoPath: string): Promise<ScanResult> {
         fileContent.split('\n').forEach((line: string) => {
           untrackedDiff += `+${line}\n`;
         });
-      } catch {
-        // Skip files that can't be read
+      } catch (error) {
+        warnings.push({
+          file,
+          reason: error instanceof Error ? error.message : 'unknown read error',
+        });
       }
     }
-    
+
     const hasChanges = stagedFiles.length > 0 || unstagedFiles.length > 0 || untrackedFiles.length > 0;
-    
+
     const fullDiff = diffOutput + untrackedDiff;
     const diffData = smartPack(fullDiff);
-    
+
     return {
       isRepo: true,
       hasChanges,
@@ -58,6 +68,7 @@ export async function scanRepository(repoPath: string): Promise<ScanResult> {
       unstagedFiles: [...unstagedFiles, ...untrackedFiles],
       diff: fullDiff,
       diffData,
+      warnings: warnings.length > 0 ? warnings : undefined,
     };
   } catch {
     return {
@@ -67,6 +78,7 @@ export async function scanRepository(repoPath: string): Promise<ScanResult> {
       unstagedFiles: [],
       diff: '',
       diffData: { mode: 'direct', payload: '', originalSize: 0 },
+      warnings: undefined,
     };
   }
 }
