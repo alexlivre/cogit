@@ -1,6 +1,6 @@
 # Cogit CLI
 
-![Status](https://img.shields.io/badge/Status-FASE_7_Complete-brightgreen) ![Version](https://img.shields.io/badge/Version-1.4.0-blue) ![Node](https://img.shields.io/badge/Node-18%2B-green) ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue) ![Tests](https://img.shields.io/badge/Tests-95.4%25_Passing-success)
+![Node](https://img.shields.io/badge/Node-18%2B-green) ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-blue) ![Tests](https://img.shields.io/badge/Tests-Vitest-blue)
 
 > **Git automation CLI with AI-powered commit messages**
 
@@ -293,9 +293,8 @@ src/
 ### Clean Architecture
 
 - **Domain Layer**: Commit, Repository, Diff entities
-- **Application Layer**: 5 use cases (Scan, Generate, Execute, Branch, Security)
 - **Dependency Rule**: Dependencies point inward
-- **95.4% validated** - 305 tests passing
+- Tests run with Vitest (coverage generated via v8 provider)
 
 ---
 
