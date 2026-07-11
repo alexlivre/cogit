@@ -33,6 +33,16 @@ export interface ExecutorResult {
 }
 
 /**
+ * Escape shell metacharacters so the dry-run display is safe to copy-paste.
+ * Escapes double quotes, backticks, and dollar signs so the rendered command
+ * cannot break out of the surrounding quotes or trigger command substitution
+ * when pasted into a shell.
+ */
+function escapeForDisplay(s: string): string {
+  return s.replace(/"/g, '\\"').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+}
+
+/**
  * Handle commit execution with optional dry-run
  * @param options Execution options
  * @returns Execution result
@@ -42,15 +52,16 @@ export async function handleCommitExecution(
 ): Promise<ExecutorResult> {
   // Dry run mode - don't execute anything
   if (options.dryRun) {
+    const safeMessage = escapeForDisplay(options.message);
     const commands = [
       'git add -A',
-      `git commit -m "${options.message}"`,
+      `git commit -m "${safeMessage}"`,
     ];
-    
+
     if (options.shouldPush) {
       commands.push('git push');
     }
-    
+
     renderDryRun(commands);
     return { success: true };
   }

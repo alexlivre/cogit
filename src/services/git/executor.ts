@@ -1,4 +1,4 @@
-import { execGit } from '../../utils/executor';
+import { execGit, safeExecGit } from '../../utils/executor';
 
 export interface ExecutorResult {
   success: boolean;
@@ -17,8 +17,10 @@ export async function gitAdd(repoPath: string): Promise<ExecutorResult> {
 
 export async function gitCommit(repoPath: string, message: string): Promise<ExecutorResult> {
   try {
-    const escapedMessage = message.replace(/"/g, '\\"');
-    const { stdout } = await execGit(`commit -m "${escapedMessage}"`, { cwd: repoPath });
+    const { stdout } = await safeExecGit(
+      ['commit', '-F', '-'],
+      { cwd: repoPath, input: message }
+    );
     return { success: true, output: stdout };
   } catch (error) {
     return { success: false, error: String(error) };
