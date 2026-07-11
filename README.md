@@ -275,56 +275,54 @@ src/
 │   ├── commands/             # CLI commands
 │   └── ui/                   # Interface components
 ├── core/
-│   ├── container.ts          # Dependency injection
-│   ├── vault.ts              # VibeVault
-│   └── errors.ts             # Error system
+│   ├── vault.ts              # VibeVault (large diff management)
+│   ├── errors.ts             # Error hierarchy
+│   └── error-handler/        # Classification + presentation
 ├── services/
 │   ├── ai/                   # Providers + Brain
 │   ├── git/                  # Scanner, Executor, Healer
 │   ├── security/             # Sanitizer, Redactor
+│   ├── network/              # Connectivity, auto-push, retry
+│   ├── tools/                # Stealth mode, ignore suggestions
 │   └── diagnostics/          # Health, Resources
 ├── domain/                   # Entities (Clean Architecture)
-├── application/              # Use Cases (Clean Architecture)
-├── infrastructure/           # Adapters
-├── config/                   # Configuration + i18n
-└── locales/                  # Translations (en, pt)
+├── config/                   # Environment config + i18n
+├── locales/                  # Translations (en, pt)
+├── utils/                    # git-ref validator, platform helpers
+├── types/                    # Shared TypeScript types
 ```
 
-### Clean Architecture
+### Architecture
 
-- **Domain Layer**: Commit, Repository, Diff entities
-- **Dependency Rule**: Dependencies point inward
-- Tests run with Vitest (coverage generated via v8 provider)
+- **Domain Layer**: Pure entities (Commit, Repository, Diff) — no external dependencies
+- **Services**: Orchestration with security validation at every entry point
+- All external commands are executed via `safeExecGit` (spawn + argv, no shell)
 
 ---
 
 ## Testing
 
 ```bash
-# Full suite
-node test-automation/test-all-fases.js
+# Unit tests (Vitest)
+npm run test
 
-# With JSON report
-node test-automation/test-all-fases.js --report
+# With coverage report
+npm run test:coverage
 
-# Specific phase
-node test-automation/test-all-fases.js --fase=1
-
-# Stress tests
-node test-automation/test-full-exhaustive.js --stress --report
+# Watch mode
+npm run test:watch
 ```
 
 ### Coverage
 
-| Phase | Tests | Status |
-|-------|-------|--------|
-| PHASE 1 (MVP) | 10 | ✅ 100% |
-| PHASE 2 (Automation) | 8 | ✅ 100% |
-| PHASE 3 (Branch/Tags) | 12 | ✅ 100% |
-| PHASE 4 (Smart Features) | 10 | ✅ 100% |
-| PHASE 5 (Diagnostics) | 18 | ✅ 100% |
-| Edge Cases | 8 | ✅ 100% |
-| **TOTAL** | **66** | **✅ 100%** |
+Measured via Vitest + v8 provider (threshold gates in CI):
+
+| Module | Lines | Branches |
+|--------|-------|----------|
+| Domain entities | > 85% | > 80% |
+| Error system | > 45% | > 80% |
+| Git ref validator | > 78% | > 90% |
+| Git command validator | > 97% | 100% |
 
 ---
 
@@ -347,7 +345,7 @@ node test-automation/test-full-exhaustive.js --stress --report
 | Phase | Description |
 |-------|-------------|
 | Clean Code Phase 1 | Error system, extracted handlers, SRP |
-| Clean Architecture Phase 3 | Domain/Application layers, 50 tests |
+| Security Audit 2026-07 | 47 findings — 30 resolved (all critical/moderate) |
 
 ---
 
@@ -355,9 +353,11 @@ node test-automation/test-full-exhaustive.js --stress --report
 
 ```bash
 npm install        # Install dependencies
-npm run build      # Build project
-npm run dev        # Development mode
-node dist/index.js # Run
+npm run build      # Compile TypeScript
+npm run test       # Run Vitest suite
+npm run test:coverage # Run tests with coverage report
+npm run dev        # Development mode (ts-node)
+node dist/index.js # Run compiled binary
 ```
 
 ---
