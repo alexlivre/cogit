@@ -1,24 +1,16 @@
-import { execGit } from '../../utils/executor';
+import { execGit, safeExecGit } from '../../utils/executor';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { separatorLine } from '../../cli/ui/separator';
 import { confirmDestructiveOperation } from '../../utils/confirmation';
 import { autoPushTag } from '../network/auto-push';
+import { isValidTagName } from '../../utils/git-ref';
 
 export interface TagInfo {
   name: string;
   commit: string;
   message?: string;
   date?: string;
-}
-
-/**
- * Validates tag name according to Git rules
- */
-function isValidTagName(name: string): boolean {
-  // Git tag name rules
-  const pattern = /^[a-zA-Z0-9][a-zA-Z0-9._-]*$/;
-  return pattern.test(name);
 }
 
 /**
@@ -34,9 +26,9 @@ export async function listTags(repoPath: string): Promise<TagInfo[]> {
     
     for (const name of tagNames) {
       try {
-        const { stdout: commit } = await execGit(`rev-list -n 1 ${name}`, { cwd: repoPath });
-        const { stdout: message } = await execGit(`tag -l -n1 ${name}`, { cwd: repoPath });
-        const { stdout: date } = await execGit(`log -1 --format=%ci ${name}`, { cwd: repoPath });
+        const { stdout: commit } = await safeExecGit(['rev-list', '-n', '1', name], { cwd: repoPath });
+        const { stdout: message } = await safeExecGit(['tag', '-l', '-n1', name], { cwd: repoPath });
+        const { stdout: date } = await safeExecGit(['log', '-1', '--format=%ci', name], { cwd: repoPath });
         
         tags.push({
           name,
@@ -71,10 +63,9 @@ export async function createTag(
     }
     
     if (annotated && message) {
-      const escapedMessage = message.replace(/"/g, '\\"');
-      await execGit(`tag -a ${tagName} -m "${escapedMessage}"`, { cwd: repoPath });
+      await safeExecGit(['tag', '-a', tagName, '-m', message], { cwd: repoPath });
     } else {
-      await execGit(`tag ${tagName}`, { cwd: repoPath });
+      await safeExecGit(['tag', tagName], { cwd: repoPath });
     }
     
     // Attempt auto push if enabled
@@ -103,6 +94,10 @@ export async function deleteTag(
   tagName: string, 
   remote: boolean = false
 ): Promise<{ success: boolean; error?: string }> {
+  if (!isValidTagName(tagName)) {
+    return { success: false, error: `Invalid tag name: ${tagName}` };
+  }
+
   const confirmed = await confirmDestructiveOperation(
     remote ? `Delete remote tag: ${tagName}` : `Delete local tag: ${tagName}`
   );
@@ -113,9 +108,9 @@ export async function deleteTag(
   
   try {
     if (remote) {
-      await execGit(`push origin --delete ${tagName}`, { cwd: repoPath });
+      await safeExecGit(['push', 'origin', '--delete', tagName], { cwd: repoPath });
     } else {
-      await execGit(`tag -d ${tagName}`, { cwd: repoPath });
+      await safeExecGit(['tag', '-d', tagName], { cwd: repoPath });
     }
     return { success: true };
   } catch (error) {
@@ -127,6 +122,10 @@ export async function deleteTag(
  * Resets the repository to a specific tag (requires confirmation)
  */
 export async function resetToTag(repoPath: string, tagName: string, hard: boolean = true): Promise<{ success: boolean; error?: string }> {
+  if (!isValidTagName(tagName)) {
+    return { success: false, error: `Invalid tag name: ${tagName}` };
+  }
+
   const confirmed = await confirmDestructiveOperation(`Reset to tag: ${tagName} (${hard ? 'hard' : 'soft'})`);
   
   if (!confirmed) {
@@ -135,7 +134,7 @@ export async function resetToTag(repoPath: string, tagName: string, hard: boolea
   
   try {
     const mode = hard ? '--hard' : '--soft';
-    await execGit(`reset ${mode} ${tagName}`, { cwd: repoPath });
+    await safeExecGit(['reset', mode, tagName], { cwd: repoPath });
     return { success: true };
   } catch (error) {
     return { success: false, error: String(error) };
@@ -146,9 +145,13 @@ export async function resetToTag(repoPath: string, tagName: string, hard: boolea
  * Pushes tag(s) to remote
  */
 export async function pushTag(repoPath: string, tagName?: string): Promise<{ success: boolean; error?: string }> {
+  if (tagName !== undefined && !isValidTagName(tagName)) {
+    return { success: false, error: `Invalid tag name: ${tagName}` };
+  }
+
   try {
     const tagRef = tagName ? tagName : '--tags';
-    await execGit(`push origin ${tagRef}`, { cwd: repoPath });
+    await safeExecGit(['push', 'origin', tagRef], { cwd: repoPath });
     return { success: true };
   } catch (error) {
     return { success: false, error: String(error) };
