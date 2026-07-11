@@ -5,7 +5,22 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { execGit } from '../../utils/executor';
+import { safeExecGit } from '../../utils/executor';
+
+const FORBIDDEN_PATTERN_CHARS = /[;&|`$<>(){}!\\\n\r\x00]/;
+const MAX_PATTERN_LENGTH = 512;
+
+function validatePattern(pattern: string): void {
+  if (pattern.length === 0) {
+    throw new Error('Empty pattern is not allowed');
+  }
+  if (pattern.length > MAX_PATTERN_LENGTH) {
+    throw new Error(`Pattern exceeds max length of ${MAX_PATTERN_LENGTH}: ${pattern.slice(0, 64)}…`);
+  }
+  if (FORBIDDEN_PATTERN_CHARS.test(pattern)) {
+    throw new Error(`Pattern contains forbidden shell metacharacter: ${pattern.slice(0, 64)}…`);
+  }
+}
 
 const PRIVATE_CONFIG_FILE = '.gitpy-private';
 const TEMP_DIR = '.gitpy-temp';
@@ -47,22 +62,33 @@ function readPrivatePatterns(repoPath: string): string[] {
  */
 async function getMatchingFiles(repoPath: string, patterns: string[]): Promise<string[]> {
   const matchingFiles: string[] = [];
-  
+
   for (const pattern of patterns) {
     try {
-      // Use git ls-files to find matching files
-      const { stdout } = await execGit(
-        `ls-files --others --exclude-standard "${pattern}" && git ls-files "${pattern}"`,
+      validatePattern(pattern);
+    } catch (error) {
+      // Skip invalid pattern; don't abort entire stash.
+      console.warn(`Skipping invalid stealth pattern: ${(error as Error).message}`);
+      continue;
+    }
+
+    try {
+      // safeExecGit: pattern flows via argv, never via shell.
+      const others = await safeExecGit(
+        ['ls-files', '--others', '--exclude-standard', pattern],
         { cwd: repoPath }
       );
-      
-      const files = stdout.trim().split('\n').filter(Boolean);
+      const tracked = await safeExecGit(['ls-files', pattern], { cwd: repoPath });
+
+      const files = (others.stdout + '\n' + tracked.stdout)
+        .split('\n')
+        .filter(Boolean);
       matchingFiles.push(...files);
     } catch {
       // Pattern might not match anything, continue
     }
   }
-  
+
   // Remove duplicates
   return [...new Set(matchingFiles)];
 }
