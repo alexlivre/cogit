@@ -1,6 +1,7 @@
-import { execGit, execCommand } from '../../utils/executor';
+import { safeExecGit } from '../../utils/executor';
 import { OpenRouterProvider } from '../ai/providers/openrouter';
 import { CONFIG } from '../../config/env';
+import { isValidGitCommand } from './git-command-validator';
 
 export interface HealerInput {
   repoPath: string;
@@ -29,21 +30,24 @@ Rules:
 - If a command fails, execution stops and I'll return with the error
 - Keep commands simple and safe`;
 
+function tokenize(line: string): string[] {
+  return line.trim().split(/\s+/).filter((t) => t.length > 0);
+}
+
 export async function healGitError(input: HealerInput): Promise<{ success: boolean; attempts: HealerAttempt[] }> {
   const attempts: HealerAttempt[] = [];
   const provider = new OpenRouterProvider({
     apiKey: CONFIG.OPENROUTER_API_KEY || '',
     model: CONFIG.OPENROUTER_MODEL || 'meta-llama/llama-4-scout',
   });
-  
+
   let currentError = input.errorOutput;
-  
+
   for (let attempt = 1; attempt <= input.maxRetries; attempt++) {
-    // Build context with history
-    const historyContext = attempts.map(a => 
+    const historyContext = attempts.map(a =>
       `Attempt ${a.attempt}: Commands: ${a.commands.join(', ')} - Result: ${a.success ? 'Success' : a.error}`
     ).join('\n');
-    
+
     const userPrompt = `Failed command: ${input.failedCommand}
 Error output:
 ${currentError}
@@ -53,77 +57,74 @@ ${historyContext || 'None'}
 
 Provide commands to fix this error:`;
 
-    // Get commands from AI
     const response = await provider.generate([
       { role: 'system', content: HEALER_SYSTEM_PROMPT },
       { role: 'user', content: userPrompt },
     ]);
-    
-    // Parse commands
-    const commands = response
+
+    const rawLines = response
       .split('\n')
       .map(line => line.trim())
       .filter(line => line && !line.startsWith('```') && !line.startsWith('#'));
-    
-    // Validate commands (safety check)
-    const safeCommands = commands.filter(cmd => {
-      const lowerCmd = cmd.toLowerCase();
-      // Block dangerous commands
-      if (lowerCmd.includes('--force') || lowerCmd.includes('-f ')) {
-        return false;
+
+    const safeCommands: string[] = [];
+    const rejectedReasons: string[] = [];
+
+    for (const line of rawLines) {
+      const argv = tokenize(line);
+      const validation = isValidGitCommand(argv);
+      if (!validation.safe) {
+        rejectedReasons.push(`${line} -> ${validation.reason}`);
+        continue;
       }
-      if (lowerCmd.includes('reset --hard')) {
-        return false;
-      }
-      if (lowerCmd.includes('clean -fd')) {
-        return false;
-      }
-      return true;
-    });
-    
+      safeCommands.push(line);
+    }
+
     if (safeCommands.length === 0) {
       attempts.push({
         attempt,
-        commands: ['No safe commands suggested'],
+        commands: rejectedReasons.length > 0
+          ? [`Rejected: ${rejectedReasons.join('; ')}`]
+          : ['No commands suggested'],
         success: false,
         error: 'AI suggested no safe commands',
       });
       continue;
     }
-    
-    // Execute commands
+
     let allSuccess = true;
     let lastError = '';
-    
-    for (const cmd of safeCommands) {
+
+    for (const line of safeCommands) {
+      const argv = tokenize(line);
+      const gitArgs = argv.slice(1);
       try {
-        await execCommand(cmd, { cwd: input.repoPath });
+        await safeExecGit(gitArgs, { cwd: input.repoPath });
       } catch (error) {
         allSuccess = false;
-        lastError = String(error);
+        lastError = error instanceof Error ? error.message : String(error);
         break;
       }
     }
-    
+
     attempts.push({
       attempt,
       commands: safeCommands,
       success: allSuccess,
       error: allSuccess ? undefined : lastError,
     });
-    
+
     if (allSuccess) {
-      // Try original push again
       try {
-        await execGit('push', { cwd: input.repoPath });
+        await safeExecGit(['push'], { cwd: input.repoPath });
         return { success: true, attempts };
       } catch (error) {
-        currentError = String(error);
+        currentError = error instanceof Error ? error.message : String(error);
       }
     } else {
       currentError = lastError;
     }
   }
-  
+
   return { success: false, attempts };
 }
