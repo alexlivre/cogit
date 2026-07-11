@@ -24,12 +24,18 @@ class I18nManager {
 
   private loadTranslations(): void {
     const localesDir = path.join(__dirname, '../locales');
-    
+
     for (const lang of ['en', 'pt']) {
       const filePath = path.join(localesDir, `${lang}.json`);
       if (fs.existsSync(filePath)) {
-        const content = fs.readFileSync(filePath, 'utf-8');
-        this.translations.set(lang, JSON.parse(content));
+        try {
+          const content = fs.readFileSync(filePath, 'utf-8');
+          this.translations.set(lang, JSON.parse(content));
+        } catch (error) {
+          // Malformed JSON: log and fall back to empty translation set.
+          // `t()` will simply return the key for this language.
+          console.warn(`Failed to load translations for "${lang}" at ${filePath}: ${(error as Error).message}`);
+        }
       }
     }
   }
