@@ -69,19 +69,17 @@ export class OllamaProvider implements AIProvider {
   }
 
   async checkConnection(): Promise<{ available: boolean; error?: string }> {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 3000);
+
     try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 3000);
-      
       const response = await fetch(`${this.baseURL}/api/tags`, {
         method: 'GET',
         signal: controller.signal,
       });
-      
-      clearTimeout(timeout);
-      
+
       if (!response.ok) {
-        return { 
+        return {
           available: false, 
           error: `Ollama server returned ${response.status}` 
         };
@@ -116,10 +114,12 @@ export class OllamaProvider implements AIProvider {
         };
       }
       
-      return { 
-        available: false, 
-        error: `Connection error: ${errorMessage}` 
+      return {
+        available: false,
+        error: `Connection error: ${errorMessage}`
       };
+    } finally {
+      clearTimeout(timeout);
     }
   }
 }

@@ -202,6 +202,24 @@ export function getRetrySummary(attempts: RetryAttempt[]): string {
 }
 
 /**
+ * Get human-readable retry summary from a numeric attempt count.
+ * Useful for log messages that only have access to the count, not the full
+ * RetryAttempt[] array. Format mirrors getRetrySummary where possible.
+ */
+export function getRetrySummaryFromCount(count: number, success: boolean): string {
+  if (count <= 0) {
+    return success ? '✅ Success' : '❌ Failed';
+  }
+  if (count === 1 && success) {
+    return '✅ Success on first attempt';
+  }
+  if (success) {
+    return `✅ Success after ${count} attempts (${count - 1} ${count - 1 === 1 ? 'retry' : 'retries'})`;
+  }
+  return `❌ Failed after ${count} attempts`;
+}
+
+/**
  * Format retry attempts for logging
  */
 export function formatRetryAttempts(attempts: RetryAttempt[]): string[] {

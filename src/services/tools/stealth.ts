@@ -99,16 +99,32 @@ async function getMatchingFiles(repoPath: string, patterns: string[]): Promise<s
 async function ensureGitignoreEntry(repoPath: string): Promise<void> {
   const gitignorePath = path.join(repoPath, '.gitignore');
   const tempEntry = `${TEMP_DIR}/`;
-  
+  const backupPath = `${gitignorePath}.cogit-backup`;
+
   if (!fs.existsSync(gitignorePath)) {
     fs.writeFileSync(gitignorePath, `# Cogit temporary directory\n${tempEntry}\n`);
     return;
   }
-  
+
   const content = fs.readFileSync(gitignorePath, 'utf-8');
-  
+
   if (!content.includes(tempEntry) && !content.includes(TEMP_DIR)) {
-    fs.appendFileSync(gitignorePath, `\n# Cogit temporary directory\n${tempEntry}\n`);
+    // Create backup before mutating user-controlled file
+    fs.copyFileSync(gitignorePath, backupPath);
+    try {
+      fs.appendFileSync(gitignorePath, `\n# Cogit temporary directory\n${tempEntry}\n`);
+    } catch (error) {
+      // If append fails, restore from backup
+      if (fs.existsSync(backupPath)) {
+        fs.copyFileSync(backupPath, gitignorePath);
+        fs.unlinkSync(backupPath);
+      }
+      throw error;
+    }
+    // Best-effort cleanup of backup on success
+    if (fs.existsSync(backupPath)) {
+      fs.unlinkSync(backupPath);
+    }
   }
 }
 

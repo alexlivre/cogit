@@ -14,23 +14,29 @@ export interface SanitizerResult {
   message?: string;
 }
 
+function escapeRegex(str: string): string {
+  return str.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
+}
+
 function matchPattern(filename: string, pattern: string): boolean {
   const normalizedPattern = pattern.toLowerCase();
   const normalizedFilename = filename.toLowerCase();
-  
+
   if (pattern.startsWith('**/')) {
     return normalizedFilename.includes(normalizedPattern.replace('**/', ''));
   }
-  
+
   if (pattern.endsWith('/*')) {
     return normalizedFilename.startsWith(normalizedPattern.replace('/*', '/'));
   }
-  
+
   if (pattern.includes('*')) {
-    const regex = new RegExp(`^${normalizedPattern.replace(/\*/g, '.*')}$`);
+    // Escape regex metacharacters first, then convert glob `*` to `.*`
+    const escaped = escapeRegex(normalizedPattern).replace(/\\\*/g, '.*');
+    const regex = new RegExp(`^${escaped}$`);
     return regex.test(normalizedFilename);
   }
-  
+
   return normalizedFilename === normalizedPattern;
 }
 

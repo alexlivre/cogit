@@ -67,15 +67,14 @@ async function runBrain(input: BrainInput): Promise<BrainOutput> {
   ];
 
   // Determine if thinking should be used
-  // Priority: flag > env config
-  // Only Ollama supports thinking, but we pass it to all providers (they ignore it)
   const shouldThink = thinkFlag !== undefined ? thinkFlag : CONFIG.OLLAMA_THINK;
 
   try {
-    // Use fallback system for provider selection
     const { result: rawResponse, provider } = await tryWithFallback(async (p) => {
       const startTime = Date.now();
 
+      // logRequest receives already-redacted messages (safeDiff was used to build user_prompt),
+      // so secrets are not exposed even before log is flushed.
       if (debug) {
         debugLogger.logRequest(p.getName(), messages);
       }
@@ -83,7 +82,10 @@ async function runBrain(input: BrainInput): Promise<BrainOutput> {
       const response = await p.generate(messages, { think: shouldThink });
 
       if (debug) {
-        debugLogger.logResponse(p.getName(), typeof response === 'string' ? response : response.content, Date.now() - startTime);
+        // Redact response too in case provider echoed secrets from prior context.
+        const responseForLog = typeof response === 'string' ? response : response.content;
+        const redacted = redactDiff(responseForLog);
+        debugLogger.logResponse(p.getName(), redacted, Date.now() - startTime);
       }
 
       return response;
