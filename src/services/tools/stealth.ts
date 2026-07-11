@@ -163,23 +163,40 @@ export async function stealthStash(repoPath: string): Promise<StealthResult> {
       fs.mkdirSync(tempPath, { recursive: true });
     }
     
+    // Track each successful rename so we can rollback on failure.
+    const movedFiles: Array<{ from: string; to: string }> = [];
+
     // Move files to temp directory
     for (const file of matchingFiles) {
       const sourcePath = path.join(repoPath, file);
       const destPath = path.join(tempPath, file);
-      
+
       if (fs.existsSync(sourcePath)) {
-        // Create directory structure in temp
         const destDir = path.dirname(destPath);
         if (!fs.existsSync(destDir)) {
           fs.mkdirSync(destDir, { recursive: true });
         }
-        
-        // Move file
-        fs.renameSync(sourcePath, destPath);
+
+        try {
+          fs.renameSync(sourcePath, destPath);
+          movedFiles.push({ from: sourcePath, to: destPath });
+        } catch (error) {
+          // Rollback everything that was already moved (reverse order).
+          for (let i = movedFiles.length - 1; i >= 0; i--) {
+            const op = movedFiles[i];
+            try {
+              if (fs.existsSync(op.to)) {
+                fs.renameSync(op.to, op.from);
+              }
+            } catch {
+              // Best-effort rollback: keep going to attempt all reverse moves.
+            }
+          }
+          throw error;
+        }
       }
     }
-    
+
     return {
       hiddenFiles: matchingFiles,
       tempPath,
