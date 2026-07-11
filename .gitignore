@@ -1,5 +1,7 @@
 # === SENSITIVE FILES ===
 .env
+.env.local
+.env.*.local
 
 # === NODE.JS ===
 node_modules/
@@ -16,6 +18,8 @@ dist/
 .idea/
 *.swp
 *.swo
+.opencode/
+.windsurf/
 
 # === OPERATING SYSTEM ===
 .DS_Store
@@ -25,5 +29,21 @@ Thumbs.db
 *.tmp
 *.temp
 *.log
+*.cogit-backup
+coverage/
 
+# === LANGUAGE ===
 *.pyc
+
+# === TEST REPORTS (ephemeral) ===
+test-automation/reports/*.json
+test-automation/reports/*.md
+test-automation/temp-test-repo/
+
+# === RUNTIME TEST FIXTURES ===
+# teste/ folder is runtime scratch; only fixtures kept in git live under test-automation/fixtures
+teste/
+
+# === VIBE COGIT ===
+.vibe-debug.log
+.gitpy-temp/
