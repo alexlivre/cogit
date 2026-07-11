@@ -55,6 +55,9 @@ export async function autoCommand(options: AutoOptions): Promise<void> {
 
     // Scan repository
     const scanResult = await scanRepositoryWithErrorHandling(repoPath);
+    if (!scanResult) {
+      return;  // no changes detected, exit gracefully
+    }
 
     // Security check
     validateFiles(scanResult.stagedFiles, scanResult.unstagedFiles);
@@ -104,7 +107,7 @@ async function scanRepositoryWithErrorHandling(repoPath: string) {
 
   if (!scanResult.hasChanges) {
     scanSpinner.info(t('auto.no_changes'));
-    process.exit(0);
+    return undefined;
   }
 
   scanSpinner.succeed(t('auto.processing'));

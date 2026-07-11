@@ -111,7 +111,6 @@ export async function checkAICommand(): Promise<void> {
   console.log(`Total: ${availableCount}/${providers.length} providers available`);
 
   if (availableCount === 0) {
-    console.log(chalk.red('\n⚠️  No AI providers available. Check your API keys in .env'));
-    process.exit(1);
+    throw new Error('No AI providers available. Check your API keys in .env');
   }
 }

@@ -75,9 +75,6 @@ export const checkConnectivityCommand = new Command('check-connectivity')
       console.log(chalk.green('\n✅ Connectivity check completed\n'));
       
     } catch (error: any) {
-      console.log(chalk.red('\n❌ Connectivity check failed:'));
-      console.log(chalk.gray(`   ${error.message}\n`));
-      console.log(chalk.gray(`   Stack: ${error.stack}\n`));
-      process.exit(1);
+      throw new Error(`Connectivity check failed: ${error.message}`);
     }
   });
