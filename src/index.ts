@@ -11,10 +11,12 @@ import { autoCommand } from './cli/commands/auto/index';
 import { menuCommand } from './cli/commands/menu';
 import { handleFatalError } from './core/errors';
 
+const VERSION = require('../package.json').version as string;
+
 const showCustomHelp = () => {
   console.log(chalk.cyan.bold('╔══════════════════════════════════════════════════════════╗'));
   console.log(chalk.cyan.bold('║') + chalk.white.bold('         COGIT - AI-Powered Git CLI                       ') + chalk.cyan.bold('║'));
-  console.log(chalk.cyan.bold('║') + chalk.gray('         Version 1.0.0 | github.com/alexlivre/cogit       ') + chalk.cyan.bold('║'));
+  console.log(chalk.cyan.bold('║') + chalk.gray(`         Version ${VERSION} | github.com/alexlivre/cogit       `) + chalk.cyan.bold('║'));
   console.log(chalk.cyan.bold('╚══════════════════════════════════════════════════════════╝\n'));
 
   console.log(chalk.yellow.bold('USAGE:'));
@@ -59,7 +61,7 @@ const showCustomHelp = () => {
 program
   .name('cogit')
   .description('Git automation CLI with AI-powered commit messages')
-  .version('1.0.0')
+  .version(VERSION)
   .helpOption(false);
 
 // Custom help handlers
