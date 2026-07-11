@@ -7,6 +7,7 @@ import { randomUUID } from 'crypto';
 
 const SIZE_THRESHOLD_KB = 100;
 const SIZE_THRESHOLD_BYTES = SIZE_THRESHOLD_KB * 1024;
+const DEFAULT_TTL_MS = 5 * 60 * 1000;
 
 export interface DiffData {
   mode: 'direct' | 'ref';
@@ -19,23 +20,33 @@ export interface DiffData {
 interface VaultMetadata {
   size: number;
   timestamp: Date;
+  expiresAt: Date;
 }
 
 class VibeVault {
   private static storage: Map<string, string> = new Map();
   private static metadata: Map<string, VaultMetadata> = new Map();
 
-  static store(data: string): string {
+  static store(data: string, ttlMs: number = DEFAULT_TTL_MS): string {
     const refId = `ref-${randomUUID().split('-')[0]}`;
+    const now = new Date();
     this.storage.set(refId, data);
     this.metadata.set(refId, {
       size: Buffer.byteLength(data, 'utf-8'),
-      timestamp: new Date(),
+      timestamp: now,
+      expiresAt: new Date(now.getTime() + ttlMs),
     });
+    this.scheduleCleanup(refId, ttlMs);
     return refId;
   }
 
   static retrieve(refId: string): string | undefined {
+    const meta = this.metadata.get(refId);
+    if (!meta) return undefined;
+    if (meta.expiresAt.getTime() < Date.now()) {
+      this.cleanup(refId);
+      return undefined;
+    }
     return this.storage.get(refId);
   }
 
@@ -70,6 +81,11 @@ class VibeVault {
     } finally {
       this.cleanup(refId);
     }
+  }
+
+  private static scheduleCleanup(refId: string, ttlMs: number): void {
+    const timer = setTimeout(() => this.cleanup(refId), ttlMs);
+    if (typeof timer.unref === 'function') timer.unref();
   }
 }
 
