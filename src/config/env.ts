@@ -1,3 +1,14 @@
+/**
+ * Parse integer env var, falling back to default when missing or NaN.
+ * Returns default when value is empty string, not a number, or negative.
+ */
+function parseIntOrFallback(raw: string | undefined, fallback: number): number {
+  if (raw === undefined || raw === '') return fallback;
+  const parsed = parseInt(raw, 10);
+  if (Number.isNaN(parsed) || parsed < 0) return fallback;
+  return parsed;
+}
+
 export const CONFIG = {
   AI_PROVIDER: process.env.AI_PROVIDER || 'auto',
   LANGUAGE: process.env.LANGUAGE?.toLowerCase() || 'en',
@@ -25,14 +36,14 @@ export const CONFIG = {
   AUTO_PUSH_TAGS: process.env.AUTO_PUSH_TAGS !== 'false', // default true
   AUTO_PUSH_INTERNET_CHECK: process.env.AUTO_PUSH_INTERNET_CHECK !== 'false', // default true
   AUTO_PUSH_GITHUB_ONLY: process.env.AUTO_PUSH_GITHUB_ONLY !== 'false', // default true
-  AUTO_PUSH_DELAY: parseInt(process.env.AUTO_PUSH_DELAY || '5', 10) * 1000, // convert to ms
-  AUTO_PUSH_RETRY_COUNT: parseInt(process.env.AUTO_PUSH_RETRY_COUNT || '3', 10),
+  AUTO_PUSH_DELAY: parseIntOrFallback(process.env.AUTO_PUSH_DELAY, 5) * 1000,
+  AUTO_PUSH_RETRY_COUNT: parseIntOrFallback(process.env.AUTO_PUSH_RETRY_COUNT, 3),
   AUTO_PUSH_SILENT: process.env.AUTO_PUSH_SILENT === 'true',
-  
+
   // Auto Push Fallback Settings
   AUTO_PUSH_FALLBACK_ENABLED: process.env.AUTO_PUSH_FALLBACK_ENABLED !== 'false', // default true
   AUTO_PUSH_STRICT_CHECK: process.env.AUTO_PUSH_STRICT_CHECK === 'true', // default false
-  AUTO_PUSH_FALLBACK_TIMEOUT: parseInt(process.env.AUTO_PUSH_FALLBACK_TIMEOUT || '15', 10) * 1000,
+  AUTO_PUSH_FALLBACK_TIMEOUT: parseIntOrFallback(process.env.AUTO_PUSH_FALLBACK_TIMEOUT, 15) * 1000,
   
   VALID_LANGUAGES: ['en', 'pt'],
 };

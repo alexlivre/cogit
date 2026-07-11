@@ -22,7 +22,11 @@ export class GroqProvider implements AIProvider {
       })),
     });
 
-    return completion.choices[0]?.message?.content || '';
+    const content = completion.choices?.[0]?.message?.content;
+    if (content === undefined || content === null || content === '') {
+      throw new Error('Groq returned empty response');
+    }
+    return content;
   }
 
   getName(): string {

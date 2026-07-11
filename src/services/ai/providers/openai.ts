@@ -22,7 +22,11 @@ export class OpenAIProvider implements AIProvider {
       })),
     });
 
-    return completion.choices[0]?.message?.content || '';
+    const content = completion.choices?.[0]?.message?.content;
+    if (content === undefined || content === null || content === '') {
+      throw new Error('OpenAI returned empty response');
+    }
+    return content;
   }
 
   getName(): string {
